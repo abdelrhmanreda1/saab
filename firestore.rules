@@ -1,0 +1,576 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // Helper function to check if user is admin
+    function isAdmin() {
+      return request.auth != null && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.isAdmin == true;
+    }
+    
+    // Helper function to check if user is authenticated
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    // Users:
+    match /users/{userId} {
+      // Allow create for new users (for demo mode and normal registration)
+      allow create: if true;
+      // Allow read for public (needed for demo mode and login checks)
+      allow read: if true;
+      // Allow update for authenticated users, admins, or for demo mode (when no auth)
+      // Note: In demo mode, setDoc with merge on existing doc is treated as update
+      // We allow update if no auth (demo mode) OR if authenticated user matches userId
+      allow update: if request.auth == null || 
+                     (request.auth != null && (request.auth.uid == userId || isAdmin()));
+      // Allow delete only for admins
+      allow delete: if isAdmin();
+    }
+
+    // Public Content (Read: Public, Write: Admin)
+    match /products/{productId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+    match /categories/{categoryId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+    match /collections/{collectionId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+    match /brands/{brandId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+    match /banners/{bannerId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+    match /posts/{postId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+    match /coupons/{couponId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+    
+    // New Collections for Geography and Attributes
+    match /pages/{slug} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+    match /countries/{id} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+    match /states/{id} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+    match /cities/{id} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+    match /sizes/{id} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+    match /colors/{id} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // Orders:
+    match /orders/{orderId} {
+      allow create: if true; // Allow guest checkout
+      allow read: if isAuthenticated() && (resource.data.userId == request.auth.uid || isAdmin());
+      // Allow users to update their own orders only for cancellation
+      // Admins can update any order
+      allow update: if isAdmin() || 
+        (isAuthenticated() && 
+         resource.data.userId == request.auth.uid && 
+         request.resource.data.status == 'cancelled' &&
+         resource.data.status != 'cancelled' &&
+         resource.data.status != 'delivered'); 
+      allow delete: if isAdmin();
+    }
+
+    // Settings:
+    match /settings/{settingId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+    
+    // Product Templates:
+    match /product_templates/{templateId} {
+      allow read: if isAdmin();
+      allow write: if isAdmin();
+    }
+    
+    // Suppliers:
+    match /suppliers/{supplierId} {
+      allow read: if isAdmin();
+      allow write: if isAdmin();
+    }
+    
+    // Purchase Orders:
+    match /purchase_orders/{orderId} {
+      allow read: if isAdmin();
+      allow write: if isAdmin();
+    }
+    
+    // Inventory Alerts:
+    match /inventory_alerts/{alertId} {
+      allow read: if isAdmin();
+      allow write: if isAdmin();
+    }
+    
+    // Shipping Zones:
+    match /shipping_zones/{zoneId} {
+      allow read: if true; // Public read for checkout calculations
+      allow write: if isAdmin();
+    }
+    
+    // Shipping Rates:
+    match /shipping_rates/{rateId} {
+      allow read: if true; // Public read for checkout calculations
+      allow write: if isAdmin();
+    }
+    
+    // Shipping Carriers:
+    match /shipping_carriers/{carrierId} {
+      allow read: if true; // Public read for checkout
+      allow write: if isAdmin();
+    }
+    
+    // Order Tracking:
+    match /order_tracking/{trackingId} {
+      allow read: if isAuthenticated(); // Authenticated users can read (filtered by orderId in code)
+      allow write: if isAdmin();
+    }
+    
+    // User Addresses:
+    match /user_addresses/{addressId} {
+      allow read: if request.auth != null && (resource.data.userId == request.auth.uid || isAdmin());
+      allow create: if request.auth != null && request.resource.data.userId == request.auth.uid;
+      allow update, delete: if request.auth != null && (resource.data.userId == request.auth.uid || isAdmin());
+    }
+    
+    // Return/Exchange Requests:
+    match /return_exchange_requests/{requestId} {
+      allow read: if request.auth != null && (resource.data.userId == request.auth.uid || isAdmin());
+      allow create: if request.auth != null && request.resource.data.userId == request.auth.uid;
+      allow update: if isAdmin();
+    }
+    
+    // Refunds:
+    match /refunds/{refundId} {
+      allow read: if request.auth != null && (resource.data.userId == request.auth.uid || isAdmin());
+      allow create: if isAdmin();
+      allow update: if isAdmin();
+      allow delete: if isAdmin();
+    }
+    
+    // User Preferences:
+    match /user_preferences/{prefId} {
+      allow read: if request.auth != null && (resource.data.userId == request.auth.uid || isAdmin());
+      allow create, update: if request.auth != null && request.resource.data.userId == request.auth.uid;
+    }
+    
+    // Enhanced Reviews:
+    match /reviews/{reviewId} {
+      allow read: if true; // Public read
+      allow create: if request.auth != null && request.resource.data.userId == request.auth.uid;
+      allow update: if request.auth != null && (resource.data.userId == request.auth.uid || isAdmin());
+      allow delete: if request.auth != null && (resource.data.userId == request.auth.uid || isAdmin());
+    }
+    
+    // Product Q&A:
+    match /product_qa/{qaId} {
+      allow read: if resource == null || resource.data.isPublic == true || (request.auth != null && (resource.data.askedBy == request.auth.uid || isAdmin()));
+      allow create: if request.auth != null && request.resource.data.askedBy == request.auth.uid;
+      allow update: if isAdmin(); // Only admins can answer
+      allow delete: if request.auth != null && (resource.data.askedBy == request.auth.uid || isAdmin());
+    }
+    
+    // User-Generated Content:
+    match /user_generated_content/{contentId} {
+      allow read: if resource == null || resource.data.isApproved == true || (request.auth != null && (resource.data.userId == request.auth.uid || isAdmin()));
+      allow create: if request.auth != null && request.resource.data.userId == request.auth.uid;
+      allow update, delete: if request.auth != null && (resource.data.userId == request.auth.uid || isAdmin());
+    }
+    
+    // Email Notifications:
+    match /email_notifications/{notificationId} {
+      allow read: if request.auth != null && (resource.data.userId == request.auth.uid || isAdmin());
+      allow create: if isAdmin();
+      allow update: if isAdmin();
+    }
+    
+    // SMS Notifications:
+    match /sms_notifications/{notificationId} {
+      allow read: if isAdmin();
+      allow create: if isAdmin();
+      allow update: if isAdmin();
+    }
+    
+    // Push Notifications:
+    match /push_notifications/{notificationId} {
+      allow read: if request.auth != null && (resource.data.userId == request.auth.uid || isAdmin());
+      allow create: if isAdmin();
+      allow update: if isAdmin();
+    }
+    
+    // Chat Sessions:
+    match /chat_sessions/{sessionId} {
+      // Allow anyone to create chat sessions (for guests, authenticated users, and demo mode)
+      allow create: if true;
+      // Allow read if: it's a guest session, or authenticated user owns it, or admin, or no auth (demo mode)
+      allow read: if resource == null ||
+                     resource.data.isGuest == true || 
+                     request.auth == null ||
+                     (request.auth != null && (resource.data.userId == request.auth.uid || isAdmin()));
+      // Allow update if: it's a guest session, or authenticated user owns it, or admin, or no auth (demo mode)
+      allow update: if resource.data.isGuest == true || 
+                       request.auth == null ||
+                       (request.auth != null && (resource.data.userId == request.auth.uid || isAdmin()));
+      allow delete: if isAdmin();
+    }
+    
+    // Role Permissions:
+    match /role_permissions/{permId} {
+      allow read: if isAdmin();
+      allow write: if isAdmin();
+    }
+    
+    // Staff Management:
+    match /staff/{staffId} {
+      allow read: if isAdmin();
+      allow create: if isAdmin();
+      allow update: if isAdmin();
+      allow delete: if isAdmin();
+    }
+    
+    // Activity Logs:
+    match /activity_logs/{logId} {
+      allow read: if isAdmin();
+      allow create: if isAdmin();
+    }
+    
+    // Two-Factor Authentication:
+    match /two_factor_auth/{tfaId} {
+      allow read: if request.auth != null && (resource.data.userId == request.auth.uid || isAdmin());
+      allow create, update: if request.auth != null && request.resource.data.userId == request.auth.uid;
+    }
+    
+    // Custom Report Templates:
+    match /custom_report_templates/{templateId} {
+      allow read: if isAdmin();
+      allow write: if isAdmin();
+    }
+    
+    // Scheduled Reports:
+    match /scheduled_reports/{reportId} {
+      allow read: if isAdmin();
+      allow write: if isAdmin();
+    }
+    
+    // Customer Segments:
+    match /customer_segments/{segmentId} {
+      allow read: if isAdmin();
+      allow write: if isAdmin();
+    }
+    
+    // Customer Tags:
+    match /customer_tags/{tagId} {
+      allow read: if isAdmin();
+      allow write: if isAdmin();
+    }
+    
+    // Customer Notes:
+    match /customer_notes/{noteId} {
+      allow read: if isAdmin();
+      allow create: if isAdmin();
+      allow update, delete: if isAdmin(); // Only admins can update/delete
+    }
+    
+    // Customer Communications:
+    match /customer_communications/{commId} {
+      allow read: if isAdmin();
+      allow create: if isAdmin();
+      allow update: if isAdmin();
+    }
+    
+    // Product Features:
+    match /recently_viewed_products/{viewId} {
+      allow read, write: if request.auth != null && (resource.data.userId == request.auth.uid || request.resource.data.userId == request.auth.uid);
+    }
+    
+    match /product_comparisons/{compId} {
+      allow read, write: if request.auth != null && (resource.data.userId == request.auth.uid || request.resource.data.userId == request.auth.uid);
+    }
+    
+    match /product_tags/{tagId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+    
+    match /saved_searches/{searchId} {
+      allow read, write: if request.auth != null && (resource.data.userId == request.auth.uid || request.resource.data.userId == request.auth.uid);
+    }
+    
+    match /product_notifications/{notifId} {
+      allow read, write: if request.auth != null && (resource.data.userId == request.auth.uid || request.resource.data.userId == request.auth.uid);
+    }
+    
+    match /size_charts/{chartId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+    
+    match /gift_registries/{registryId} {
+      allow read: if resource == null || resource.data.isPublic == true || (request.auth != null && resource.data.userId == request.auth.uid);
+      allow write: if request.auth != null && (resource.data.userId == request.auth.uid || request.resource.data.userId == request.auth.uid);
+    }
+    
+    // Email Campaigns:
+    match /email_campaigns/{campaignId} {
+      allow read: if isAdmin();
+      allow write: if isAdmin();
+    }
+    
+    // Push Notification Campaigns:
+    match /push_notification_campaigns/{campaignId} {
+      allow read: if isAdmin();
+      allow write: if isAdmin();
+    }
+    
+    // Abandoned Carts:
+    match /abandoned_carts/{cartId} {
+      allow read: if isAdmin() || (request.auth != null && resource.data.userId == request.auth.uid);
+      allow create: if true; // Can be created by system
+      allow update: if isAdmin() || (request.auth != null && resource.data.userId == request.auth.uid);
+    }
+    
+    // Flash Sales:
+    match /flash_sales/{saleId} {
+      allow read: if true; // Public read
+      allow write: if isAdmin();
+    }
+    
+    // Buy X Get Y Promotions:
+    match /buy_x_get_y_promotions/{promoId} {
+      allow read: if true; // Public read
+      allow write: if isAdmin();
+    }
+    
+    // Free Shipping Rules:
+    match /free_shipping_rules/{ruleId} {
+      allow read: if true; // Public read
+      allow write: if isAdmin();
+    }
+    
+    // Gift Cards:
+    match /gift_cards/{cardId} {
+      allow read: if isAdmin() || (request.auth != null && (resource.data.issuedTo == request.auth.uid || resource.data.redeemedBy == request.auth.uid));
+      allow create: if isAdmin();
+      allow update: if isAdmin() || (request.auth != null && resource.data.issuedTo == request.auth.uid);
+    }
+    
+    // Gift Card Templates:
+    match /gift_card_templates/{templateId} {
+      allow read: if isAdmin();
+      allow write: if isAdmin();
+    }
+    
+    // Warehouses:
+    match /warehouses/{warehouseId} {
+      allow read: if isAdmin();
+      allow write: if isAdmin();
+    }
+    
+    // Stock Transfers:
+    match /stock_transfers/{transferId} {
+      allow read: if isAdmin();
+      allow write: if isAdmin();
+    }
+    
+    // Stock Adjustments:
+    match /stock_adjustments/{adjustmentId} {
+      allow read: if isAdmin();
+      allow write: if isAdmin();
+    }
+    
+    // Stock History:
+    match /stock_history/{historyId} {
+      allow read: if isAdmin();
+      allow create: if isAdmin(); // Only system can create
+    }
+    
+    // Audit Logs:
+    match /audit_logs/{logId} {
+      allow read: if isAdmin();
+      allow create: if true; // System can create audit logs
+      allow update, delete: if false; // Audit logs are immutable
+    }
+    
+    // Order Management:
+    match /order_notes/{noteId} {
+      allow read: if isAdmin();
+      allow create: if isAdmin();
+      allow update, delete: if isAdmin();
+    }
+    
+    match /order_history/{logId} {
+      allow read: if isAdmin();
+      allow create: if true; // System can create
+      allow update, delete: if false; // Immutable
+    }
+    
+    match /order_fulfillments/{fulfillmentId} {
+      allow read: if isAdmin();
+      allow write: if isAdmin();
+    }
+    
+    match /order_shipments/{shipmentId} {
+      allow read: if isAdmin();
+      allow write: if isAdmin();
+    }
+    
+    match /order_returns/{returnId} {
+      allow read: if isAdmin() || (request.auth != null && resource.data.requestedBy == request.auth.uid);
+      allow create: if request.auth != null; // Customers can create returns
+      allow update: if isAdmin();
+    }
+    
+    match /order_refunds/{refundId} {
+      allow read: if isAdmin() || (request.auth != null && resource.data.userId == request.auth.uid);
+      allow write: if isAdmin();
+    }
+    
+    // SEO Settings:
+    match /seo_settings/{settingId} {
+      allow read: if true; // Public read for SEO metadata
+      allow write: if isAdmin();
+    }
+    
+    match /page_seo/{seoId} {
+      allow read: if true; // Public read for SEO
+      allow write: if isAdmin();
+    }
+    
+    match /product_seo/{seoId} {
+      allow read: if true; // Public read for SEO
+      allow write: if isAdmin();
+    }
+    
+    match /category_seo/{seoId} {
+      allow read: if true; // Public read for SEO
+      allow write: if isAdmin();
+    }
+    
+    match /brand_seo/{seoId} {
+      allow read: if true; // Public read for SEO
+      allow write: if isAdmin();
+    }
+    
+    match /collection_seo/{seoId} {
+      allow read: if true; // Public read for SEO
+      allow write: if isAdmin();
+    }
+    
+    match /blog_seo/{seoId} {
+      allow read: if true; // Public read for SEO
+      allow write: if isAdmin();
+    }
+    
+    // Store Locations:
+    match /store_locations/{locationId} {
+      allow read: if true; // Public read for store locator
+      allow write: if isAdmin();
+    }
+    
+    // Product Bundles:
+    match /product_bundles/{bundleId} {
+      allow read: if true; // Public read
+      allow write: if isAdmin();
+    }
+    
+    // Internationalization:
+    match /languages/{languageId} {
+      allow read: if true; // Public read
+      allow write: if isAdmin();
+    }
+    
+    match /currencies/{currencyId} {
+      allow read: if true; // Public read
+      allow write: if isAdmin();
+    }
+    
+    match /currency_conversions/{conversionId} {
+      allow read: if true; // Public read
+      allow write: if isAdmin();
+    }
+    
+    match /tax_rates/{taxId} {
+      allow read: if true; // Public read
+      allow write: if isAdmin();
+    }
+    
+    match /local_payment_methods/{methodId} {
+      allow read: if true; // Public read
+      allow write: if isAdmin();
+    }
+    
+    // Payment Gateways:
+    match /payment_gateways/{gatewayId} {
+      allow read: if true; // Public read
+      allow write: if isAdmin();
+    }
+    
+    // Marketing Campaigns:
+    match /marketing_campaigns/{campaignId} {
+      allow read: if isAdmin();
+      allow write: if isAdmin();
+    }
+    
+    // Blog Posts:
+    match /blog_posts/{postId} {
+      allow read: if true; // Public read
+      allow write: if isAdmin();
+    }
+    
+    // Translations:
+    match /translations/{translationId} {
+      allow read: if true; // Public read for translations
+      allow write: if isAdmin();
+    }
+    
+    // Contact Submissions:
+    match /contact_submissions/{submissionId} {
+      allow create: if true; // Anyone can submit contact form
+      allow read: if isAdmin();
+      allow update: if isAdmin();
+      allow delete: if isAdmin();
+    }
+    
+    // Newsletter Subscriptions:
+    match /newsletter_subscriptions/{subscriptionId} {
+      allow create: if true; // Anyone can subscribe
+      allow read: if isAdmin();
+      allow update: if isAdmin();
+      allow delete: if isAdmin();
+    }
+    
+    // Job Applications:
+    match /job_applications/{applicationId} {
+      allow create: if true; // Anyone can apply for jobs
+      allow read: if isAdmin();
+      allow update: if isAdmin();
+      allow delete: if isAdmin();
+    }
+  }
+}

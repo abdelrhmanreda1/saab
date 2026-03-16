@@ -1,0 +1,158 @@
+[
+  {
+    "id": "black",
+    "name": "Black",
+    "hexCode": "#000000"
+  },
+  {
+    "id": "white",
+    "name": "White",
+    "hexCode": "#FFFFFF"
+  },
+  {
+    "id": "navy",
+    "name": "Navy Blue",
+    "hexCode": "#001F3F"
+  },
+  {
+    "id": "gray",
+    "name": "Gray",
+    "hexCode": "#808080"
+  },
+  {
+    "id": "beige",
+    "name": "Beige",
+    "hexCode": "#F5F5DC"
+  },
+  {
+    "id": "brown",
+    "name": "Brown",
+    "hexCode": "#8B4513"
+  },
+  {
+    "id": "burgundy",
+    "name": "Burgundy",
+    "hexCode": "#800020"
+  },
+  {
+    "id": "red",
+    "name": "Red",
+    "hexCode": "#FF0000"
+  },
+  {
+    "id": "pink",
+    "name": "Pink",
+    "hexCode": "#FFC0CB"
+  },
+  {
+    "id": "rose",
+    "name": "Rose",
+    "hexCode": "#FF007F"
+  },
+  {
+    "id": "coral",
+    "name": "Coral",
+    "hexCode": "#FF7F50"
+  },
+  {
+    "id": "orange",
+    "name": "Orange",
+    "hexCode": "#FFA500"
+  },
+  {
+    "id": "yellow",
+    "name": "Yellow",
+    "hexCode": "#FFFF00"
+  },
+  {
+    "id": "gold",
+    "name": "Gold",
+    "hexCode": "#FFD700"
+  },
+  {
+    "id": "green",
+    "name": "Green",
+    "hexCode": "#008000"
+  },
+  {
+    "id": "mint",
+    "name": "Mint",
+    "hexCode": "#98FF98"
+  },
+  {
+    "id": "teal",
+    "name": "Teal",
+    "hexCode": "#008080"
+  },
+  {
+    "id": "turquoise",
+    "name": "Turquoise",
+    "hexCode": "#40E0D0"
+  },
+  {
+    "id": "blue",
+    "name": "Blue",
+    "hexCode": "#0000FF"
+  },
+  {
+    "id": "sky-blue",
+    "name": "Sky Blue",
+    "hexCode": "#87CEEB"
+  },
+  {
+    "id": "royal-blue",
+    "name": "Royal Blue",
+    "hexCode": "#4169E1"
+  },
+  {
+    "id": "purple",
+    "name": "Purple",
+    "hexCode": "#800080"
+  },
+  {
+    "id": "lavender",
+    "name": "Lavender",
+    "hexCode": "#E6E6FA"
+  },
+  {
+    "id": "violet",
+    "name": "Violet",
+    "hexCode": "#8A2BE2"
+  },
+  {
+    "id": "maroon",
+    "name": "Maroon",
+    "hexCode": "#800000"
+  },
+  {
+    "id": "khaki",
+    "name": "Khaki",
+    "hexCode": "#C3B091"
+  },
+  {
+    "id": "olive",
+    "name": "Olive",
+    "hexCode": "#808000"
+  },
+  {
+    "id": "cream",
+    "name": "Cream",
+    "hexCode": "#FFFDD0"
+  },
+  {
+    "id": "ivory",
+    "name": "Ivory",
+    "hexCode": "#FFFFF0"
+  },
+  {
+    "id": "charcoal",
+    "name": "Charcoal",
+    "hexCode": "#36454F"
+  },
+  {
+    "id": "silver",
+    "name": "Silver",
+    "hexCode": "#C0C0C0"
+  }
+]
+

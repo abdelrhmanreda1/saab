@@ -1,0 +1,1629 @@
+[
+  {
+    "id": "prod_floral_maxi_dress",
+    "name": "Floral Print Maxi Dress",
+    "slug": "floral-print-maxi-dress",
+    "description": "Beautiful floral print maxi dress with long sleeves. Perfect for spring and summer occasions. Made from breathable cotton blend fabric for comfort and style.",
+    "images": [
+      "https://images.unsplash.com/photo-1595777457583-95e059d581b8?w=800",
+      "https://images.unsplash.com/photo-1594633312681-425c7b97ccd1?w=800"
+    ],
+    "price": 189.99,
+    "salePrice": 149.99,
+    "discountType": "percentage",
+    "discountValue": 21,
+    "category": "cat_women_dresses",
+    "brandId": "brand_elegance",
+    "variants": [
+      {
+        "id": "var_size_s",
+        "name": "Size",
+        "value": "Small",
+        "stock": 15,
+        "extraPrice": 0
+      },
+      {
+        "id": "var_size_m",
+        "name": "Size",
+        "value": "Medium",
+        "stock": 25,
+        "extraPrice": 0
+      },
+      {
+        "id": "var_size_l",
+        "name": "Size",
+        "value": "Large",
+        "stock": 20,
+        "extraPrice": 0
+      },
+      {
+        "id": "var_size_xl",
+        "name": "Size",
+        "value": "Extra Large",
+        "stock": 12,
+        "extraPrice": 0
+      }
+    ],
+    "isFeatured": true,
+    "isActive": true,
+    "allowPreOrder": false,
+    "isBundle": false,
+    "analytics": {
+      "views": 312,
+      "clicks": 145,
+      "addToCartCount": 67,
+      "purchases": 23,
+      "conversionRate": 7.4
+    },
+    "createdAt": {
+      "seconds": 1704067200,
+      "nanoseconds": 0
+    },
+    "updatedAt": {
+      "seconds": 1704153600,
+      "nanoseconds": 0
+    }
+  },
+  {
+    "id": "prod_silk_blouse",
+    "name": "Elegant Silk Blouse",
+    "slug": "elegant-silk-blouse",
+    "description": "Luxurious silk blouse with elegant details. Perfect for office wear or special occasions. Available in multiple colors.",
+    "images": [
+      "https://images.unsplash.com/photo-1594633313593-bab3825d0caf?w=800",
+      "https://images.unsplash.com/photo-1583292650898-7d22cd27ca6f?w=800"
+    ],
+    "price": 129.99,
+    "salePrice": 99.99,
+    "discountType": "percentage",
+    "discountValue": 23,
+    "category": "cat_women_tops",
+    "brandId": "brand_stylehouse",
+    "variants": [
+      {
+        "id": "var_size_s",
+        "name": "Size",
+        "value": "Small",
+        "stock": 18,
+        "extraPrice": 0
+      },
+      {
+        "id": "var_size_m",
+        "name": "Size",
+        "value": "Medium",
+        "stock": 22,
+        "extraPrice": 5
+      },
+      {
+        "id": "var_size_l",
+        "name": "Size",
+        "value": "Large",
+        "stock": 15,
+        "extraPrice": 10
+      },
+      {
+        "id": "var_color_white",
+        "name": "Color",
+        "value": "White",
+        "stock": 20,
+        "extraPrice": 0
+      },
+      {
+        "id": "var_color_black",
+        "name": "Color",
+        "value": "Black",
+        "stock": 18,
+        "extraPrice": 0
+      },
+      {
+        "id": "var_color_navy",
+        "name": "Color",
+        "value": "Navy Blue",
+        "stock": 12,
+        "extraPrice": 0
+      }
+    ],
+    "isFeatured": true,
+    "isActive": true,
+    "allowPreOrder": false,
+    "isBundle": false,
+    "analytics": {
+      "views": 245,
+      "clicks": 98,
+      "addToCartCount": 45,
+      "purchases": 18,
+      "conversionRate": 7.3
+    },
+    "createdAt": {
+      "seconds": 1704067200,
+      "nanoseconds": 0
+    },
+    "updatedAt": {
+      "seconds": 1704153600,
+      "nanoseconds": 0
+    }
+  },
+  {
+    "id": "prod_high_waist_jeans",
+    "name": "High Waist Skinny Jeans",
+    "slug": "high-waist-skinny-jeans",
+    "description": "Comfortable high waist skinny jeans with stretch. Perfect fit and modern style. Made from premium denim fabric.",
+    "images": [
+      "https://images.unsplash.com/photo-1542272604-787c3835535d?w=800",
+      "https://images.unsplash.com/photo-1582418702059-97ebafb8885e?w=800"
+    ],
+    "price": 89.99,
+    "salePrice": 69.99,
+    "discountType": "percentage",
+    "discountValue": 22,
+    "category": "cat_women_bottoms",
+    "brandId": "brand_trendsetter",
+    "variants": [
+      {
+        "id": "var_size_26",
+        "name": "Size",
+        "value": "26",
+        "stock": 10,
+        "extraPrice": 0
+      },
+      {
+        "id": "var_size_28",
+        "name": "Size",
+        "value": "28",
+        "stock": 15,
+        "extraPrice": 0
+      },
+      {
+        "id": "var_size_30",
+        "name": "Size",
+        "value": "30",
+        "stock": 20,
+        "extraPrice": 0
+      },
+      {
+        "id": "var_size_32",
+        "name": "Size",
+        "value": "32",
+        "stock": 18,
+        "extraPrice": 0
+      },
+      {
+        "id": "var_color_blue",
+        "name": "Color",
+        "value": "Blue",
+        "stock": 25,
+        "extraPrice": 0
+      },
+      {
+        "id": "var_color_black",
+        "name": "Color",
+        "value": "Black",
+        "stock": 20,
+        "extraPrice": 0
+      }
+    ],
+    "isFeatured": true,
+    "isActive": true,
+    "allowPreOrder": false,
+    "isBundle": false,
+    "analytics": {
+      "views": 456,
+      "clicks": 198,
+      "addToCartCount": 89,
+      "purchases": 34,
+      "conversionRate": 7.5
+    },
+    "createdAt": {
+      "seconds": 1704067200,
+      "nanoseconds": 0
+    },
+    "updatedAt": {
+      "seconds": 1704153600,
+      "nanoseconds": 0
+    }
+  },
+  {
+    "id": "prod_leather_ankle_boots",
+    "name": "Leather Ankle Boots",
+    "slug": "leather-ankle-boots",
+    "description": "Stylish leather ankle boots with comfortable heel. Perfect for everyday wear. Available in multiple colors.",
+    "images": [
+      "https://images.unsplash.com/photo-1549298916-b41d501d3772?w=800",
+      "https://images.unsplash.com/photo-1605812860427-4024433a70fd?w=800"
+    ],
+    "price": 149.99,
+    "salePrice": 119.99,
+    "discountType": "percentage",
+    "discountValue": 20,
+    "category": "cat_women_shoes",
+    "brandId": "brand_elegance",
+    "variants": [
+      {
+        "id": "var_size_36",
+        "name": "Size",
+        "value": "36",
+        "stock": 8,
+        "extraPrice": -5
+      },
+      {
+        "id": "var_size_37",
+        "name": "Size",
+        "value": "37",
+        "stock": 12,
+        "extraPrice": 0
+      },
+      {
+        "id": "var_size_38",
+        "name": "Size",
+        "value": "38",
+        "stock": 15,
+        "extraPrice": 0
+      },
+      {
+        "id": "var_size_39",
+        "name": "Size",
+        "value": "39",
+        "stock": 10,
+        "extraPrice": 5
+      },
+      {
+        "id": "var_size_40",
+        "name": "Size",
+        "value": "40",
+        "stock": 6,
+        "extraPrice": 10
+      },
+      {
+        "id": "var_color_brown",
+        "name": "Color",
+        "value": "Brown",
+        "stock": 20,
+        "extraPrice": 0
+      },
+      {
+        "id": "var_color_black",
+        "name": "Color",
+        "value": "Black",
+        "stock": 18,
+        "extraPrice": 8
+      }
+    ],
+    "isFeatured": false,
+    "isActive": true,
+    "allowPreOrder": false,
+    "isBundle": false,
+    "analytics": {
+      "views": 289,
+      "clicks": 112,
+      "addToCartCount": 56,
+      "purchases": 21,
+      "conversionRate": 7.3
+    },
+    "createdAt": {
+      "seconds": 1704067200,
+      "nanoseconds": 0
+    },
+    "updatedAt": {
+      "seconds": 1704153600,
+      "nanoseconds": 0
+    }
+  },
+  {
+    "id": "prod_designer_handbag",
+    "name": "Designer Leather Handbag",
+    "slug": "designer-leather-handbag",
+    "description": "Premium quality leather handbag with elegant design. Spacious interior with multiple compartments. Perfect for everyday use or special occasions.",
+    "images": [
+      "https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?w=800",
+      "https://images.unsplash.com/photo-1590874103328-eac38a683ce7?w=800"
+    ],
+    "price": 199.99,
+    "salePrice": 159.99,
+    "discountType": "percentage",
+    "discountValue": 20,
+    "category": "cat_women_accessories",
+    "brandId": "brand_elegance",
+    "variants": [
+      {
+        "id": "var_color_black",
+        "name": "Color",
+        "value": "Black",
+        "stock": 12,
+        "extraPrice": 0
+      },
+      {
+        "id": "var_color_brown",
+        "name": "Color",
+        "value": "Brown",
+        "stock": 8,
+        "extraPrice": 15
+      },
+      {
+        "id": "var_color_tan",
+        "name": "Color",
+        "value": "Khaki",
+        "stock": 6,
+        "extraPrice": 20
+      }
+    ],
+    "isFeatured": true,
+    "isActive": true,
+    "allowPreOrder": false,
+    "isBundle": false,
+    "analytics": {
+      "views": 378,
+      "clicks": 156,
+      "addToCartCount": 78,
+      "purchases": 29,
+      "conversionRate": 7.7
+    },
+    "createdAt": {
+      "seconds": 1704067200,
+      "nanoseconds": 0
+    },
+    "updatedAt": {
+      "seconds": 1704153600,
+      "nanoseconds": 0
+    }
+  },
+  {
+    "id": "prod_midi_dress",
+    "name": "Elegant Midi Dress",
+    "slug": "elegant-midi-dress",
+    "description": "Classic midi dress with flattering silhouette. Perfect for office or casual occasions. Made from premium fabric.",
+    "images": [
+      "https://images.unsplash.com/photo-1594633312681-425c7b97ccd1?w=800",
+      "https://images.unsplash.com/photo-1595777457583-95e059d581b8?w=800"
+    ],
+    "price": 159.99,
+    "salePrice": 129.99,
+    "discountType": "percentage",
+    "discountValue": 19,
+    "category": "cat_women_dresses",
+    "brandId": "brand_elegance",
+    "variants": [
+      {
+        "id": "var_size_s",
+        "name": "Size",
+        "value": "Small",
+        "stock": 12,
+        "extraPrice": -5
+      },
+      {
+        "id": "var_size_m",
+        "name": "Size",
+        "value": "Medium",
+        "stock": 18,
+        "extraPrice": 0
+      },
+      {
+        "id": "var_size_l",
+        "name": "Size",
+        "value": "Large",
+        "stock": 15,
+        "extraPrice": 8
+      }
+    ],
+    "isFeatured": false,
+    "isActive": true,
+    "allowPreOrder": false,
+    "isBundle": false,
+    "analytics": {
+      "views": 198,
+      "clicks": 87,
+      "addToCartCount": 42,
+      "purchases": 15,
+      "conversionRate": 7.6
+    },
+    "createdAt": {
+      "seconds": 1704240000,
+      "nanoseconds": 0
+    },
+    "updatedAt": {
+      "seconds": 1704326400,
+      "nanoseconds": 0
+    }
+  },
+  {
+    "id": "prod_casual_t_shirt",
+    "name": "Classic Cotton T-Shirt",
+    "slug": "classic-cotton-t-shirt",
+    "description": "Comfortable and versatile cotton t-shirt. Perfect for everyday wear. Available in multiple colors.",
+    "images": [
+      "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=800",
+      "https://images.unsplash.com/photo-1576566588028-4147f3842f27?w=800"
+    ],
+    "price": 29.99,
+    "salePrice": 24.99,
+    "discountType": "percentage",
+    "discountValue": 17,
+    "category": "cat_women_tops",
+    "brandId": "brand_trendsetter",
+    "variants": [
+      {
+        "id": "var_size_s",
+        "name": "Size",
+        "value": "Small",
+        "stock": 30,
+        "extraPrice": -2
+      },
+      {
+        "id": "var_size_m",
+        "name": "Size",
+        "value": "Medium",
+        "stock": 35,
+        "extraPrice": 0
+      },
+      {
+        "id": "var_size_l",
+        "name": "Size",
+        "value": "Large",
+        "stock": 28,
+        "extraPrice": 3
+      },
+      {
+        "id": "var_color_white",
+        "name": "Color",
+        "value": "White",
+        "stock": 40,
+        "extraPrice": 0
+      },
+      {
+        "id": "var_color_black",
+        "name": "Color",
+        "value": "Black",
+        "stock": 35,
+        "extraPrice": 2
+      },
+      {
+        "id": "var_color_gray",
+        "name": "Color",
+        "value": "Gray",
+        "stock": 25,
+        "extraPrice": 0
+      }
+    ],
+    "isFeatured": false,
+    "isActive": true,
+    "allowPreOrder": false,
+    "isBundle": false,
+    "analytics": {
+      "views": 523,
+      "clicks": 234,
+      "addToCartCount": 156,
+      "purchases": 67,
+      "conversionRate": 12.8
+    },
+    "createdAt": {
+      "seconds": 1704240000,
+      "nanoseconds": 0
+    },
+    "updatedAt": {
+      "seconds": 1704326400,
+      "nanoseconds": 0
+    }
+  },
+  {
+    "id": "prod_wide_leg_pants",
+    "name": "Wide Leg Trousers",
+    "slug": "wide-leg-trousers",
+    "description": "Comfortable wide leg trousers with high waist. Perfect for office or casual wear. Made from premium fabric.",
+    "images": [
+      "https://images.unsplash.com/photo-1594938291221-94f18cbb8b8a?w=800",
+      "https://images.unsplash.com/photo-1624378515193-8fc0b398d0c5?w=800"
+    ],
+    "price": 79.99,
+    "salePrice": 64.99,
+    "discountType": "percentage",
+    "discountValue": 19,
+    "category": "cat_women_bottoms",
+    "brandId": "brand_stylehouse",
+    "variants": [
+      {
+        "id": "var_size_s",
+        "name": "Size",
+        "value": "Small",
+        "stock": 14,
+        "extraPrice": -3
+      },
+      {
+        "id": "var_size_m",
+        "name": "Size",
+        "value": "Medium",
+        "stock": 20,
+        "extraPrice": 0
+      },
+      {
+        "id": "var_size_l",
+        "name": "Size",
+        "value": "Large",
+        "stock": 16,
+        "extraPrice": 5
+      }
+    ],
+    "isFeatured": false,
+    "isActive": true,
+    "allowPreOrder": false,
+    "isBundle": false,
+    "analytics": {
+      "views": 267,
+      "clicks": 112,
+      "addToCartCount": 54,
+      "purchases": 19,
+      "conversionRate": 7.1
+    },
+    "createdAt": {
+      "seconds": 1704240000,
+      "nanoseconds": 0
+    },
+    "updatedAt": {
+      "seconds": 1704326400,
+      "nanoseconds": 0
+    }
+  },
+  {
+    "id": "prod_sneakers",
+    "name": "Classic White Sneakers",
+    "slug": "classic-white-sneakers",
+    "description": "Comfortable and stylish white sneakers. Perfect for everyday wear. Made from premium materials.",
+    "images": [
+      "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=800",
+      "https://images.unsplash.com/photo-1606107557195-0e29a4b5b4aa?w=800"
+    ],
+    "price": 89.99,
+    "salePrice": 74.99,
+    "discountType": "percentage",
+    "discountValue": 17,
+    "category": "cat_women_shoes",
+    "brandId": "brand_trendsetter",
+    "variants": [
+      {
+        "id": "var_size_36",
+        "name": "Size",
+        "value": "36",
+        "stock": 10,
+        "extraPrice": -3
+      },
+      {
+        "id": "var_size_37",
+        "name": "Size",
+        "value": "37",
+        "stock": 15,
+        "extraPrice": 0
+      },
+      {
+        "id": "var_size_38",
+        "name": "Size",
+        "value": "38",
+        "stock": 18,
+        "extraPrice": 0
+      },
+      {
+        "id": "var_size_39",
+        "name": "Size",
+        "value": "39",
+        "stock": 12,
+        "extraPrice": 4
+      }
+    ],
+    "isFeatured": true,
+    "isActive": true,
+    "allowPreOrder": false,
+    "isBundle": false,
+    "analytics": {
+      "views": 445,
+      "clicks": 198,
+      "addToCartCount": 98,
+      "purchases": 38,
+      "conversionRate": 8.5
+    },
+    "createdAt": {
+      "seconds": 1704240000,
+      "nanoseconds": 0
+    },
+    "updatedAt": {
+      "seconds": 1704326400,
+      "nanoseconds": 0
+    }
+  },
+  {
+    "id": "prod_sunglasses",
+    "name": "Designer Sunglasses",
+    "slug": "designer-sunglasses",
+    "description": "Stylish designer sunglasses with UV protection. Perfect for sunny days. Available in multiple frame colors.",
+    "images": [
+      "https://images.unsplash.com/photo-1511499767150-a48a237f0083?w=800",
+      "https://images.unsplash.com/photo-1572635196237-14b3f281503f?w=800"
+    ],
+    "price": 79.99,
+    "salePrice": 64.99,
+    "discountType": "percentage",
+    "discountValue": 19,
+    "category": "cat_women_accessories",
+    "brandId": "brand_elegance",
+    "variants": [
+      {
+        "id": "var_color_black",
+        "name": "Color",
+        "value": "Black",
+        "stock": 25,
+        "extraPrice": 0
+      },
+      {
+        "id": "var_color_brown",
+        "name": "Color",
+        "value": "Brown",
+        "stock": 20,
+        "extraPrice": 5
+      },
+      {
+        "id": "var_color_tortoise",
+        "name": "Color",
+        "value": "Brown",
+        "stock": 15,
+        "extraPrice": 12
+      }
+    ],
+    "isFeatured": false,
+    "isActive": true,
+    "allowPreOrder": false,
+    "isBundle": false,
+    "analytics": {
+      "views": 312,
+      "clicks": 145,
+      "addToCartCount": 78,
+      "purchases": 28,
+      "conversionRate": 9
+    },
+    "createdAt": {
+      "seconds": 1704240000,
+      "nanoseconds": 0
+    },
+    "updatedAt": {
+      "seconds": 1704326400,
+      "nanoseconds": 0
+    }
+  },
+  {
+    "id": "prod_wrap_dress",
+    "name": "Floral Wrap Dress",
+    "slug": "floral-wrap-dress",
+    "description": "Beautiful wrap dress with floral print. Flattering fit for all body types. Perfect for spring and summer.",
+    "images": [
+      "https://images.unsplash.com/photo-1594633312681-425c7b97ccd1?w=800",
+      "https://images.unsplash.com/photo-1595777457583-95e059d581b8?w=800"
+    ],
+    "price": 139.99,
+    "salePrice": 109.99,
+    "discountType": "percentage",
+    "discountValue": 21,
+    "category": "cat_women_dresses",
+    "brandId": "brand_stylehouse",
+    "variants": [
+      {
+        "id": "var_size_s",
+        "name": "Size",
+        "value": "Small",
+        "stock": 16,
+        "extraPrice": -5
+      },
+      {
+        "id": "var_size_m",
+        "name": "Size",
+        "value": "Medium",
+        "stock": 22,
+        "extraPrice": 0
+      },
+      {
+        "id": "var_size_l",
+        "name": "Size",
+        "value": "Large",
+        "stock": 18,
+        "extraPrice": 7
+      }
+    ],
+    "isFeatured": true,
+    "isActive": true,
+    "allowPreOrder": false,
+    "isBundle": false,
+    "analytics": {
+      "views": 289,
+      "clicks": 134,
+      "addToCartCount": 67,
+      "purchases": 24,
+      "conversionRate": 8.3
+    },
+    "createdAt": {
+      "seconds": 1704412800,
+      "nanoseconds": 0
+    },
+    "updatedAt": {
+      "seconds": 1704499200,
+      "nanoseconds": 0
+    }
+  },
+  {
+    "id": "prod_denim_jacket",
+    "name": "Classic Denim Jacket",
+    "slug": "classic-denim-jacket",
+    "description": "Timeless denim jacket with classic fit. Perfect for layering. Made from premium denim.",
+    "images": [
+      "https://images.unsplash.com/photo-1551028719-00167b16eac5?w=800",
+      "https://images.unsplash.com/photo-1576995853123-5a10305d93c0?w=800"
+    ],
+    "price": 99.99,
+    "salePrice": 79.99,
+    "discountType": "percentage",
+    "discountValue": 20,
+    "category": "cat_women_tops",
+    "brandId": "brand_trendsetter",
+    "variants": [
+      {
+        "id": "var_size_s",
+        "name": "Size",
+        "value": "Small",
+        "stock": 12,
+        "extraPrice": -4
+      },
+      {
+        "id": "var_size_m",
+        "name": "Size",
+        "value": "Medium",
+        "stock": 18,
+        "extraPrice": 0
+      },
+      {
+        "id": "var_size_l",
+        "name": "Size",
+        "value": "Large",
+        "stock": 14,
+        "extraPrice": 6
+      }
+    ],
+    "isFeatured": false,
+    "isActive": true,
+    "allowPreOrder": false,
+    "isBundle": false,
+    "analytics": {
+      "views": 234,
+      "clicks": 98,
+      "addToCartCount": 45,
+      "purchases": 17,
+      "conversionRate": 7.3
+    },
+    "createdAt": {
+      "seconds": 1704412800,
+      "nanoseconds": 0
+    },
+    "updatedAt": {
+      "seconds": 1704499200,
+      "nanoseconds": 0
+    }
+  },
+  {
+    "id": "prod_pleated_skirt",
+    "name": "Pleated Midi Skirt",
+    "slug": "pleated-midi-skirt",
+    "description": "Elegant pleated midi skirt. Perfect for office or special occasions. Available in multiple colors.",
+    "images": [
+      "https://images.unsplash.com/photo-1594633313593-bab3825d0caf?w=800",
+      "https://images.unsplash.com/photo-1583292650898-7d22cd27ca6f?w=800"
+    ],
+    "price": 69.99,
+    "category": "cat_women_bottoms",
+    "brandId": "brand_elegance",
+    "variants": [
+      {
+        "id": "var_size_s",
+        "name": "Size",
+        "value": "Small",
+        "stock": 15,
+        "extraPrice": 0
+      },
+      {
+        "id": "var_size_m",
+        "name": "Size",
+        "value": "Medium",
+        "stock": 20,
+        "extraPrice": 0
+      },
+      {
+        "id": "var_size_l",
+        "name": "Size",
+        "value": "Large",
+        "stock": 16,
+        "extraPrice": 0
+      },
+      {
+        "id": "var_color_black",
+        "name": "Color",
+        "value": "Black",
+        "stock": 25,
+        "extraPrice": 0
+      },
+      {
+        "id": "var_color_navy",
+        "name": "Color",
+        "value": "Navy Blue",
+        "stock": 18,
+        "extraPrice": 0
+      }
+    ],
+    "isFeatured": false,
+    "isActive": true,
+    "allowPreOrder": false,
+    "isBundle": false,
+    "analytics": {
+      "views": 198,
+      "clicks": 87,
+      "addToCartCount": 42,
+      "purchases": 15,
+      "conversionRate": 7.6
+    },
+    "createdAt": {
+      "seconds": 1704412800,
+      "nanoseconds": 0
+    },
+    "updatedAt": {
+      "seconds": 1704499200,
+      "nanoseconds": 0
+    }
+  },
+  {
+    "id": "prod_heels",
+    "name": "Classic High Heels",
+    "slug": "classic-high-heels",
+    "description": "Elegant high heels perfect for special occasions. Comfortable fit with premium materials.",
+    "images": [
+      "https://images.unsplash.com/photo-1543163521-1bf539c55dd2?w=800",
+      "https://images.unsplash.com/photo-1605812860427-4024433a70fd?w=800"
+    ],
+    "price": 129.99,
+    "category": "cat_women_shoes",
+    "brandId": "brand_elegance",
+    "variants": [
+      {
+        "id": "var_size_36",
+        "name": "Size",
+        "value": "36",
+        "stock": 8,
+        "extraPrice": 0
+      },
+      {
+        "id": "var_size_37",
+        "name": "Size",
+        "value": "37",
+        "stock": 12,
+        "extraPrice": 0
+      },
+      {
+        "id": "var_size_38",
+        "name": "Size",
+        "value": "38",
+        "stock": 15,
+        "extraPrice": 0
+      },
+      {
+        "id": "var_size_39",
+        "name": "Size",
+        "value": "39",
+        "stock": 10,
+        "extraPrice": 0
+      },
+      {
+        "id": "var_color_black",
+        "name": "Color",
+        "value": "Black",
+        "stock": 20,
+        "extraPrice": 0
+      },
+      {
+        "id": "var_color_nude",
+        "name": "Color",
+        "value": "Beige",
+        "stock": 15,
+        "extraPrice": 0
+      }
+    ],
+    "isFeatured": true,
+    "isActive": true,
+    "allowPreOrder": false,
+    "isBundle": false,
+    "analytics": {
+      "views": 356,
+      "clicks": 167,
+      "addToCartCount": 89,
+      "purchases": 32,
+      "conversionRate": 9
+    },
+    "createdAt": {
+      "seconds": 1704412800,
+      "nanoseconds": 0
+    },
+    "updatedAt": {
+      "seconds": 1704499200,
+      "nanoseconds": 0
+    }
+  },
+  {
+    "id": "prod_watch",
+    "name": "Elegant Watch",
+    "slug": "elegant-watch",
+    "description": "Stylish watch with leather strap. Perfect accessory for any outfit. Water resistant.",
+    "images": [
+      "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=800",
+      "https://images.unsplash.com/photo-1524592094714-473f89d0d0b5?w=800"
+    ],
+    "price": 149.99,
+    "category": "cat_women_accessories",
+    "brandId": "brand_stylehouse",
+    "variants": [
+      {
+        "id": "var_color_silver",
+        "name": "Color",
+        "value": "Silver",
+        "stock": 18,
+        "extraPrice": 0
+      },
+      {
+        "id": "var_color_gold",
+        "name": "Color",
+        "value": "Gold",
+        "stock": 15,
+        "extraPrice": 0
+      },
+      {
+        "id": "var_color_rose_gold",
+        "name": "Color",
+        "value": "Gold",
+        "stock": 12,
+        "extraPrice": 0
+      }
+    ],
+    "isFeatured": false,
+    "isActive": true,
+    "allowPreOrder": false,
+    "isBundle": false,
+    "analytics": {
+      "views": 267,
+      "clicks": 123,
+      "addToCartCount": 67,
+      "purchases": 24,
+      "conversionRate": 9
+    },
+    "createdAt": {
+      "seconds": 1704412800,
+      "nanoseconds": 0
+    },
+    "updatedAt": {
+      "seconds": 1704499200,
+      "nanoseconds": 0
+    }
+  },
+  {
+    "id": "prod_bodycon_dress",
+    "name": "Bodycon Party Dress",
+    "slug": "bodycon-party-dress",
+    "description": "Stylish bodycon dress perfect for parties and events. Flattering fit with stretch fabric.",
+    "images": [
+      "https://images.unsplash.com/photo-1594633312681-425c7b97ccd1?w=800",
+      "https://images.unsplash.com/photo-1595777457583-95e059d581b8?w=800"
+    ],
+    "price": 119.99,
+    "category": "cat_women_dresses",
+    "brandId": "brand_trendsetter",
+    "variants": [
+      {
+        "id": "var_size_s",
+        "name": "Size",
+        "value": "Small",
+        "stock": 14,
+        "extraPrice": 0
+      },
+      {
+        "id": "var_size_m",
+        "name": "Size",
+        "value": "Medium",
+        "stock": 20,
+        "extraPrice": 0
+      },
+      {
+        "id": "var_size_l",
+        "name": "Size",
+        "value": "Large",
+        "stock": 16,
+        "extraPrice": 0
+      }
+    ],
+    "isFeatured": false,
+    "isActive": true,
+    "allowPreOrder": false,
+    "isBundle": false,
+    "analytics": {
+      "views": 245,
+      "clicks": 112,
+      "addToCartCount": 56,
+      "purchases": 20,
+      "conversionRate": 8.2
+    },
+    "createdAt": {
+      "seconds": 1704585600,
+      "nanoseconds": 0
+    },
+    "updatedAt": {
+      "seconds": 1704672000,
+      "nanoseconds": 0
+    }
+  },
+  {
+    "id": "prod_cardigan",
+    "name": "Cozy Cardigan",
+    "slug": "cozy-cardigan",
+    "description": "Warm and comfortable cardigan perfect for layering. Made from soft premium yarn.",
+    "images": [
+      "https://images.unsplash.com/photo-1576566588028-4147f3842f27?w=800",
+      "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=800"
+    ],
+    "price": 89.99,
+    "salePrice": 69.99,
+    "discountType": "percentage",
+    "discountValue": 22,
+    "category": "cat_women_tops",
+    "brandId": "brand_stylehouse",
+    "variants": [
+      {
+        "id": "var_size_s",
+        "name": "Size",
+        "value": "Small",
+        "stock": 16,
+        "extraPrice": 0
+      },
+      {
+        "id": "var_size_m",
+        "name": "Size",
+        "value": "Medium",
+        "stock": 22,
+        "extraPrice": 0
+      },
+      {
+        "id": "var_size_l",
+        "name": "Size",
+        "value": "Large",
+        "stock": 18,
+        "extraPrice": 0
+      },
+      {
+        "id": "var_color_beige",
+        "name": "Color",
+        "value": "Beige",
+        "stock": 20,
+        "extraPrice": 0
+      },
+      {
+        "id": "var_color_gray",
+        "name": "Color",
+        "value": "Gray",
+        "stock": 18,
+        "extraPrice": 0
+      }
+    ],
+    "isFeatured": false,
+    "isActive": true,
+    "allowPreOrder": false,
+    "isBundle": false,
+    "analytics": {
+      "views": 312,
+      "clicks": 145,
+      "addToCartCount": 78,
+      "purchases": 28,
+      "conversionRate": 9
+    },
+    "createdAt": {
+      "seconds": 1704585600,
+      "nanoseconds": 0
+    },
+    "updatedAt": {
+      "seconds": 1704672000,
+      "nanoseconds": 0
+    }
+  },
+  {
+    "id": "prod_cargo_pants",
+    "name": "Cargo Pants",
+    "slug": "cargo-pants",
+    "description": "Stylish cargo pants with multiple pockets. Perfect for casual wear. Made from durable fabric.",
+    "images": [
+      "https://images.unsplash.com/photo-1624378515193-8fc0b398d0c5?w=800",
+      "https://images.unsplash.com/photo-1594938291221-94f18cbb8b8a?w=800"
+    ],
+    "price": 79.99,
+    "category": "cat_women_bottoms",
+    "brandId": "brand_trendsetter",
+    "variants": [
+      {
+        "id": "var_size_s",
+        "name": "Size",
+        "value": "Small",
+        "stock": 12,
+        "extraPrice": 0
+      },
+      {
+        "id": "var_size_m",
+        "name": "Size",
+        "value": "Medium",
+        "stock": 18,
+        "extraPrice": 0
+      },
+      {
+        "id": "var_size_l",
+        "name": "Size",
+        "value": "Large",
+        "stock": 15,
+        "extraPrice": 0
+      }
+    ],
+    "isFeatured": false,
+    "isActive": true,
+    "allowPreOrder": false,
+    "isBundle": false,
+    "analytics": {
+      "views": 198,
+      "clicks": 87,
+      "addToCartCount": 42,
+      "purchases": 15,
+      "conversionRate": 7.6
+    },
+    "createdAt": {
+      "seconds": 1704585600,
+      "nanoseconds": 0
+    },
+    "updatedAt": {
+      "seconds": 1704672000,
+      "nanoseconds": 0
+    }
+  },
+  {
+    "id": "prod_flat_sandals",
+    "name": "Comfortable Flat Sandals",
+    "slug": "comfortable-flat-sandals",
+    "description": "Comfortable flat sandals perfect for summer. Made from premium materials with cushioned sole.",
+    "images": [
+      "https://images.unsplash.com/photo-1605812860427-4024433a70fd?w=800",
+      "https://images.unsplash.com/photo-1543163521-1bf539c55dd2?w=800"
+    ],
+    "price": 59.99,
+    "category": "cat_women_shoes",
+    "brandId": "brand_stylehouse",
+    "variants": [
+      {
+        "id": "var_size_36",
+        "name": "Size",
+        "value": "36",
+        "stock": 10,
+        "extraPrice": 0
+      },
+      {
+        "id": "var_size_37",
+        "name": "Size",
+        "value": "37",
+        "stock": 15,
+        "extraPrice": 0
+      },
+      {
+        "id": "var_size_38",
+        "name": "Size",
+        "value": "38",
+        "stock": 18,
+        "extraPrice": 0
+      },
+      {
+        "id": "var_size_39",
+        "name": "Size",
+        "value": "39",
+        "stock": 12,
+        "extraPrice": 0
+      },
+      {
+        "id": "var_color_tan",
+        "name": "Color",
+        "value": "Khaki",
+        "stock": 25,
+        "extraPrice": 0
+      },
+      {
+        "id": "var_color_black",
+        "name": "Color",
+        "value": "Black",
+        "stock": 20,
+        "extraPrice": 0
+      }
+    ],
+    "isFeatured": false,
+    "isActive": true,
+    "allowPreOrder": false,
+    "isBundle": false,
+    "analytics": {
+      "views": 289,
+      "clicks": 134,
+      "addToCartCount": 67,
+      "purchases": 24,
+      "conversionRate": 8.3
+    },
+    "createdAt": {
+      "seconds": 1704585600,
+      "nanoseconds": 0
+    },
+    "updatedAt": {
+      "seconds": 1704672000,
+      "nanoseconds": 0
+    }
+  },
+  {
+    "id": "prod_scarf",
+    "name": "Silk Scarf",
+    "slug": "silk-scarf",
+    "description": "Luxurious silk scarf with beautiful patterns. Perfect accessory for any outfit.",
+    "images": [
+      "https://images.unsplash.com/photo-1583292650898-7d22cd27ca6f?w=800",
+      "https://images.unsplash.com/photo-1594633313593-bab3825d0caf?w=800"
+    ],
+    "price": 49.99,
+    "category": "cat_women_accessories",
+    "brandId": "brand_elegance",
+    "variants": [
+      {
+        "id": "var_color_blue",
+        "name": "Color",
+        "value": "Blue",
+        "stock": 20,
+        "extraPrice": 0
+      },
+      {
+        "id": "var_color_red",
+        "name": "Color",
+        "value": "Red",
+        "stock": 18,
+        "extraPrice": 0
+      },
+      {
+        "id": "var_color_green",
+        "name": "Color",
+        "value": "Green",
+        "stock": 15,
+        "extraPrice": 0
+      }
+    ],
+    "isFeatured": false,
+    "isActive": true,
+    "allowPreOrder": false,
+    "isBundle": false,
+    "analytics": {
+      "views": 234,
+      "clicks": 98,
+      "addToCartCount": 45,
+      "purchases": 17,
+      "conversionRate": 7.3
+    },
+    "createdAt": {
+      "seconds": 1704585600,
+      "nanoseconds": 0
+    },
+    "updatedAt": {
+      "seconds": 1704672000,
+      "nanoseconds": 0
+    }
+  },
+  {
+    "id": "prod_shirt_dress",
+    "name": "Classic Shirt Dress",
+    "slug": "classic-shirt-dress",
+    "description": "Versatile shirt dress perfect for office or casual wear. Belt included for adjustable fit.",
+    "images": [
+      "https://images.unsplash.com/photo-1595777457583-95e059d581b8?w=800",
+      "https://images.unsplash.com/photo-1594633312681-425c7b97ccd1?w=800"
+    ],
+    "price": 119.99,
+    "category": "cat_women_dresses",
+    "brandId": "brand_stylehouse",
+    "variants": [
+      {
+        "id": "var_size_s",
+        "name": "Size",
+        "value": "Small",
+        "stock": 14,
+        "extraPrice": 0
+      },
+      {
+        "id": "var_size_m",
+        "name": "Size",
+        "value": "Medium",
+        "stock": 20,
+        "extraPrice": 0
+      },
+      {
+        "id": "var_size_l",
+        "name": "Size",
+        "value": "Large",
+        "stock": 16,
+        "extraPrice": 0
+      }
+    ],
+    "isFeatured": false,
+    "isActive": true,
+    "allowPreOrder": false,
+    "isBundle": false,
+    "analytics": {
+      "views": 267,
+      "clicks": 123,
+      "addToCartCount": 67,
+      "purchases": 24,
+      "conversionRate": 9
+    },
+    "createdAt": {
+      "seconds": 1704758400,
+      "nanoseconds": 0
+    },
+    "updatedAt": {
+      "seconds": 1704844800,
+      "nanoseconds": 0
+    }
+  },
+  {
+    "id": "prod_tank_top",
+    "name": "Basic Tank Top",
+    "slug": "basic-tank-top",
+    "description": "Comfortable and versatile tank top. Perfect for layering or wearing alone. Made from soft cotton.",
+    "images": [
+      "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=800",
+      "https://images.unsplash.com/photo-1576566588028-4147f3842f27?w=800"
+    ],
+    "price": 24.99,
+    "category": "cat_women_tops",
+    "brandId": "brand_trendsetter",
+    "variants": [
+      {
+        "id": "var_size_s",
+        "name": "Size",
+        "value": "Small",
+        "stock": 35,
+        "extraPrice": 0
+      },
+      {
+        "id": "var_size_m",
+        "name": "Size",
+        "value": "Medium",
+        "stock": 40,
+        "extraPrice": 0
+      },
+      {
+        "id": "var_size_l",
+        "name": "Size",
+        "value": "Large",
+        "stock": 32,
+        "extraPrice": 0
+      },
+      {
+        "id": "var_color_white",
+        "name": "Color",
+        "value": "White",
+        "stock": 45,
+        "extraPrice": 0
+      },
+      {
+        "id": "var_color_black",
+        "name": "Color",
+        "value": "Black",
+        "stock": 40,
+        "extraPrice": 0
+      },
+      {
+        "id": "var_color_gray",
+        "name": "Color",
+        "value": "Gray",
+        "stock": 30,
+        "extraPrice": 0
+      }
+    ],
+    "isFeatured": false,
+    "isActive": true,
+    "allowPreOrder": false,
+    "isBundle": false,
+    "analytics": {
+      "views": 445,
+      "clicks": 198,
+      "addToCartCount": 156,
+      "purchases": 67,
+      "conversionRate": 15.1
+    },
+    "createdAt": {
+      "seconds": 1704758400,
+      "nanoseconds": 0
+    },
+    "updatedAt": {
+      "seconds": 1704844800,
+      "nanoseconds": 0
+    }
+  },
+  {
+    "id": "prod_shorts",
+    "name": "High Waist Shorts",
+    "slug": "high-waist-shorts",
+    "description": "Comfortable high waist shorts perfect for summer. Made from breathable fabric.",
+    "images": [
+      "https://images.unsplash.com/photo-1624378515193-8fc0b398d0c5?w=800",
+      "https://images.unsplash.com/photo-1594938291221-94f18cbb8b8a?w=800"
+    ],
+    "price": 49.99,
+    "category": "cat_women_bottoms",
+    "brandId": "brand_trendsetter",
+    "variants": [
+      {
+        "id": "var_size_s",
+        "name": "Size",
+        "value": "Small",
+        "stock": 18,
+        "extraPrice": 0
+      },
+      {
+        "id": "var_size_m",
+        "name": "Size",
+        "value": "Medium",
+        "stock": 25,
+        "extraPrice": 0
+      },
+      {
+        "id": "var_size_l",
+        "name": "Size",
+        "value": "Large",
+        "stock": 20,
+        "extraPrice": 0
+      }
+    ],
+    "isFeatured": false,
+    "isActive": true,
+    "allowPreOrder": false,
+    "isBundle": false,
+    "analytics": {
+      "views": 312,
+      "clicks": 145,
+      "addToCartCount": 78,
+      "purchases": 28,
+      "conversionRate": 9
+    },
+    "createdAt": {
+      "seconds": 1704758400,
+      "nanoseconds": 0
+    },
+    "updatedAt": {
+      "seconds": 1704844800,
+      "nanoseconds": 0
+    }
+  },
+  {
+    "id": "prod_loafers",
+    "name": "Classic Loafers",
+    "slug": "classic-loafers",
+    "description": "Comfortable and stylish loafers. Perfect for office or casual wear. Made from premium leather.",
+    "images": [
+      "https://images.unsplash.com/photo-1605812860427-4024433a70fd?w=800",
+      "https://images.unsplash.com/photo-1543163521-1bf539c55dd2?w=800"
+    ],
+    "price": 109.99,
+    "category": "cat_women_shoes",
+    "brandId": "brand_elegance",
+    "variants": [
+      {
+        "id": "var_size_36",
+        "name": "Size",
+        "value": "36",
+        "stock": 9,
+        "extraPrice": 0
+      },
+      {
+        "id": "var_size_37",
+        "name": "Size",
+        "value": "37",
+        "stock": 13,
+        "extraPrice": 0
+      },
+      {
+        "id": "var_size_38",
+        "name": "Size",
+        "value": "38",
+        "stock": 16,
+        "extraPrice": 0
+      },
+      {
+        "id": "var_size_39",
+        "name": "Size",
+        "value": "39",
+        "stock": 11,
+        "extraPrice": 0
+      },
+      {
+        "id": "var_color_brown",
+        "name": "Color",
+        "value": "Brown",
+        "stock": 22,
+        "extraPrice": 0
+      },
+      {
+        "id": "var_color_black",
+        "name": "Color",
+        "value": "Black",
+        "stock": 18,
+        "extraPrice": 0
+      }
+    ],
+    "isFeatured": false,
+    "isActive": true,
+    "allowPreOrder": false,
+    "isBundle": false,
+    "analytics": {
+      "views": 289,
+      "clicks": 134,
+      "addToCartCount": 67,
+      "purchases": 24,
+      "conversionRate": 8.3
+    },
+    "createdAt": {
+      "seconds": 1704758400,
+      "nanoseconds": 0
+    },
+    "updatedAt": {
+      "seconds": 1704844800,
+      "nanoseconds": 0
+    }
+  },
+  {
+    "id": "prod_necklace",
+    "name": "Gold Necklace",
+    "slug": "gold-necklace",
+    "description": "Elegant gold necklace with pendant. Perfect accessory for special occasions.",
+    "images": [
+      "https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?w=800",
+      "https://images.unsplash.com/photo-1590874103328-eac38a683ce7?w=800"
+    ],
+    "price": 179.99,
+    "salePrice": 149.99,
+    "discountType": "percentage",
+    "discountValue": 17,
+    "category": "cat_women_accessories",
+    "brandId": "brand_elegance",
+    "variants": [
+      {
+        "id": "var_color_gold",
+        "name": "Color",
+        "value": "Gold",
+        "stock": 15,
+        "extraPrice": 0
+      },
+      {
+        "id": "var_color_silver",
+        "name": "Color",
+        "value": "Silver",
+        "stock": 12,
+        "extraPrice": 0
+      }
+    ],
+    "isFeatured": true,
+    "isActive": true,
+    "allowPreOrder": false,
+    "isBundle": false,
+    "analytics": {
+      "views": 356,
+      "clicks": 167,
+      "addToCartCount": 89,
+      "purchases": 32,
+      "conversionRate": 9
+    },
+    "createdAt": {
+      "seconds": 1704758400,
+      "nanoseconds": 0
+    },
+    "updatedAt": {
+      "seconds": 1704844800,
+      "nanoseconds": 0
+    }
+  }
+]

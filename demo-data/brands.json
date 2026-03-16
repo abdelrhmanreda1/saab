@@ -1,0 +1,50 @@
+[
+  {
+    "id": "brand_elegance",
+    "name": "Elegance",
+    "slug": "elegance",
+    "description": "Premium fashion brand for modern women",
+    "logoUrl": "https://images.unsplash.com/photo-1560179707-f14e90ef3623?w=400",
+    "translations": [],
+    "createdAt": {
+      "seconds": 1704067200,
+      "nanoseconds": 0
+    },
+    "updatedAt": {
+      "seconds": 1704067200,
+      "nanoseconds": 0
+    }
+  },
+  {
+    "id": "brand_stylehouse",
+    "name": "StyleHouse",
+    "slug": "stylehouse",
+    "description": "Contemporary fashion for the style-conscious",
+    "logoUrl": "https://images.unsplash.com/photo-1560179707-f14e90ef3623?w=400",
+    "translations": [],
+    "createdAt": {
+      "seconds": 1704067200,
+      "nanoseconds": 0
+    },
+    "updatedAt": {
+      "seconds": 1704067200,
+      "nanoseconds": 0
+    }
+  },
+  {
+    "id": "brand_trendsetter",
+    "name": "TrendSetter",
+    "slug": "trendsetter",
+    "description": "Setting trends in fashion",
+    "logoUrl": "https://images.unsplash.com/photo-1560179707-f14e90ef3623?w=400",
+    "translations": [],
+    "createdAt": {
+      "seconds": 1704067200,
+      "nanoseconds": 0
+    },
+    "updatedAt": {
+      "seconds": 1704067200,
+      "nanoseconds": 0
+    }
+  }
+]

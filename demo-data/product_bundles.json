@@ -1,0 +1,154 @@
+[
+  {
+    "id": "bundle_complete_outfit",
+    "name": "Complete Outfit Bundle",
+    "description": "Get a complete outfit at a special bundle price! Includes a dress, shoes, and handbag. Save up to 25% when you buy together.",
+    "image": "https://images.unsplash.com/photo-1595777457583-95e059d581b8?w=800",
+    "products": [
+      {
+        "productId": "prod_floral_maxi_dress",
+        "productName": "Floral Print Maxi Dress",
+        "quantity": 1,
+        "discount": 15,
+        "isRequired": true
+      },
+      {
+        "productId": "prod_heels",
+        "productName": "Classic High Heels",
+        "quantity": 1,
+        "discount": 10,
+        "isRequired": false
+      },
+      {
+        "productId": "prod_designer_handbag",
+        "productName": "Designer Leather Handbag",
+        "quantity": 1,
+        "discount": 20,
+        "isRequired": false
+      }
+    ],
+    "bundlePrice": 349.99,
+    "discountType": "bundle_price",
+    "validFrom": {
+      "seconds": 1735689600,
+      "nanoseconds": 0
+    },
+    "validUntil": {
+      "seconds": 1738281600,
+      "nanoseconds": 0
+    },
+    "isActive": true,
+    "createdAt": {
+      "seconds": 1735603200,
+      "nanoseconds": 0
+    },
+    "updatedAt": {
+      "seconds": 1735603200,
+      "nanoseconds": 0
+    }
+  },
+  {
+    "id": "bundle_casual_weekend",
+    "name": "Casual Weekend Bundle",
+    "description": "Perfect casual weekend look! Get a t-shirt, jeans, and sneakers together at a discounted bundle price.",
+    "image": "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=800",
+    "products": [
+      {
+        "productId": "prod_casual_t_shirt",
+        "productName": "Classic Cotton T-Shirt",
+        "quantity": 1,
+        "discount": 10,
+        "isRequired": true
+      },
+      {
+        "productId": "prod_high_waist_jeans",
+        "productName": "High Waist Skinny Jeans",
+        "quantity": 1,
+        "discount": 15,
+        "isRequired": true
+      },
+      {
+        "productId": "prod_sneakers",
+        "productName": "Classic White Sneakers",
+        "quantity": 1,
+        "discount": 12,
+        "isRequired": false
+      }
+    ],
+    "discountType": "percentage",
+    "discountValue": 20,
+    "validFrom": {
+      "seconds": 1735776000,
+      "nanoseconds": 0
+    },
+    "validUntil": {
+      "seconds": 1738368000,
+      "nanoseconds": 0
+    },
+    "isActive": true,
+    "createdAt": {
+      "seconds": 1735689600,
+      "nanoseconds": 0
+    },
+    "updatedAt": {
+      "seconds": 1735689600,
+      "nanoseconds": 0
+    }
+  },
+  {
+    "id": "bundle_office_essentials",
+    "name": "Office Essentials Bundle",
+    "description": "Professional office look bundle! Includes a blouse, trousers, and loafers. Save money when you buy the complete set.",
+    "image": "https://images.unsplash.com/photo-1594633313593-bab3825d0caf?w=800",
+    "products": [
+      {
+        "productId": "prod_silk_blouse",
+        "productName": "Elegant Silk Blouse",
+        "quantity": 1,
+        "discount": 15,
+        "isRequired": true
+      },
+      {
+        "productId": "prod_wide_leg_pants",
+        "productName": "Wide Leg Trousers",
+        "quantity": 1,
+        "discount": 12,
+        "isRequired": true
+      },
+      {
+        "productId": "prod_loafers",
+        "productName": "Classic Loafers",
+        "quantity": 1,
+        "discount": 10,
+        "isRequired": false
+      },
+      {
+        "productId": "prod_watch",
+        "productName": "Elegant Watch",
+        "quantity": 1,
+        "discount": 18,
+        "isRequired": false
+      }
+    ],
+    "bundlePrice": 299.99,
+    "discountType": "bundle_price",
+    "validFrom": {
+      "seconds": 1736035200,
+      "nanoseconds": 0
+    },
+    "validUntil": {
+      "seconds": 1738627200,
+      "nanoseconds": 0
+    },
+    "isActive": true,
+    "createdAt": {
+      "seconds": 1735948800,
+      "nanoseconds": 0
+    },
+    "updatedAt": {
+      "seconds": 1735948800,
+      "nanoseconds": 0
+    }
+  }
+]
+

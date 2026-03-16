@@ -1,0 +1,379 @@
+[
+  {
+    "id": "PK-PB",
+    "countryId": "PK",
+    "countryName": "Pakistan",
+    "name": "Punjab",
+    "code": "PB",
+    "status": "active"
+  },
+  {
+    "id": "PK-SD",
+    "countryId": "PK",
+    "countryName": "Pakistan",
+    "name": "Sindh",
+    "code": "SD",
+    "status": "active"
+  },
+  {
+    "id": "PK-KP",
+    "countryId": "PK",
+    "countryName": "Pakistan",
+    "name": "Khyber Pakhtunkhwa",
+    "code": "KP",
+    "status": "active"
+  },
+  {
+    "id": "PK-BA",
+    "countryId": "PK",
+    "countryName": "Pakistan",
+    "name": "Balochistan",
+    "code": "BA",
+    "status": "active"
+  },
+  {
+    "id": "PK-IS",
+    "countryId": "PK",
+    "countryName": "Pakistan",
+    "name": "Islamabad Capital Territory",
+    "code": "IS",
+    "status": "active"
+  },
+  {
+    "id": "PK-GB",
+    "countryId": "PK",
+    "countryName": "Pakistan",
+    "name": "Gilgit-Baltistan",
+    "code": "GB",
+    "status": "active"
+  },
+  {
+    "id": "PK-AJ",
+    "countryId": "PK",
+    "countryName": "Pakistan",
+    "name": "Azad Jammu and Kashmir",
+    "code": "AJ",
+    "status": "active"
+  },
+  {
+    "id": "PK-OTHER",
+    "countryId": "PK",
+    "countryName": "Pakistan",
+    "name": "Other",
+    "code": "OT",
+    "status": "active"
+  },
+  {
+    "id": "US-CA",
+    "countryId": "US",
+    "countryName": "United States",
+    "name": "California",
+    "code": "CA",
+    "status": "active"
+  },
+  {
+    "id": "US-NY",
+    "countryId": "US",
+    "countryName": "United States",
+    "name": "New York",
+    "code": "NY",
+    "status": "active"
+  },
+  {
+    "id": "US-TX",
+    "countryId": "US",
+    "countryName": "United States",
+    "name": "Texas",
+    "code": "TX",
+    "status": "active"
+  },
+  {
+    "id": "US-FL",
+    "countryId": "US",
+    "countryName": "United States",
+    "name": "Florida",
+    "code": "FL",
+    "status": "active"
+  },
+  {
+    "id": "US-IL",
+    "countryId": "US",
+    "countryName": "United States",
+    "name": "Illinois",
+    "code": "IL",
+    "status": "active"
+  },
+  {
+    "id": "US-OTHER",
+    "countryId": "US",
+    "countryName": "United States",
+    "name": "Other",
+    "code": "OT",
+    "status": "active"
+  },
+  {
+    "id": "GB-ENG",
+    "countryId": "GB",
+    "countryName": "United Kingdom",
+    "name": "England",
+    "code": "ENG",
+    "status": "active"
+  },
+  {
+    "id": "GB-SCT",
+    "countryId": "GB",
+    "countryName": "United Kingdom",
+    "name": "Scotland",
+    "code": "SCT",
+    "status": "active"
+  },
+  {
+    "id": "GB-WLS",
+    "countryId": "GB",
+    "countryName": "United Kingdom",
+    "name": "Wales",
+    "code": "WLS",
+    "status": "active"
+  },
+  {
+    "id": "GB-NIR",
+    "countryId": "GB",
+    "countryName": "United Kingdom",
+    "name": "Northern Ireland",
+    "code": "NIR",
+    "status": "active"
+  },
+  {
+    "id": "GB-OTHER",
+    "countryId": "GB",
+    "countryName": "United Kingdom",
+    "name": "Other",
+    "code": "OT",
+    "status": "active"
+  },
+  {
+    "id": "CA-ON",
+    "countryId": "CA",
+    "countryName": "Canada",
+    "name": "Ontario",
+    "code": "ON",
+    "status": "active"
+  },
+  {
+    "id": "CA-BC",
+    "countryId": "CA",
+    "countryName": "Canada",
+    "name": "British Columbia",
+    "code": "BC",
+    "status": "active"
+  },
+  {
+    "id": "CA-QC",
+    "countryId": "CA",
+    "countryName": "Canada",
+    "name": "Quebec",
+    "code": "QC",
+    "status": "active"
+  },
+  {
+    "id": "CA-AB",
+    "countryId": "CA",
+    "countryName": "Canada",
+    "name": "Alberta",
+    "code": "AB",
+    "status": "active"
+  },
+  {
+    "id": "CA-OTHER",
+    "countryId": "CA",
+    "countryName": "Canada",
+    "name": "Other",
+    "code": "OT",
+    "status": "active"
+  },
+  {
+    "id": "AE-DU",
+    "countryId": "AE",
+    "countryName": "United Arab Emirates",
+    "name": "Dubai",
+    "code": "DU",
+    "status": "active"
+  },
+  {
+    "id": "AE-AB",
+    "countryId": "AE",
+    "countryName": "United Arab Emirates",
+    "name": "Abu Dhabi",
+    "code": "AB",
+    "status": "active"
+  },
+  {
+    "id": "AE-SH",
+    "countryId": "AE",
+    "countryName": "United Arab Emirates",
+    "name": "Sharjah",
+    "code": "SH",
+    "status": "active"
+  },
+  {
+    "id": "AE-OTHER",
+    "countryId": "AE",
+    "countryName": "United Arab Emirates",
+    "name": "Other",
+    "code": "OT",
+    "status": "active"
+  },
+  {
+    "id": "SA-RI",
+    "countryId": "SA",
+    "countryName": "Saudi Arabia",
+    "name": "Riyadh",
+    "code": "RI",
+    "status": "active"
+  },
+  {
+    "id": "SA-MK",
+    "countryId": "SA",
+    "countryName": "Saudi Arabia",
+    "name": "Makkah",
+    "code": "MK",
+    "status": "active"
+  },
+  {
+    "id": "SA-MD",
+    "countryId": "SA",
+    "countryName": "Saudi Arabia",
+    "name": "Madinah",
+    "code": "MD",
+    "status": "active"
+  },
+  {
+    "id": "SA-OTHER",
+    "countryId": "SA",
+    "countryName": "Saudi Arabia",
+    "name": "Other",
+    "code": "OT",
+    "status": "active"
+  },
+  {
+    "id": "IN-MH",
+    "countryId": "IN",
+    "countryName": "India",
+    "name": "Maharashtra",
+    "code": "MH",
+    "status": "active"
+  },
+  {
+    "id": "IN-DL",
+    "countryId": "IN",
+    "countryName": "India",
+    "name": "Delhi",
+    "code": "DL",
+    "status": "active"
+  },
+  {
+    "id": "IN-KA",
+    "countryId": "IN",
+    "countryName": "India",
+    "name": "Karnataka",
+    "code": "KA",
+    "status": "active"
+  },
+  {
+    "id": "IN-TN",
+    "countryId": "IN",
+    "countryName": "India",
+    "name": "Tamil Nadu",
+    "code": "TN",
+    "status": "active"
+  },
+  {
+    "id": "IN-OTHER",
+    "countryId": "IN",
+    "countryName": "India",
+    "name": "Other",
+    "code": "OT",
+    "status": "active"
+  },
+  {
+    "id": "AU-NSW",
+    "countryId": "AU",
+    "countryName": "Australia",
+    "name": "New South Wales",
+    "code": "NSW",
+    "status": "active"
+  },
+  {
+    "id": "AU-VIC",
+    "countryId": "AU",
+    "countryName": "Australia",
+    "name": "Victoria",
+    "code": "VIC",
+    "status": "active"
+  },
+  {
+    "id": "AU-QLD",
+    "countryId": "AU",
+    "countryName": "Australia",
+    "name": "Queensland",
+    "code": "QLD",
+    "status": "active"
+  },
+  {
+    "id": "AU-OTHER",
+    "countryId": "AU",
+    "countryName": "Australia",
+    "name": "Other",
+    "code": "OT",
+    "status": "active"
+  },
+  {
+    "id": "DE-BY",
+    "countryId": "DE",
+    "countryName": "Germany",
+    "name": "Bavaria",
+    "code": "BY",
+    "status": "active"
+  },
+  {
+    "id": "DE-BE",
+    "countryId": "DE",
+    "countryName": "Germany",
+    "name": "Berlin",
+    "code": "BE",
+    "status": "active"
+  },
+  {
+    "id": "DE-OTHER",
+    "countryId": "DE",
+    "countryName": "Germany",
+    "name": "Other",
+    "code": "OT",
+    "status": "active"
+  },
+  {
+    "id": "FR-IDF",
+    "countryId": "FR",
+    "countryName": "France",
+    "name": "Île-de-France",
+    "code": "IDF",
+    "status": "active"
+  },
+  {
+    "id": "FR-OTHER",
+    "countryId": "FR",
+    "countryName": "France",
+    "name": "Other",
+    "code": "OT",
+    "status": "active"
+  },
+  {
+    "id": "OTHER-OTHER",
+    "countryId": "OTHER",
+    "countryName": "Other",
+    "name": "Other",
+    "code": "OT",
+    "status": "active"
+  }
+]
+

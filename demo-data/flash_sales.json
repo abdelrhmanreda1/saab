@@ -1,0 +1,103 @@
+[
+  {
+    "id": "flash_summer_sale",
+    "name": "Summer Fashion Flash Sale",
+    "description": "Limited time summer fashion sale! Get up to 40% off on selected dresses and tops. Don't miss out!",
+    "productIds": [
+      "prod_floral_maxi_dress",
+      "prod_wrap_dress",
+      "prod_midi_dress",
+      "prod_silk_blouse",
+      "prod_casual_t_shirt"
+    ],
+    "discountType": "percentage",
+    "discountValue": 35,
+    "startTime": {
+      "seconds": 1735689600,
+      "nanoseconds": 0
+    },
+    "endTime": {
+      "seconds": 1735862400,
+      "nanoseconds": 0
+    },
+    "isActive": true,
+    "maxQuantity": 2,
+    "createdBy": "admin",
+    "createdAt": {
+      "seconds": 1735603200,
+      "nanoseconds": 0
+    },
+    "updatedAt": {
+      "seconds": 1735603200,
+      "nanoseconds": 0
+    }
+  },
+  {
+    "id": "flash_shoes_accessories",
+    "name": "Shoes & Accessories Flash Sale",
+    "description": "Flash sale on shoes and accessories! Get amazing discounts on boots, sneakers, handbags, and more.",
+    "productIds": [
+      "prod_leather_ankle_boots",
+      "prod_sneakers",
+      "prod_heels",
+      "prod_designer_handbag",
+      "prod_watch",
+      "prod_sunglasses"
+    ],
+    "discountType": "percentage",
+    "discountValue": 30,
+    "startTime": {
+      "seconds": 1735776000,
+      "nanoseconds": 0
+    },
+    "endTime": {
+      "seconds": 1735948800,
+      "nanoseconds": 0
+    },
+    "isActive": true,
+    "maxQuantity": 3,
+    "createdBy": "admin",
+    "createdAt": {
+      "seconds": 1735689600,
+      "nanoseconds": 0
+    },
+    "updatedAt": {
+      "seconds": 1735689600,
+      "nanoseconds": 0
+    }
+  },
+  {
+    "id": "flash_weekend_special",
+    "name": "Weekend Special Flash Sale",
+    "description": "Weekend special! Get flat $20 off on selected items. Limited stock available!",
+    "productIds": [
+      "prod_bodycon_dress",
+      "prod_cardigan",
+      "prod_wide_leg_pants",
+      "prod_pleated_skirt",
+      "prod_denim_jacket"
+    ],
+    "discountType": "fixed",
+    "discountValue": 20,
+    "startTime": {
+      "seconds": 1736035200,
+      "nanoseconds": 0
+    },
+    "endTime": {
+      "seconds": 1736208000,
+      "nanoseconds": 0
+    },
+    "isActive": true,
+    "maxQuantity": 2,
+    "createdBy": "admin",
+    "createdAt": {
+      "seconds": 1735948800,
+      "nanoseconds": 0
+    },
+    "updatedAt": {
+      "seconds": 1735948800,
+      "nanoseconds": 0
+    }
+  }
+]
+

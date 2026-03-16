@@ -1,0 +1,185 @@
+{
+  "id": "general",
+  "company": {
+    "name": "Pardah Store",
+    "email": "info@pardahstore.com",
+    "phone": "+1 234 567 8900",
+    "website": "https://pardahstore.com",
+    "address": "123 Fashion Street",
+    "city": "New York",
+    "state": "NY",
+    "countryCode": "US",
+    "zipCode": "10001"
+  },
+  "site": {
+    "dateFormat": "DD-MM-YYYY",
+    "timeFormat": "12 Hour",
+    "timezone": "America/New_York",
+    "defaultCountry": "US",
+    "language": "English",
+    "androidAppLink": "",
+    "iosAppLink": "",
+    "copyrightText": "© 2024 Pardah Store. All rights reserved.",
+    "currency": "USD",
+    "currencyPosition": "left",
+    "digitsAfterDecimal": 2,
+    "phoneDigitLength": 10,
+    "paymentGateway": "stripe",
+    "enableLanguageSwitcher": true,
+    "enableUserAccountCreation": true,
+    "enablePhoneVerification": false,
+    "googleMapsApiKey": ""
+  },
+  "seo": {
+    "siteTitle": "Pardah Store - Premium Fashion",
+    "siteDescription": "Discover elegant fashion for the modern woman. Shop our collection of dresses, tops, bottoms, shoes, and accessories.",
+    "siteKeywords": [
+      "fashion",
+      "women clothing",
+      "dresses",
+      "tops",
+      "jeans",
+      "shoes",
+      "accessories",
+      "online shopping",
+      "fashion store"
+    ],
+    "defaultMetaImage": "https://images.unsplash.com/photo-1595777457583-95e059d581b8?w=1200",
+    "ogSiteName": "Pardah Store",
+    "ogLocale": "en_US",
+    "ogDefaultImage": "https://images.unsplash.com/photo-1595777457583-95e059d581b8?w=1200",
+    "twitterCard": "summary_large_image",
+    "twitterSite": "@pardahstore",
+    "twitterCreator": "@pardahstore",
+    "organizationName": "Pardah Store",
+    "organizationLogo": "https://images.unsplash.com/photo-1560179707-f14e90ef3623?w=400",
+    "organizationUrl": "https://pardahstore.com",
+    "robotsTxt": "User-agent: *\nAllow: /",
+    "sitemapEnabled": true,
+    "sitemapUrl": "https://pardahstore.com/sitemap.xml",
+    "googleAnalyticsId": "",
+    "googleTagManagerId": "",
+    "facebookPixelId": "",
+    "googleVerificationCode": "",
+    "bingVerificationCode": ""
+  },
+  "smtp": {
+    "host": "smtp.gmail.com",
+    "port": "587",
+    "username": "noreply@pardahstore.com",
+    "password": "",
+    "fromName": "Pardah Store",
+    "fromEmail": "noreply@pardahstore.com",
+    "encryption": "tls"
+  },
+  "emailNotifications": {
+    "customerOrderPlaced": true,
+    "customerOrderPlacedSubject": "Order Confirmation - Order #{orderId}",
+    "customerOrderPlacedTemplate": "",
+    "customerOrderStatusUpdate": true,
+    "customerOrderStatusUpdateSubject": "Order Status Update - Order #{orderId}",
+    "customerOrderStatusUpdateTemplate": "",
+    "customerOrderDelivered": true,
+    "customerOrderDeliveredSubject": "Your Order Has Been Delivered - Order #{orderId}",
+    "customerOrderDeliveredTemplate": "",
+    "adminNewOrder": true,
+    "adminNewOrderEmails": [
+      "admin@pardahstore.com"
+    ],
+    "adminNewOrderSubject": "New Order Received - Order #{orderId}",
+    "adminNewOrderTemplate": ""
+  },
+  "social": {
+    "facebook": "https://facebook.com/pardahstore",
+    "instagram": "https://instagram.com/pardahstore",
+    "twitter": "https://twitter.com/pardahstore",
+    "youtube": "https://youtube.com/@pardahstore"
+  },
+  "theme": {
+    "logoUrl": "https://images.unsplash.com/photo-1560179707-f14e90ef3623?w=400",
+    "faviconUrl": "/favicon.ico",
+    "loginImageUrl": "https://images.unsplash.com/photo-1595777457583-95e059d581b8?w=1200",
+    "colors": {
+      "headerBackground": "#ffffff",
+      "headerText": "#000000",
+      "footerBackground": "#1f2937",
+      "footerText": "#ffffff",
+      "primaryButton": "#000000",
+      "primaryButtonText": "#ffffff",
+      "secondaryButton": "#f3f4f6",
+      "secondaryButtonText": "#000000"
+    },
+    "fonts": {
+      "heading": "Inter",
+      "body": "Inter"
+    },
+    "topBar": {
+      "enabled": true,
+      "text": "FREE SHIPPING ON ORDERS OVER $100",
+      "backgroundColor": "#000000",
+      "textColor": "#ffffff"
+    }
+  },
+  "features": {
+    "category": true,
+    "brands": true,
+    "collections": true,
+    "size": true,
+    "colors": true,
+    "banners": true,
+    "coupons": true,
+    "emailMarketing": true,
+    "notifications": true,
+    "blog": true,
+    "wishlist": true,
+    "productReviews": true,
+    "productBundles": true,
+    "preOrders": true,
+    "productTemplates": true,
+    "recentlyViewed": true,
+    "productRecommendations": true,
+    "importExport": true,
+    "abandonedCarts": true,
+    "customerSegmentation": true
+  },
+  "pages": {
+    "aboutUs": true,
+    "privacyPolicy": true,
+    "termsOfService": true,
+    "shippingReturns": true,
+    "sizeGuide": true,
+    "storeLocator": true,
+    "careers": true,
+    "faqs": true,
+    "contactUs": true
+  },
+  "geography": {
+    "countries": true,
+    "states": true,
+    "cities": true
+  },
+  "payment": {
+    "enableCOD": true,
+    "enableLocalPayment": true,
+    "enableOnlinePayment": true,
+    "enableAdvancePayment": false,
+    "advancePaymentType": "percentage",
+    "advancePaymentValue": 50,
+    "enableWallet": false,
+    "enableLoyaltyPoint": false,
+    "loyaltyPointValue": 1
+  },
+  "giftWrap": {
+    "enabled": true,
+    "price": 15.99,
+    "description": "Add a special touch to your gift with our premium gift wrap service"
+  },
+  "createdAt": {
+    "seconds": 1704067200,
+    "nanoseconds": 0
+  },
+  "updatedAt": {
+    "seconds": 1704067200,
+    "nanoseconds": 0
+  }
+}

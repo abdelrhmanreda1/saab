@@ -1,0 +1,146 @@
+[
+  {
+    "id": "banner_main",
+    "title": "Discover Your Style",
+    "subtitle": "Explore our latest collection of premium fashion designed for the modern woman.",
+    "imageUrl": "https://images.unsplash.com/photo-1595777457583-95e059d581b8?w=1920",
+    "linkTo": "/shop",
+    "deviceType": "both",
+    "isActive": true,
+    "order": 1,
+    "createdAt": {
+      "seconds": 1704067200,
+      "nanoseconds": 0
+    },
+    "updatedAt": {
+      "seconds": 1704067200,
+      "nanoseconds": 0
+    }
+  },
+  {
+    "id": "banner_new_arrivals",
+    "title": "New Arrivals",
+    "subtitle": "Shop the latest trends in fashion",
+    "imageUrl": "https://images.unsplash.com/photo-1594633312681-425c7b97ccd1?w=1920",
+    "linkTo": "/shop?sort=newest",
+    "deviceType": "both",
+    "isActive": true,
+    "order": 2,
+    "createdAt": {
+      "seconds": 1704067200,
+      "nanoseconds": 0
+    },
+    "updatedAt": {
+      "seconds": 1704067200,
+      "nanoseconds": 0
+    }
+  },
+  {
+    "id": "banner_sale",
+    "title": "Summer Sale",
+    "subtitle": "Up to 50% off on selected items",
+    "imageUrl": "https://images.unsplash.com/photo-1549298916-b41d501d3772?w=1920",
+    "linkTo": "/shop?sort=price-low",
+    "deviceType": "both",
+    "isActive": true,
+    "order": 3,
+    "createdAt": {
+      "seconds": 1704067200,
+      "nanoseconds": 0
+    },
+    "updatedAt": {
+      "seconds": 1704067200,
+      "nanoseconds": 0
+    }
+  },
+  {
+    "id": "banner_winter_collection",
+    "title": "Winter Collection",
+    "subtitle": "Stay warm and stylish this season",
+    "imageUrl": "https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=1920",
+    "linkTo": "/shop?collection=winter",
+    "deviceType": "both",
+    "isActive": true,
+    "order": 4,
+    "createdAt": {
+      "seconds": 1704153600,
+      "nanoseconds": 0
+    },
+    "updatedAt": {
+      "seconds": 1704153600,
+      "nanoseconds": 0
+    }
+  },
+  {
+    "id": "banner_accessories",
+    "title": "Complete Your Look",
+    "subtitle": "Discover our stunning collection of accessories",
+    "imageUrl": "https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?w=1920",
+    "linkTo": "/shop?category=accessories",
+    "deviceType": "both",
+    "isActive": true,
+    "order": 5,
+    "createdAt": {
+      "seconds": 1704240000,
+      "nanoseconds": 0
+    },
+    "updatedAt": {
+      "seconds": 1704240000,
+      "nanoseconds": 0
+    }
+  },
+  {
+    "id": "banner_free_shipping",
+    "title": "Free Shipping",
+    "subtitle": "On orders over $100 - Shop now!",
+    "imageUrl": "https://images.unsplash.com/photo-1445205170230-053b83016050?w=1920",
+    "linkTo": "/shop",
+    "deviceType": "both",
+    "isActive": true,
+    "order": 6,
+    "createdAt": {
+      "seconds": 1704326400,
+      "nanoseconds": 0
+    },
+    "updatedAt": {
+      "seconds": 1704326400,
+      "nanoseconds": 0
+    }
+  },
+  {
+    "id": "banner_weekend_sale",
+    "title": "Weekend Flash Sale",
+    "subtitle": "Limited time offers - Up to 40% off",
+    "imageUrl": "https://images.unsplash.com/photo-1441984904996-e0b6ba687e04?w=1920",
+    "linkTo": "/shop?sort=price-low",
+    "deviceType": "both",
+    "isActive": true,
+    "order": 7,
+    "createdAt": {
+      "seconds": 1704412800,
+      "nanoseconds": 0
+    },
+    "updatedAt": {
+      "seconds": 1704412800,
+      "nanoseconds": 0
+    }
+  },
+  {
+    "id": "banner_brands",
+    "title": "Shop by Brand",
+    "subtitle": "Explore collections from your favorite brands",
+    "imageUrl": "https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=1920",
+    "linkTo": "/brands",
+    "deviceType": "both",
+    "isActive": true,
+    "order": 8,
+    "createdAt": {
+      "seconds": 1704499200,
+      "nanoseconds": 0
+    },
+    "updatedAt": {
+      "seconds": 1704499200,
+      "nanoseconds": 0
+    }
+  }
+]

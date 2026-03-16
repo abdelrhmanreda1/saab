@@ -1,0 +1,157 @@
+[
+  {
+    "id": "about",
+    "slug": "about",
+    "isActive": true,
+    "translations": [
+      {
+        "languageCode": "en",
+        "title": "About Us",
+        "content": "<h2>Welcome to Our Fashion Store</h2><p>We are a leading fashion retailer dedicated to providing high-quality, stylish clothing and accessories for the modern woman. Our mission is to help you express your unique style while feeling comfortable and confident.</p><h3>Our Story</h3><p>Founded with a passion for fashion and a commitment to quality, we have been serving customers worldwide for over a decade. We believe that everyone deserves to look and feel their best, which is why we carefully curate our collections to offer something special for every occasion.</p><h3>Our Values</h3><ul><li><strong>Quality First:</strong> We source only the finest materials and work with trusted manufacturers to ensure every product meets our high standards.</li><li><strong>Customer Satisfaction:</strong> Your happiness is our priority. We're committed to providing exceptional service and support.</li><li><strong>Sustainability:</strong> We're dedicated to ethical practices and sustainable fashion choices.</li><li><strong>Innovation:</strong> We stay ahead of trends to bring you the latest styles and fashion-forward pieces.</li></ul><h3>Why Choose Us?</h3><p>With a wide selection of products, competitive prices, and fast shipping, we make it easy to find exactly what you're looking for. Our team is always here to help, and we're constantly working to improve your shopping experience.</p><p>Thank you for choosing us for your fashion needs. We look forward to serving you!</p>",
+        "metaTitle": "About Us - Fashion Store",
+        "metaDescription": "Learn about our fashion store, our story, values, and commitment to providing quality clothing and accessories."
+      }
+    ],
+    "createdAt": {
+      "seconds": 1704067200,
+      "nanoseconds": 0
+    },
+    "updatedAt": {
+      "seconds": 1704153600,
+      "nanoseconds": 0
+    }
+  },
+  {
+    "id": "privacy",
+    "slug": "privacy",
+    "isActive": true,
+    "translations": [
+      {
+        "languageCode": "en",
+        "title": "Privacy Policy",
+        "content": "<h2>Privacy Policy</h2><p>Last updated: January 2024</p><h3>Introduction</h3><p>We respect your privacy and are committed to protecting your personal data. This privacy policy explains how we collect, use, and safeguard your information when you visit our website or make a purchase.</p><h3>Information We Collect</h3><p>We collect information that you provide directly to us, including:</p><ul><li>Name and contact information (email, phone number, address)</li><li>Payment information (processed securely through our payment partners)</li><li>Order history and preferences</li><li>Account information and login credentials</li></ul><h3>How We Use Your Information</h3><p>We use the information we collect to:</p><ul><li>Process and fulfill your orders</li><li>Communicate with you about your orders and our services</li><li>Send you marketing communications (with your consent)</li><li>Improve our website and customer experience</li><li>Prevent fraud and ensure security</li></ul><h3>Data Security</h3><p>We implement appropriate technical and organizational measures to protect your personal data against unauthorized access, alteration, disclosure, or destruction.</p><h3>Your Rights</h3><p>You have the right to:</p><ul><li>Access your personal data</li><li>Correct inaccurate data</li><li>Request deletion of your data</li><li>Object to processing of your data</li><li>Data portability</li></ul><h3>Cookies</h3><p>We use cookies to enhance your browsing experience. You can control cookie preferences through your browser settings.</p><h3>Contact Us</h3><p>If you have questions about this privacy policy, please contact us through our customer service channels.</p>",
+        "metaTitle": "Privacy Policy - Fashion Store",
+        "metaDescription": "Read our privacy policy to understand how we collect, use, and protect your personal information."
+      }
+    ],
+    "createdAt": {
+      "seconds": 1704067200,
+      "nanoseconds": 0
+    },
+    "updatedAt": {
+      "seconds": 1704153600,
+      "nanoseconds": 0
+    }
+  },
+  {
+    "id": "terms",
+    "slug": "terms",
+    "isActive": true,
+    "translations": [
+      {
+        "languageCode": "en",
+        "title": "Terms of Service",
+        "content": "<h2>Terms of Service</h2><p>Last updated: January 2024</p><h3>Agreement to Terms</h3><p>By accessing or using our website, you agree to be bound by these Terms of Service. If you disagree with any part of these terms, you may not access our service.</p><h3>Use of Our Website</h3><p>You agree to use our website only for lawful purposes and in a way that does not infringe the rights of others or restrict their use of the website.</p><h3>Product Information</h3><p>We strive to provide accurate product descriptions and images. However, we do not warrant that product descriptions or other content on this site is accurate, complete, reliable, current, or error-free.</p><h3>Pricing and Payment</h3><p>All prices are displayed in the currency selected and are subject to change without notice. We reserve the right to refuse or cancel any order at any time.</p><h3>Shipping and Delivery</h3><p>Shipping times and costs are provided at checkout. We are not responsible for delays caused by shipping carriers or customs.</p><h3>Returns and Refunds</h3><p>Please review our return policy. Items must be returned in their original condition within the specified return period.</p><h3>Intellectual Property</h3><p>All content on this website, including text, graphics, logos, and images, is the property of our company and is protected by copyright laws.</p><h3>Limitation of Liability</h3><p>We shall not be liable for any indirect, incidental, special, or consequential damages arising from your use of our website or products.</p><h3>Changes to Terms</h3><p>We reserve the right to modify these terms at any time. Your continued use of our website constitutes acceptance of any changes.</p><h3>Contact Information</h3><p>For questions about these terms, please contact our customer service team.</p>",
+        "metaTitle": "Terms of Service - Fashion Store",
+        "metaDescription": "Read our terms of service to understand the rules and regulations for using our website and services."
+      }
+    ],
+    "createdAt": {
+      "seconds": 1704067200,
+      "nanoseconds": 0
+    },
+    "updatedAt": {
+      "seconds": 1704153600,
+      "nanoseconds": 0
+    }
+  },
+  {
+    "id": "shipping-returns",
+    "slug": "shipping-returns",
+    "isActive": true,
+    "translations": [
+      {
+        "languageCode": "en",
+        "title": "Shipping & Returns",
+        "content": "<h2>Shipping & Returns</h2><h3>Shipping Information</h3><p>We offer fast and reliable shipping to customers worldwide. Shipping costs and delivery times vary by location and shipping method selected at checkout.</p><h4>Shipping Options</h4><ul><li><strong>Standard Shipping:</strong> 5-7 business days</li><li><strong>Express Shipping:</strong> 2-3 business days</li><li><strong>Overnight Shipping:</strong> Next business day (where available)</li></ul><h4>International Shipping</h4><p>International orders may be subject to customs duties and taxes, which are the responsibility of the customer. Delivery times may vary for international shipments.</p><h3>Returns & Exchanges</h3><p>We want you to be completely satisfied with your purchase. If you're not happy, we're here to help.</p><h4>Return Policy</h4><ul><li>Items must be returned within 30 days of delivery</li><li>Items must be unworn, unwashed, and in original condition with tags attached</li><li>Original packaging should be included when possible</li><li>Sale items and personalized products may have different return policies</li></ul><h4>How to Return</h4><ol><li>Log into your account and go to your order history</li><li>Select the item(s) you wish to return</li><li>Print the return label and follow the instructions</li><li>Package the item securely and ship it back</li></ol><h4>Refunds</h4><p>Once we receive and inspect your return, we will process your refund within 5-7 business days. Refunds will be issued to the original payment method.</p><h4>Exchanges</h4><p>If you need a different size or color, please return the original item and place a new order for the item you want.</p><h3>Contact Us</h3><p>If you have questions about shipping or returns, please contact our customer service team. We're here to help!</p>",
+        "metaTitle": "Shipping & Returns Policy - Fashion Store",
+        "metaDescription": "Learn about our shipping options, delivery times, return policy, and how to return or exchange items."
+      }
+    ],
+    "createdAt": {
+      "seconds": 1704067200,
+      "nanoseconds": 0
+    },
+    "updatedAt": {
+      "seconds": 1704153600,
+      "nanoseconds": 0
+    }
+  },
+  {
+    "id": "size-guide",
+    "slug": "size-guide",
+    "isActive": true,
+    "translations": [
+      {
+        "languageCode": "en",
+        "title": "Size Guide",
+        "content": "<h2>Size Guide</h2><p>Finding the perfect fit is important to us. Use this guide to help you choose the right size for your purchase.</p><h3>How to Measure</h3><p>For the most accurate fit, measure yourself wearing lightweight clothing and use a flexible measuring tape.</p><h4>Bust/Chest</h4><p>Measure around the fullest part of your bust, keeping the tape level.</p><h4>Waist</h4><p>Measure around your natural waistline, which is the narrowest part of your waist.</p><h4>Hips</h4><p>Measure around the fullest part of your hips, approximately 7-8 inches below your waist.</p><h3>Size Chart</h3><table style=\"width: 100%; border-collapse: collapse; margin: 20px 0;\"><thead><tr style=\"background-color: #f5f5f5;\"><th style=\"padding: 10px; border: 1px solid #ddd;\">Size</th><th style=\"padding: 10px; border: 1px solid #ddd;\">Bust (inches)</th><th style=\"padding: 10px; border: 1px solid #ddd;\">Waist (inches)</th><th style=\"padding: 10px; border: 1px solid #ddd;\">Hips (inches)</th></tr></thead><tbody><tr><td style=\"padding: 10px; border: 1px solid #ddd;\">XS</td><td style=\"padding: 10px; border: 1px solid #ddd;\">32-34</td><td style=\"padding: 10px; border: 1px solid #ddd;\">24-26</td><td style=\"padding: 10px; border: 1px solid #ddd;\">34-36</td></tr><tr><td style=\"padding: 10px; border: 1px solid #ddd;\">S</td><td style=\"padding: 10px; border: 1px solid #ddd;\">34-36</td><td style=\"padding: 10px; border: 1px solid #ddd;\">26-28</td><td style=\"padding: 10px; border: 1px solid #ddd;\">36-38</td></tr><tr><td style=\"padding: 10px; border: 1px solid #ddd;\">M</td><td style=\"padding: 10px; border: 1px solid #ddd;\">36-38</td><td style=\"padding: 10px; border: 1px solid #ddd;\">28-30</td><td style=\"padding: 10px; border: 1px solid #ddd;\">38-40</td></tr><tr><td style=\"padding: 10px; border: 1px solid #ddd;\">L</td><td style=\"padding: 10px; border: 1px solid #ddd;\">38-40</td><td style=\"padding: 10px; border: 1px solid #ddd;\">30-32</td><td style=\"padding: 10px; border: 1px solid #ddd;\">40-42</td></tr><tr><td style=\"padding: 10px; border: 1px solid #ddd;\">XL</td><td style=\"padding: 10px; border: 1px solid #ddd;\">40-42</td><td style=\"padding: 10px; border: 1px solid #ddd;\">32-34</td><td style=\"padding: 10px; border: 1px solid #ddd;\">42-44</td></tr><tr><td style=\"padding: 10px; border: 1px solid #ddd;\">XXL</td><td style=\"padding: 10px; border: 1px solid #ddd;\">42-44</td><td style=\"padding: 10px; border: 1px solid #ddd;\">34-36</td><td style=\"padding: 10px; border: 1px solid #ddd;\">44-46</td></tr></tbody></table><h3>Fit Tips</h3><ul><li>If you're between sizes, we recommend sizing up for a more comfortable fit</li><li>Different styles may fit differently, so check individual product descriptions</li><li>For items with stretch, you may be able to size down</li><li>When in doubt, measure yourself and compare to our size chart</li></ul><h3>Need Help?</h3><p>If you're unsure about sizing, our customer service team is here to help. Contact us and we'll assist you in finding the perfect fit!</p>",
+        "metaTitle": "Size Guide - Fashion Store",
+        "metaDescription": "Find the perfect fit with our comprehensive size guide. Learn how to measure yourself and choose the right size."
+      }
+    ],
+    "createdAt": {
+      "seconds": 1704067200,
+      "nanoseconds": 0
+    },
+    "updatedAt": {
+      "seconds": 1704153600,
+      "nanoseconds": 0
+    }
+  },
+  {
+    "id": "contact",
+    "slug": "contact",
+    "isActive": true,
+    "translations": [
+      {
+        "languageCode": "en",
+        "title": "Contact Us",
+        "content": "<h2>Contact Us</h2><p>We'd love to hear from you! Whether you have a question, need help with an order, or just want to say hello, we're here to help.</p><h3>Get in Touch</h3><h4>Customer Service</h4><p>Our customer service team is available to assist you with any questions or concerns.</p><ul><li><strong>Email:</strong> support@fashionstore.com</li><li><strong>Phone:</strong> +1 (555) 123-4567</li><li><strong>Hours:</strong> Monday - Friday, 9:00 AM - 6:00 PM EST</li></ul><h4>Business Inquiries</h4><p>For business partnerships, wholesale inquiries, or media requests, please contact:</p><ul><li><strong>Email:</strong> business@fashionstore.com</li></ul><h3>Visit Our Store</h3><p>If you're in the area, we'd love to see you in person! Visit us at:</p><p><strong>Fashion Store</strong><br>123 Fashion Street<br>New York, NY 10001<br>United States</p><h3>Social Media</h3><p>Follow us on social media for the latest updates, style tips, and exclusive offers:</p><ul><li>Instagram: @fashionstore</li><li>Facebook: /fashionstore</li><li>Twitter: @fashionstore</li></ul><h3>Response Time</h3><p>We aim to respond to all inquiries within 24-48 hours during business days. For urgent matters, please call us directly.</p><p>Thank you for reaching out. We look forward to hearing from you!</p>",
+        "metaTitle": "Contact Us - Fashion Store",
+        "metaDescription": "Get in touch with our customer service team. Find our contact information, store location, and business hours."
+      }
+    ],
+    "createdAt": {
+      "seconds": 1704067200,
+      "nanoseconds": 0
+    },
+    "updatedAt": {
+      "seconds": 1704153600,
+      "nanoseconds": 0
+    }
+  },
+  {
+    "id": "faq",
+    "slug": "faq",
+    "isActive": true,
+    "translations": [
+      {
+        "languageCode": "en",
+        "title": "Frequently Asked Questions",
+        "content": "<h2>Frequently Asked Questions</h2><p>Find answers to the most common questions about our products, shipping, returns, and more.</p><h3>Orders & Shipping</h3><h4>How long does shipping take?</h4><p>Shipping times vary by location and shipping method. Standard shipping typically takes 5-7 business days, while express shipping takes 2-3 business days.</p><h4>Do you ship internationally?</h4><p>Yes, we ship to most countries worldwide. International shipping times and costs vary by destination.</p><h4>Can I track my order?</h4><p>Yes! Once your order ships, you'll receive a tracking number via email that you can use to track your package.</p><h3>Returns & Exchanges</h3><h4>What is your return policy?</h4><p>Items can be returned within 30 days of delivery, provided they are unworn, unwashed, and in original condition with tags attached.</p><h4>How do I return an item?</h4><p>Log into your account, go to your order history, select the item you want to return, and follow the instructions to print a return label.</p><h4>How long do refunds take?</h4><p>Refunds are processed within 5-7 business days after we receive and inspect your return.</p><h3>Products</h3><h4>What if an item is out of stock?</h4><p>If an item is out of stock, you can sign up for email notifications to be alerted when it's back in stock.</p><h4>Do you offer gift wrapping?</h4><p>Yes, gift wrapping is available at checkout for an additional fee.</p><h4>Can I cancel or modify my order?</h4><p>Orders can be cancelled or modified within 1 hour of placement, provided they haven't been processed for shipping yet.</p><h3>Account & Payment</h3><h4>What payment methods do you accept?</h4><p>We accept all major credit cards, PayPal, and other secure payment methods.</p><h4>Is my payment information secure?</h4><p>Yes, we use industry-standard encryption to protect your payment information. We never store your full credit card details.</p><h4>How do I create an account?</h4><p>You can create an account during checkout or by clicking \"Sign Up\" in the top navigation. Having an account makes it easier to track orders and manage your information.</p><h3>Still Have Questions?</h3><p>If you can't find the answer you're looking for, please don't hesitate to contact our customer service team. We're here to help!</p>",
+        "metaTitle": "FAQs - Fashion Store",
+        "metaDescription": "Find answers to frequently asked questions about orders, shipping, returns, products, and more."
+      }
+    ],
+    "createdAt": {
+      "seconds": 1704067200,
+      "nanoseconds": 0
+    },
+    "updatedAt": {
+      "seconds": 1704153600,
+      "nanoseconds": 0
+    }
+  }
+]
+

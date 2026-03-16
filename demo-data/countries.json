@@ -1,0 +1,91 @@
+[
+  {
+    "id": "PK",
+    "name": "Pakistan",
+    "isoCode": "PK",
+    "phoneCode": "+92",
+    "currency": "PKR",
+    "status": "active"
+  },
+  {
+    "id": "US",
+    "name": "United States",
+    "isoCode": "US",
+    "phoneCode": "+1",
+    "currency": "USD",
+    "status": "active"
+  },
+  {
+    "id": "GB",
+    "name": "United Kingdom",
+    "isoCode": "GB",
+    "phoneCode": "+44",
+    "currency": "GBP",
+    "status": "active"
+  },
+  {
+    "id": "CA",
+    "name": "Canada",
+    "isoCode": "CA",
+    "phoneCode": "+1",
+    "currency": "CAD",
+    "status": "active"
+  },
+  {
+    "id": "AE",
+    "name": "United Arab Emirates",
+    "isoCode": "AE",
+    "phoneCode": "+971",
+    "currency": "AED",
+    "status": "active"
+  },
+  {
+    "id": "SA",
+    "name": "Saudi Arabia",
+    "isoCode": "SA",
+    "phoneCode": "+966",
+    "currency": "SAR",
+    "status": "active"
+  },
+  {
+    "id": "IN",
+    "name": "India",
+    "isoCode": "IN",
+    "phoneCode": "+91",
+    "currency": "INR",
+    "status": "active"
+  },
+  {
+    "id": "AU",
+    "name": "Australia",
+    "isoCode": "AU",
+    "phoneCode": "+61",
+    "currency": "AUD",
+    "status": "active"
+  },
+  {
+    "id": "DE",
+    "name": "Germany",
+    "isoCode": "DE",
+    "phoneCode": "+49",
+    "currency": "EUR",
+    "status": "active"
+  },
+  {
+    "id": "FR",
+    "name": "France",
+    "isoCode": "FR",
+    "phoneCode": "+33",
+    "currency": "EUR",
+    "status": "active"
+  },
+  {
+    "id": "OTHER",
+    "name": "Other",
+    "isoCode": "XX",
+    "phoneCode": "+00",
+    "currency": "USD",
+    "status": "active"
+  }
+]
+

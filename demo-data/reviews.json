@@ -1,0 +1,1426 @@
+[
+  {
+    "id": "rev_dress_1",
+    "productId": "prod_floral_maxi_dress",
+    "userId": "user_demo_1",
+    "userName": "Sarah Johnson",
+    "rating": 5,
+    "comment": "Absolutely love this dress! The floral print is beautiful and the fabric is so comfortable. Perfect for spring and summer. I've received so many compliments!",
+    "createdAt": {
+      "seconds": 1704153600,
+      "nanoseconds": 0
+    },
+    "updatedAt": {
+      "seconds": 1704153600,
+      "nanoseconds": 0
+    }
+  },
+  {
+    "id": "rev_dress_2",
+    "productId": "prod_floral_maxi_dress",
+    "userId": "user_demo_2",
+    "userName": "Emily Chen",
+    "rating": 5,
+    "comment": "Beautiful dress! The quality is excellent and it fits perfectly. The sizing is accurate. I ordered Medium and it fits like a dream. Will definitely order again!",
+    "createdAt": {
+      "seconds": 1704240000,
+      "nanoseconds": 0
+    },
+    "updatedAt": {
+      "seconds": 1704240000,
+      "nanoseconds": 0
+    }
+  },
+  {
+    "id": "rev_dress_3",
+    "productId": "prod_floral_maxi_dress",
+    "userId": "user_demo_3",
+    "userName": "Jessica Martinez",
+    "rating": 4,
+    "comment": "Very nice dress, good quality fabric. The only thing is it's slightly longer than expected, but overall I'm happy with my purchase. Great value for money!",
+    "createdAt": {
+      "seconds": 1704326400,
+      "nanoseconds": 0
+    },
+    "updatedAt": {
+      "seconds": 1704326400,
+      "nanoseconds": 0
+    }
+  },
+  {
+    "id": "rev_dress_4",
+    "productId": "prod_floral_maxi_dress",
+    "userId": "user_demo_4",
+    "userName": "Amanda Williams",
+    "rating": 5,
+    "comment": "Stunning dress! The print is gorgeous and the material feels luxurious. Perfect for weddings and special occasions. Highly recommend!",
+    "createdAt": {
+      "seconds": 1704412800,
+      "nanoseconds": 0
+    },
+    "updatedAt": {
+      "seconds": 1704412800,
+      "nanoseconds": 0
+    }
+  },
+  {
+    "id": "rev_dress_5",
+    "productId": "prod_floral_maxi_dress",
+    "userId": "user_demo_5",
+    "userName": "Michelle Brown",
+    "rating": 4,
+    "comment": "Love the design and colors. The dress is well-made and comfortable. Shipping was fast too. Would recommend to others!",
+    "createdAt": {
+      "seconds": 1704499200,
+      "nanoseconds": 0
+    },
+    "updatedAt": {
+      "seconds": 1704499200,
+      "nanoseconds": 0
+    }
+  },
+  {
+    "id": "rev_blouse_1",
+    "productId": "prod_silk_blouse",
+    "userId": "user_demo_6",
+    "userName": "Rachel Davis",
+    "rating": 5,
+    "comment": "Stunning silk blouse! The quality is luxurious and it feels amazing to wear. Perfect for office or special occasions. Highly recommend!",
+    "createdAt": {
+      "seconds": 1704585600,
+      "nanoseconds": 0
+    },
+    "updatedAt": {
+      "seconds": 1704585600,
+      "nanoseconds": 0
+    }
+  },
+  {
+    "id": "rev_blouse_2",
+    "productId": "prod_silk_blouse",
+    "userId": "user_demo_7",
+    "userName": "Lauren Wilson",
+    "rating": 4,
+    "comment": "Love the design and color. The blouse is well-made and fits nicely. Shipping was fast too. Would recommend to others!",
+    "createdAt": {
+      "seconds": 1704672000,
+      "nanoseconds": 0
+    },
+    "updatedAt": {
+      "seconds": 1704672000,
+      "nanoseconds": 0
+    }
+  },
+  {
+    "id": "rev_blouse_3",
+    "productId": "prod_silk_blouse",
+    "userId": "user_demo_8",
+    "userName": "Nicole Anderson",
+    "rating": 5,
+    "comment": "Excellent quality silk blouse! The fabric is smooth and the fit is perfect. I got the navy blue color and it's beautiful. Will buy more!",
+    "createdAt": {
+      "seconds": 1704758400,
+      "nanoseconds": 0
+    },
+    "updatedAt": {
+      "seconds": 1704758400,
+      "nanoseconds": 0
+    }
+  },
+  {
+    "id": "rev_blouse_4",
+    "productId": "prod_silk_blouse",
+    "userId": "user_demo_9",
+    "userName": "Stephanie Taylor",
+    "rating": 4,
+    "comment": "Very nice blouse, good quality silk. The only minor issue is it wrinkles easily, but overall I'm happy with my purchase.",
+    "createdAt": {
+      "seconds": 1704844800,
+      "nanoseconds": 0
+    },
+    "updatedAt": {
+      "seconds": 1704844800,
+      "nanoseconds": 0
+    }
+  },
+  {
+    "id": "rev_jeans_1",
+    "productId": "prod_high_waist_jeans",
+    "userId": "user_demo_10",
+    "userName": "Ashley Moore",
+    "rating": 5,
+    "comment": "Best jeans I've ever bought! The fit is perfect and they're so comfortable. The stretch fabric makes them ideal for all-day wear. Love them!",
+    "createdAt": {
+      "seconds": 1704931200,
+      "nanoseconds": 0
+    },
+    "updatedAt": {
+      "seconds": 1704931200,
+      "nanoseconds": 0
+    }
+  },
+  {
+    "id": "rev_jeans_2",
+    "productId": "prod_high_waist_jeans",
+    "userId": "user_demo_11",
+    "userName": "Jennifer Lee",
+    "rating": 5,
+    "comment": "Excellent quality jeans! The high waist is flattering and the skinny fit is perfect. True to size. Will definitely buy more pairs!",
+    "createdAt": {
+      "seconds": 1705017600,
+      "nanoseconds": 0
+    },
+    "updatedAt": {
+      "seconds": 1705017600,
+      "nanoseconds": 0
+    }
+  },
+  {
+    "id": "rev_jeans_3",
+    "productId": "prod_high_waist_jeans",
+    "userId": "user_demo_12",
+    "userName": "Lisa Garcia",
+    "rating": 4,
+    "comment": "Very nice jeans. Good quality denim and comfortable fit. The only minor issue is they run slightly small, so I'd recommend sizing up.",
+    "createdAt": {
+      "seconds": 1705104000,
+      "nanoseconds": 0
+    },
+    "updatedAt": {
+      "seconds": 1705104000,
+      "nanoseconds": 0
+    }
+  },
+  {
+    "id": "rev_jeans_4",
+    "productId": "prod_high_waist_jeans",
+    "userId": "user_demo_13",
+    "userName": "Maria Rodriguez",
+    "rating": 5,
+    "comment": "Perfect jeans! The high waist is so flattering and the material is stretchy and comfortable. I got size 30 and it fits perfectly!",
+    "createdAt": {
+      "seconds": 1705190400,
+      "nanoseconds": 0
+    },
+    "updatedAt": {
+      "seconds": 1705190400,
+      "nanoseconds": 0
+    }
+  },
+  {
+    "id": "rev_jeans_5",
+    "productId": "prod_high_waist_jeans",
+    "userId": "user_demo_14",
+    "userName": "Patricia Martinez",
+    "rating": 4,
+    "comment": "Great jeans! Good quality and comfortable. The fit is nice but could be slightly more fitted. Overall happy with purchase.",
+    "createdAt": {
+      "seconds": 1705276800,
+      "nanoseconds": 0
+    },
+    "updatedAt": {
+      "seconds": 1705276800,
+      "nanoseconds": 0
+    }
+  },
+  {
+    "id": "rev_boots_1",
+    "productId": "prod_leather_ankle_boots",
+    "userId": "user_demo_15",
+    "userName": "Linda Thompson",
+    "rating": 5,
+    "comment": "Perfect boots! The leather quality is excellent and they're very comfortable. The heel height is just right. Great for everyday wear!",
+    "createdAt": {
+      "seconds": 1705363200,
+      "nanoseconds": 0
+    },
+    "updatedAt": {
+      "seconds": 1705363200,
+      "nanoseconds": 0
+    }
+  },
+  {
+    "id": "rev_boots_2",
+    "productId": "prod_leather_ankle_boots",
+    "userId": "user_demo_16",
+    "userName": "Barbara White",
+    "rating": 4,
+    "comment": "Nice boots, good quality leather. The design is stylish and they fit well. Minor issue with the sole but overall happy with purchase.",
+    "createdAt": {
+      "seconds": 1705449600,
+      "nanoseconds": 0
+    },
+    "updatedAt": {
+      "seconds": 1705449600,
+      "nanoseconds": 0
+    }
+  },
+  {
+    "id": "rev_boots_3",
+    "productId": "prod_leather_ankle_boots",
+    "userId": "user_demo_17",
+    "userName": "Elizabeth Harris",
+    "rating": 5,
+    "comment": "Excellent boots! Very comfortable and stylish. The brown color is beautiful. Perfect for fall and winter. Highly recommend!",
+    "createdAt": {
+      "seconds": 1705536000,
+      "nanoseconds": 0
+    },
+    "updatedAt": {
+      "seconds": 1705536000,
+      "nanoseconds": 0
+    }
+  },
+  {
+    "id": "rev_boots_4",
+    "productId": "prod_leather_ankle_boots",
+    "userId": "user_demo_18",
+    "userName": "Susan Clark",
+    "rating": 4,
+    "comment": "Good quality boots. They're comfortable and look great. The only thing is they took a few days to break in, but now they're perfect!",
+    "createdAt": {
+      "seconds": 1705622400,
+      "nanoseconds": 0
+    },
+    "updatedAt": {
+      "seconds": 1705622400,
+      "nanoseconds": 0
+    }
+  },
+  {
+    "id": "rev_handbag_1",
+    "productId": "prod_designer_handbag",
+    "userId": "user_demo_19",
+    "userName": "Karen Lewis",
+    "rating": 5,
+    "comment": "Beautiful handbag! The leather quality is premium and it's very spacious. Perfect for everyday use. Great value for money!",
+    "createdAt": {
+      "seconds": 1705708800,
+      "nanoseconds": 0
+    },
+    "updatedAt": {
+      "seconds": 1705708800,
+      "nanoseconds": 0
+    }
+  },
+  {
+    "id": "rev_handbag_2",
+    "productId": "prod_designer_handbag",
+    "userId": "user_demo_20",
+    "userName": "Nancy Walker",
+    "rating": 5,
+    "comment": "Excellent handbag! The design is elegant and it holds everything I need. The compartments are well-organized. Highly satisfied!",
+    "createdAt": {
+      "seconds": 1705795200,
+      "nanoseconds": 0
+    },
+    "updatedAt": {
+      "seconds": 1705795200,
+      "nanoseconds": 0
+    }
+  },
+  {
+    "id": "rev_handbag_3",
+    "productId": "prod_designer_handbag",
+    "userId": "user_demo_21",
+    "userName": "Betty Hall",
+    "rating": 4,
+    "comment": "Nice handbag, good quality leather. The design is stylish and it's quite spacious. Minor issue with the strap length but overall happy.",
+    "createdAt": {
+      "seconds": 1705881600,
+      "nanoseconds": 0
+    },
+    "updatedAt": {
+      "seconds": 1705881600,
+      "nanoseconds": 0
+    }
+  },
+  {
+    "id": "rev_handbag_4",
+    "productId": "prod_designer_handbag",
+    "userId": "user_demo_22",
+    "userName": "Helen Allen",
+    "rating": 5,
+    "comment": "Perfect handbag! The quality is outstanding and it's so practical. I got the black color and it goes with everything. Love it!",
+    "createdAt": {
+      "seconds": 1705968000,
+      "nanoseconds": 0
+    },
+    "updatedAt": {
+      "seconds": 1705968000,
+      "nanoseconds": 0
+    }
+  },
+  {
+    "id": "rev_midi_1",
+    "productId": "prod_midi_dress",
+    "userId": "user_demo_23",
+    "userName": "Sandra Young",
+    "rating": 5,
+    "comment": "Beautiful midi dress! The fit is perfect and the fabric is high quality. Perfect for office or casual occasions. Highly recommend!",
+    "createdAt": {
+      "seconds": 1706054400,
+      "nanoseconds": 0
+    },
+    "updatedAt": {
+      "seconds": 1706054400,
+      "nanoseconds": 0
+    }
+  },
+  {
+    "id": "rev_midi_2",
+    "productId": "prod_midi_dress",
+    "userId": "user_demo_24",
+    "userName": "Donna King",
+    "rating": 4,
+    "comment": "Very nice dress. Good quality and comfortable. The length is perfect. Would recommend to others!",
+    "createdAt": {
+      "seconds": 1706140800,
+      "nanoseconds": 0
+    },
+    "updatedAt": {
+      "seconds": 1706140800,
+      "nanoseconds": 0
+    }
+  },
+  {
+    "id": "rev_midi_3",
+    "productId": "prod_midi_dress",
+    "userId": "user_demo_25",
+    "userName": "Carol Wright",
+    "rating": 5,
+    "comment": "Excellent dress! The silhouette is flattering and the material feels premium. I've worn it multiple times and it still looks great!",
+    "createdAt": {
+      "seconds": 1706227200,
+      "nanoseconds": 0
+    },
+    "updatedAt": {
+      "seconds": 1706227200,
+      "nanoseconds": 0
+    }
+  },
+  {
+    "id": "rev_tshirt_1",
+    "productId": "prod_casual_t_shirt",
+    "userId": "user_demo_26",
+    "userName": "Ruth Lopez",
+    "rating": 5,
+    "comment": "Perfect basic t-shirt! Soft cotton, comfortable fit, and great price. I bought multiple colors. Highly recommend!",
+    "createdAt": {
+      "seconds": 1706313600,
+      "nanoseconds": 0
+    },
+    "updatedAt": {
+      "seconds": 1706313600,
+      "nanoseconds": 0
+    }
+  },
+  {
+    "id": "rev_tshirt_2",
+    "productId": "prod_casual_t_shirt",
+    "userId": "user_demo_27",
+    "userName": "Sharon Hill",
+    "rating": 5,
+    "comment": "Great quality t-shirt! The fabric is soft and it holds up well after washing. Perfect for everyday wear. Great value!",
+    "createdAt": {
+      "seconds": 1706400000,
+      "nanoseconds": 0
+    },
+    "updatedAt": {
+      "seconds": 1706400000,
+      "nanoseconds": 0
+    }
+  },
+  {
+    "id": "rev_tshirt_3",
+    "productId": "prod_casual_t_shirt",
+    "userId": "user_demo_28",
+    "userName": "Michelle Green",
+    "rating": 4,
+    "comment": "Nice t-shirt, good quality cotton. The fit is comfortable. The only thing is the colors are slightly different from the photos, but still nice.",
+    "createdAt": {
+      "seconds": 1706486400,
+      "nanoseconds": 0
+    },
+    "updatedAt": {
+      "seconds": 1706486400,
+      "nanoseconds": 0
+    }
+  },
+  {
+    "id": "rev_tshirt_4",
+    "productId": "prod_casual_t_shirt",
+    "userId": "user_demo_29",
+    "userName": "Laura Adams",
+    "rating": 5,
+    "comment": "Excellent basic tee! Soft, comfortable, and true to size. I got the white and black colors. Perfect for layering!",
+    "createdAt": {
+      "seconds": 1706572800,
+      "nanoseconds": 0
+    },
+    "updatedAt": {
+      "seconds": 1706572800,
+      "nanoseconds": 0
+    }
+  },
+  {
+    "id": "rev_pants_1",
+    "productId": "prod_wide_leg_pants",
+    "userId": "user_demo_30",
+    "userName": "Kimberly Baker",
+    "rating": 5,
+    "comment": "Perfect wide leg trousers! So comfortable and flattering. The high waist is great and the fabric is premium. Love them!",
+    "createdAt": {
+      "seconds": 1706659200,
+      "nanoseconds": 0
+    },
+    "updatedAt": {
+      "seconds": 1706659200,
+      "nanoseconds": 0
+    }
+  },
+  {
+    "id": "rev_pants_2",
+    "productId": "prod_wide_leg_pants",
+    "userId": "user_demo_31",
+    "userName": "Deborah Nelson",
+    "rating": 4,
+    "comment": "Very nice trousers. Good quality fabric and comfortable fit. Perfect for office wear. Would recommend!",
+    "createdAt": {
+      "seconds": 1706745600,
+      "nanoseconds": 0
+    },
+    "updatedAt": {
+      "seconds": 1706745600,
+      "nanoseconds": 0
+    }
+  },
+  {
+    "id": "rev_pants_3",
+    "productId": "prod_wide_leg_pants",
+    "userId": "user_demo_32",
+    "userName": "Lisa Carter",
+    "rating": 5,
+    "comment": "Excellent trousers! The wide leg style is so flattering and they're very comfortable. Perfect for both office and casual wear!",
+    "createdAt": {
+      "seconds": 1706832000,
+      "nanoseconds": 0
+    },
+    "updatedAt": {
+      "seconds": 1706832000,
+      "nanoseconds": 0
+    }
+  },
+  {
+    "id": "rev_sneakers_1",
+    "productId": "prod_sneakers",
+    "userId": "user_demo_33",
+    "userName": "Nancy Mitchell",
+    "rating": 5,
+    "comment": "Perfect white sneakers! Comfortable, stylish, and great quality. I wear them almost every day. Highly recommend!",
+    "createdAt": {
+      "seconds": 1706918400,
+      "nanoseconds": 0
+    },
+    "updatedAt": {
+      "seconds": 1706918400,
+      "nanoseconds": 0
+    }
+  },
+  {
+    "id": "rev_sneakers_2",
+    "productId": "prod_sneakers",
+    "userId": "user_demo_34",
+    "userName": "Karen Perez",
+    "rating": 5,
+    "comment": "Great sneakers! Very comfortable and they look great with everything. The quality is excellent. Will buy again!",
+    "createdAt": {
+      "seconds": 1707004800,
+      "nanoseconds": 0
+    },
+    "updatedAt": {
+      "seconds": 1707004800,
+      "nanoseconds": 0
+    }
+  },
+  {
+    "id": "rev_sneakers_3",
+    "productId": "prod_sneakers",
+    "userId": "user_demo_35",
+    "userName": "Betty Roberts",
+    "rating": 4,
+    "comment": "Nice sneakers, good quality. They're comfortable but took a day to break in. Overall happy with purchase.",
+    "createdAt": {
+      "seconds": 1707091200,
+      "nanoseconds": 0
+    },
+    "updatedAt": {
+      "seconds": 1707091200,
+      "nanoseconds": 0
+    }
+  },
+  {
+    "id": "rev_sneakers_4",
+    "productId": "prod_sneakers",
+    "userId": "user_demo_36",
+    "userName": "Helen Turner",
+    "rating": 5,
+    "comment": "Excellent sneakers! The white color stays clean and they're so comfortable. Perfect for everyday wear. Love them!",
+    "createdAt": {
+      "seconds": 1707177600,
+      "nanoseconds": 0
+    },
+    "updatedAt": {
+      "seconds": 1707177600,
+      "nanoseconds": 0
+    }
+  },
+  {
+    "id": "rev_sunglasses_1",
+    "productId": "prod_sunglasses",
+    "userId": "user_demo_37",
+    "userName": "Sandra Phillips",
+    "rating": 5,
+    "comment": "Perfect sunglasses! Great UV protection and stylish design. The frames are sturdy and they fit well. Highly recommend!",
+    "createdAt": {
+      "seconds": 1707264000,
+      "nanoseconds": 0
+    },
+    "updatedAt": {
+      "seconds": 1707264000,
+      "nanoseconds": 0
+    }
+  },
+  {
+    "id": "rev_sunglasses_2",
+    "productId": "prod_sunglasses",
+    "userId": "user_demo_38",
+    "userName": "Donna Campbell",
+    "rating": 4,
+    "comment": "Nice sunglasses, good quality. The design is stylish and they provide good sun protection. Happy with purchase!",
+    "createdAt": {
+      "seconds": 1707350400,
+      "nanoseconds": 0
+    },
+    "updatedAt": {
+      "seconds": 1707350400,
+      "nanoseconds": 0
+    }
+  },
+  {
+    "id": "rev_sunglasses_3",
+    "productId": "prod_sunglasses",
+    "userId": "user_demo_39",
+    "userName": "Carol Parker",
+    "rating": 5,
+    "comment": "Excellent sunglasses! The quality is great and they look amazing. I got the black frames and they're perfect!",
+    "createdAt": {
+      "seconds": 1707436800,
+      "nanoseconds": 0
+    },
+    "updatedAt": {
+      "seconds": 1707436800,
+      "nanoseconds": 0
+    }
+  },
+  {
+    "id": "rev_wrap_1",
+    "productId": "prod_wrap_dress",
+    "userId": "user_demo_40",
+    "userName": "Ruth Evans",
+    "rating": 5,
+    "comment": "Beautiful wrap dress! The floral print is gorgeous and the fit is flattering. Perfect for spring and summer. Love it!",
+    "createdAt": {
+      "seconds": 1707523200,
+      "nanoseconds": 0
+    },
+    "updatedAt": {
+      "seconds": 1707523200,
+      "nanoseconds": 0
+    }
+  },
+  {
+    "id": "rev_wrap_2",
+    "productId": "prod_wrap_dress",
+    "userId": "user_demo_41",
+    "userName": "Sharon Edwards",
+    "rating": 4,
+    "comment": "Very nice dress. Good quality and comfortable. The wrap style is flattering. Would recommend to others!",
+    "createdAt": {
+      "seconds": 1707609600,
+      "nanoseconds": 0
+    },
+    "updatedAt": {
+      "seconds": 1707609600,
+      "nanoseconds": 0
+    }
+  },
+  {
+    "id": "rev_wrap_3",
+    "productId": "prod_wrap_dress",
+    "userId": "user_demo_42",
+    "userName": "Michelle Collins",
+    "rating": 5,
+    "comment": "Perfect dress! The wrap style is so flattering and the fabric is beautiful. I've received many compliments. Highly recommend!",
+    "createdAt": {
+      "seconds": 1707696000,
+      "nanoseconds": 0
+    },
+    "updatedAt": {
+      "seconds": 1707696000,
+      "nanoseconds": 0
+    }
+  },
+  {
+    "id": "rev_denim_1",
+    "productId": "prod_denim_jacket",
+    "userId": "user_demo_43",
+    "userName": "Laura Stewart",
+    "rating": 5,
+    "comment": "Perfect denim jacket! Classic style and great quality. It fits well and is perfect for layering. Love it!",
+    "createdAt": {
+      "seconds": 1707782400,
+      "nanoseconds": 0
+    },
+    "updatedAt": {
+      "seconds": 1707782400,
+      "nanoseconds": 0
+    }
+  },
+  {
+    "id": "rev_denim_2",
+    "productId": "prod_denim_jacket",
+    "userId": "user_demo_44",
+    "userName": "Kimberly Sanchez",
+    "rating": 4,
+    "comment": "Nice denim jacket, good quality. The fit is comfortable and it's perfect for casual wear. Would recommend!",
+    "createdAt": {
+      "seconds": 1707868800,
+      "nanoseconds": 0
+    },
+    "updatedAt": {
+      "seconds": 1707868800,
+      "nanoseconds": 0
+    }
+  },
+  {
+    "id": "rev_denim_3",
+    "productId": "prod_denim_jacket",
+    "userId": "user_demo_45",
+    "userName": "Deborah Morris",
+    "rating": 5,
+    "comment": "Excellent jacket! The denim quality is great and it's so versatile. Perfect for spring and fall. Highly recommend!",
+    "createdAt": {
+      "seconds": 1707955200,
+      "nanoseconds": 0
+    },
+    "updatedAt": {
+      "seconds": 1707955200,
+      "nanoseconds": 0
+    }
+  },
+  {
+    "id": "rev_skirt_1",
+    "productId": "prod_pleated_skirt",
+    "userId": "user_demo_46",
+    "userName": "Lisa Rogers",
+    "rating": 5,
+    "comment": "Beautiful pleated skirt! The quality is excellent and it's so elegant. Perfect for office or special occasions. Love it!",
+    "createdAt": {
+      "seconds": 1708041600,
+      "nanoseconds": 0
+    },
+    "updatedAt": {
+      "seconds": 1708041600,
+      "nanoseconds": 0
+    }
+  },
+  {
+    "id": "rev_skirt_2",
+    "productId": "prod_pleated_skirt",
+    "userId": "user_demo_47",
+    "userName": "Nancy Reed",
+    "rating": 4,
+    "comment": "Very nice skirt. Good quality and comfortable. The pleats are well-made. Would recommend to others!",
+    "createdAt": {
+      "seconds": 1708128000,
+      "nanoseconds": 0
+    },
+    "updatedAt": {
+      "seconds": 1708128000,
+      "nanoseconds": 0
+    }
+  },
+  {
+    "id": "rev_skirt_3",
+    "productId": "prod_pleated_skirt",
+    "userId": "user_demo_48",
+    "userName": "Karen Cook",
+    "rating": 5,
+    "comment": "Perfect skirt! The pleated design is elegant and the fit is flattering. I got the navy color and it's beautiful!",
+    "createdAt": {
+      "seconds": 1708214400,
+      "nanoseconds": 0
+    },
+    "updatedAt": {
+      "seconds": 1708214400,
+      "nanoseconds": 0
+    }
+  },
+  {
+    "id": "rev_heels_1",
+    "productId": "prod_heels",
+    "userId": "user_demo_49",
+    "userName": "Betty Morgan",
+    "rating": 5,
+    "comment": "Perfect high heels! Very comfortable for heels and they look elegant. Perfect for special occasions. Highly recommend!",
+    "createdAt": {
+      "seconds": 1708300800,
+      "nanoseconds": 0
+    },
+    "updatedAt": {
+      "seconds": 1708300800,
+      "nanoseconds": 0
+    }
+  },
+  {
+    "id": "rev_heels_2",
+    "productId": "prod_heels",
+    "userId": "user_demo_50",
+    "userName": "Helen Bell",
+    "rating": 4,
+    "comment": "Nice heels, good quality. They're comfortable for the height. The only thing is they're slightly narrow, but overall happy.",
+    "createdAt": {
+      "seconds": 1708387200,
+      "nanoseconds": 0
+    },
+    "updatedAt": {
+      "seconds": 1708387200,
+      "nanoseconds": 0
+    }
+  },
+  {
+    "id": "rev_heels_3",
+    "productId": "prod_heels",
+    "userId": "user_demo_51",
+    "userName": "Sandra Murphy",
+    "rating": 5,
+    "comment": "Excellent heels! The quality is great and they're surprisingly comfortable. I got the black color and they go with everything!",
+    "createdAt": {
+      "seconds": 1708473600,
+      "nanoseconds": 0
+    },
+    "updatedAt": {
+      "seconds": 1708473600,
+      "nanoseconds": 0
+    }
+  },
+  {
+    "id": "rev_heels_4",
+    "productId": "prod_heels",
+    "userId": "user_demo_52",
+    "userName": "Donna Bailey",
+    "rating": 4,
+    "comment": "Very nice heels. Good quality and stylish. They took a bit to break in but now they're comfortable. Would recommend!",
+    "createdAt": {
+      "seconds": 1708560000,
+      "nanoseconds": 0
+    },
+    "updatedAt": {
+      "seconds": 1708560000,
+      "nanoseconds": 0
+    }
+  },
+  {
+    "id": "rev_watch_1",
+    "productId": "prod_watch",
+    "userId": "user_demo_53",
+    "userName": "Carol Rivera",
+    "rating": 5,
+    "comment": "Beautiful watch! The leather strap is high quality and it looks elegant. Perfect accessory for any outfit. Love it!",
+    "createdAt": {
+      "seconds": 1708646400,
+      "nanoseconds": 0
+    },
+    "updatedAt": {
+      "seconds": 1708646400,
+      "nanoseconds": 0
+    }
+  },
+  {
+    "id": "rev_watch_2",
+    "productId": "prod_watch",
+    "userId": "user_demo_54",
+    "userName": "Ruth Cooper",
+    "rating": 4,
+    "comment": "Nice watch, good quality. The design is stylish and it's water resistant. Happy with purchase!",
+    "createdAt": {
+      "seconds": 1708732800,
+      "nanoseconds": 0
+    },
+    "updatedAt": {
+      "seconds": 1708732800,
+      "nanoseconds": 0
+    }
+  },
+  {
+    "id": "rev_watch_3",
+    "productId": "prod_watch",
+    "userId": "user_demo_55",
+    "userName": "Sharon Richardson",
+    "rating": 5,
+    "comment": "Perfect watch! The quality is excellent and it's so versatile. I got the silver color and it matches everything. Highly recommend!",
+    "createdAt": {
+      "seconds": 1708819200,
+      "nanoseconds": 0
+    },
+    "updatedAt": {
+      "seconds": 1708819200,
+      "nanoseconds": 0
+    }
+  },
+  {
+    "id": "rev_bodycon_1",
+    "productId": "prod_bodycon_dress",
+    "userId": "user_demo_56",
+    "userName": "Michelle Cox",
+    "rating": 5,
+    "comment": "Perfect party dress! The fit is amazing and the fabric has great stretch. I've worn it to multiple events. Love it!",
+    "createdAt": {
+      "seconds": 1708905600,
+      "nanoseconds": 0
+    },
+    "updatedAt": {
+      "seconds": 1708905600,
+      "nanoseconds": 0
+    }
+  },
+  {
+    "id": "rev_bodycon_2",
+    "productId": "prod_bodycon_dress",
+    "userId": "user_demo_57",
+    "userName": "Laura Howard",
+    "rating": 4,
+    "comment": "Very nice dress. Good quality and flattering fit. Perfect for parties. Would recommend to others!",
+    "createdAt": {
+      "seconds": 1708992000,
+      "nanoseconds": 0
+    },
+    "updatedAt": {
+      "seconds": 1708992000,
+      "nanoseconds": 0
+    }
+  },
+  {
+    "id": "rev_bodycon_3",
+    "productId": "prod_bodycon_dress",
+    "userId": "user_demo_58",
+    "userName": "Kimberly Ward",
+    "rating": 5,
+    "comment": "Excellent dress! The bodycon fit is perfect and it's so comfortable. I've received many compliments. Highly recommend!",
+    "createdAt": {
+      "seconds": 1709078400,
+      "nanoseconds": 0
+    },
+    "updatedAt": {
+      "seconds": 1709078400,
+      "nanoseconds": 0
+    }
+  },
+  {
+    "id": "rev_cardigan_1",
+    "productId": "prod_cardigan",
+    "userId": "user_demo_59",
+    "userName": "Deborah Torres",
+    "rating": 5,
+    "comment": "Perfect cardigan! So cozy and warm. The quality is excellent and it's perfect for layering. Love it!",
+    "createdAt": {
+      "seconds": 1709164800,
+      "nanoseconds": 0
+    },
+    "updatedAt": {
+      "seconds": 1709164800,
+      "nanoseconds": 0
+    }
+  },
+  {
+    "id": "rev_cardigan_2",
+    "productId": "prod_cardigan",
+    "userId": "user_demo_60",
+    "userName": "Lisa Peterson",
+    "rating": 4,
+    "comment": "Very nice cardigan. Good quality yarn and comfortable. Perfect for cool weather. Would recommend!",
+    "createdAt": {
+      "seconds": 1709251200,
+      "nanoseconds": 0
+    },
+    "updatedAt": {
+      "seconds": 1709251200,
+      "nanoseconds": 0
+    }
+  },
+  {
+    "id": "rev_cardigan_3",
+    "productId": "prod_cardigan",
+    "userId": "user_demo_61",
+    "userName": "Nancy Gray",
+    "rating": 5,
+    "comment": "Excellent cardigan! So soft and warm. The beige color is beautiful and it goes with everything. Highly recommend!",
+    "createdAt": {
+      "seconds": 1709337600,
+      "nanoseconds": 0
+    },
+    "updatedAt": {
+      "seconds": 1709337600,
+      "nanoseconds": 0
+    }
+  },
+  {
+    "id": "rev_cardigan_4",
+    "productId": "prod_cardigan",
+    "userId": "user_demo_62",
+    "userName": "Karen Ramirez",
+    "rating": 4,
+    "comment": "Nice cardigan, good quality. It's warm and comfortable. The only thing is it's slightly oversized, but still nice.",
+    "createdAt": {
+      "seconds": 1709424000,
+      "nanoseconds": 0
+    },
+    "updatedAt": {
+      "seconds": 1709424000,
+      "nanoseconds": 0
+    }
+  },
+  {
+    "id": "rev_cargo_1",
+    "productId": "prod_cargo_pants",
+    "userId": "user_demo_63",
+    "userName": "Betty James",
+    "rating": 5,
+    "comment": "Perfect cargo pants! So comfortable and stylish. The pockets are practical and the fit is great. Love them!",
+    "createdAt": {
+      "seconds": 1709510400,
+      "nanoseconds": 0
+    },
+    "updatedAt": {
+      "seconds": 1709510400,
+      "nanoseconds": 0
+    }
+  },
+  {
+    "id": "rev_cargo_2",
+    "productId": "prod_cargo_pants",
+    "userId": "user_demo_64",
+    "userName": "Helen Watson",
+    "rating": 4,
+    "comment": "Very nice pants. Good quality fabric and comfortable fit. Perfect for casual wear. Would recommend!",
+    "createdAt": {
+      "seconds": 1709596800,
+      "nanoseconds": 0
+    },
+    "updatedAt": {
+      "seconds": 1709596800,
+      "nanoseconds": 0
+    }
+  },
+  {
+    "id": "rev_cargo_3",
+    "productId": "prod_cargo_pants",
+    "userId": "user_demo_65",
+    "userName": "Sandra Brooks",
+    "rating": 5,
+    "comment": "Excellent cargo pants! The quality is great and they're so practical. Perfect for everyday casual wear. Highly recommend!",
+    "createdAt": {
+      "seconds": 1709683200,
+      "nanoseconds": 0
+    },
+    "updatedAt": {
+      "seconds": 1709683200,
+      "nanoseconds": 0
+    }
+  },
+  {
+    "id": "rev_sandals_1",
+    "productId": "prod_flat_sandals",
+    "userId": "user_demo_66",
+    "userName": "Donna Kelly",
+    "rating": 5,
+    "comment": "Perfect sandals! So comfortable and stylish. The cushioned sole makes them great for all-day wear. Love them!",
+    "createdAt": {
+      "seconds": 1709769600,
+      "nanoseconds": 0
+    },
+    "updatedAt": {
+      "seconds": 1709769600,
+      "nanoseconds": 0
+    }
+  },
+  {
+    "id": "rev_sandals_2",
+    "productId": "prod_flat_sandals",
+    "userId": "user_demo_67",
+    "userName": "Carol Sanders",
+    "rating": 4,
+    "comment": "Nice sandals, good quality. They're comfortable but took a day to break in. Overall happy with purchase.",
+    "createdAt": {
+      "seconds": 1709856000,
+      "nanoseconds": 0
+    },
+    "updatedAt": {
+      "seconds": 1709856000,
+      "nanoseconds": 0
+    }
+  },
+  {
+    "id": "rev_sandals_3",
+    "productId": "prod_flat_sandals",
+    "userId": "user_demo_68",
+    "userName": "Ruth Price",
+    "rating": 5,
+    "comment": "Excellent sandals! Very comfortable and perfect for summer. The tan color is beautiful. Highly recommend!",
+    "createdAt": {
+      "seconds": 1709942400,
+      "nanoseconds": 0
+    },
+    "updatedAt": {
+      "seconds": 1709942400,
+      "nanoseconds": 0
+    }
+  },
+  {
+    "id": "rev_scarf_1",
+    "productId": "prod_scarf",
+    "userId": "user_demo_69",
+    "userName": "Sharon Bennett",
+    "rating": 5,
+    "comment": "Beautiful silk scarf! The patterns are gorgeous and the quality is luxurious. Perfect accessory for any outfit. Love it!",
+    "createdAt": {
+      "seconds": 1710028800,
+      "nanoseconds": 0
+    },
+    "updatedAt": {
+      "seconds": 1710028800,
+      "nanoseconds": 0
+    }
+  },
+  {
+    "id": "rev_scarf_2",
+    "productId": "prod_scarf",
+    "userId": "user_demo_70",
+    "userName": "Michelle Wood",
+    "rating": 4,
+    "comment": "Very nice scarf. Good quality silk and beautiful patterns. Perfect for adding style to any outfit. Would recommend!",
+    "createdAt": {
+      "seconds": 1710115200,
+      "nanoseconds": 0
+    },
+    "updatedAt": {
+      "seconds": 1710115200,
+      "nanoseconds": 0
+    }
+  },
+  {
+    "id": "rev_scarf_3",
+    "productId": "prod_scarf",
+    "userId": "user_demo_71",
+    "userName": "Laura Barnes",
+    "rating": 5,
+    "comment": "Perfect scarf! The silk quality is excellent and the colors are vibrant. I got the blue color and it's stunning!",
+    "createdAt": {
+      "seconds": 1710201600,
+      "nanoseconds": 0
+    },
+    "updatedAt": {
+      "seconds": 1710201600,
+      "nanoseconds": 0
+    }
+  },
+  {
+    "id": "rev_shirt_dress_1",
+    "productId": "prod_shirt_dress",
+    "userId": "user_demo_72",
+    "userName": "Kimberly Ross",
+    "rating": 5,
+    "comment": "Perfect shirt dress! So versatile and comfortable. The belt is a nice touch. Perfect for office or casual wear. Love it!",
+    "createdAt": {
+      "seconds": 1710288000,
+      "nanoseconds": 0
+    },
+    "updatedAt": {
+      "seconds": 1710288000,
+      "nanoseconds": 0
+    }
+  },
+  {
+    "id": "rev_shirt_dress_2",
+    "productId": "prod_shirt_dress",
+    "userId": "user_demo_73",
+    "userName": "Deborah Henderson",
+    "rating": 4,
+    "comment": "Very nice dress. Good quality and comfortable. The fit is flattering. Would recommend to others!",
+    "createdAt": {
+      "seconds": 1710374400,
+      "nanoseconds": 0
+    },
+    "updatedAt": {
+      "seconds": 1710374400,
+      "nanoseconds": 0
+    }
+  },
+  {
+    "id": "rev_shirt_dress_3",
+    "productId": "prod_shirt_dress",
+    "userId": "user_demo_74",
+    "userName": "Lisa Coleman",
+    "rating": 5,
+    "comment": "Excellent dress! The shirt style is so versatile and it's perfect for layering. I've worn it multiple ways. Highly recommend!",
+    "createdAt": {
+      "seconds": 1710460800,
+      "nanoseconds": 0
+    },
+    "updatedAt": {
+      "seconds": 1710460800,
+      "nanoseconds": 0
+    }
+  },
+  {
+    "id": "rev_tank_1",
+    "productId": "prod_tank_top",
+    "userId": "user_demo_75",
+    "userName": "Nancy Jenkins",
+    "rating": 5,
+    "comment": "Perfect basic tank top! Soft cotton, comfortable fit, and great price. I bought multiple colors. Highly recommend!",
+    "createdAt": {
+      "seconds": 1710547200,
+      "nanoseconds": 0
+    },
+    "updatedAt": {
+      "seconds": 1710547200,
+      "nanoseconds": 0
+    }
+  },
+  {
+    "id": "rev_tank_2",
+    "productId": "prod_tank_top",
+    "userId": "user_demo_76",
+    "userName": "Karen Perry",
+    "rating": 5,
+    "comment": "Great quality tank top! The fabric is soft and it holds up well after washing. Perfect for layering or wearing alone. Great value!",
+    "createdAt": {
+      "seconds": 1710633600,
+      "nanoseconds": 0
+    },
+    "updatedAt": {
+      "seconds": 1710633600,
+      "nanoseconds": 0
+    }
+  },
+  {
+    "id": "rev_tank_3",
+    "productId": "prod_tank_top",
+    "userId": "user_demo_77",
+    "userName": "Betty Powell",
+    "rating": 4,
+    "comment": "Nice tank top, good quality cotton. The fit is comfortable. The only thing is the colors are slightly different from photos, but still nice.",
+    "createdAt": {
+      "seconds": 1710720000,
+      "nanoseconds": 0
+    },
+    "updatedAt": {
+      "seconds": 1710720000,
+      "nanoseconds": 0
+    }
+  },
+  {
+    "id": "rev_tank_4",
+    "productId": "prod_tank_top",
+    "userId": "user_demo_78",
+    "userName": "Helen Long",
+    "rating": 5,
+    "comment": "Excellent basic tank! Soft, comfortable, and true to size. I got white, black, and gray. Perfect for layering!",
+    "createdAt": {
+      "seconds": 1710806400,
+      "nanoseconds": 0
+    },
+    "updatedAt": {
+      "seconds": 1710806400,
+      "nanoseconds": 0
+    }
+  },
+  {
+    "id": "rev_shorts_1",
+    "productId": "prod_shorts",
+    "userId": "user_demo_79",
+    "userName": "Sandra Patterson",
+    "rating": 5,
+    "comment": "Perfect shorts! So comfortable and flattering. The high waist is great and they're perfect for summer. Love them!",
+    "createdAt": {
+      "seconds": 1710892800,
+      "nanoseconds": 0
+    },
+    "updatedAt": {
+      "seconds": 1710892800,
+      "nanoseconds": 0
+    }
+  },
+  {
+    "id": "rev_shorts_2",
+    "productId": "prod_shorts",
+    "userId": "user_demo_80",
+    "userName": "Donna Hughes",
+    "rating": 4,
+    "comment": "Very nice shorts. Good quality fabric and comfortable fit. Perfect for summer. Would recommend!",
+    "createdAt": {
+      "seconds": 1710979200,
+      "nanoseconds": 0
+    },
+    "updatedAt": {
+      "seconds": 1710979200,
+      "nanoseconds": 0
+    }
+  },
+  {
+    "id": "rev_shorts_3",
+    "productId": "prod_shorts",
+    "userId": "user_demo_81",
+    "userName": "Carol Flores",
+    "rating": 5,
+    "comment": "Excellent shorts! The high waist is so flattering and they're very comfortable. Perfect for hot weather. Highly recommend!",
+    "createdAt": {
+      "seconds": 1711065600,
+      "nanoseconds": 0
+    },
+    "updatedAt": {
+      "seconds": 1711065600,
+      "nanoseconds": 0
+    }
+  },
+  {
+    "id": "rev_loafers_1",
+    "productId": "prod_loafers",
+    "userId": "user_demo_82",
+    "userName": "Ruth Washington",
+    "rating": 5,
+    "comment": "Perfect loafers! So comfortable and stylish. The leather quality is excellent. Perfect for office or casual wear. Love them!",
+    "createdAt": {
+      "seconds": 1711152000,
+      "nanoseconds": 0
+    },
+    "updatedAt": {
+      "seconds": 1711152000,
+      "nanoseconds": 0
+    }
+  },
+  {
+    "id": "rev_loafers_2",
+    "productId": "prod_loafers",
+    "userId": "user_demo_83",
+    "userName": "Sharon Butler",
+    "rating": 4,
+    "comment": "Nice loafers, good quality leather. They're comfortable but took a day to break in. Overall happy with purchase.",
+    "createdAt": {
+      "seconds": 1711238400,
+      "nanoseconds": 0
+    },
+    "updatedAt": {
+      "seconds": 1711238400,
+      "nanoseconds": 0
+    }
+  },
+  {
+    "id": "rev_loafers_3",
+    "productId": "prod_loafers",
+    "userId": "user_demo_84",
+    "userName": "Michelle Simmons",
+    "rating": 5,
+    "comment": "Excellent loafers! The quality is great and they're so versatile. I got the brown color and they go with everything!",
+    "createdAt": {
+      "seconds": 1711324800,
+      "nanoseconds": 0
+    },
+    "updatedAt": {
+      "seconds": 1711324800,
+      "nanoseconds": 0
+    }
+  },
+  {
+    "id": "rev_loafers_4",
+    "productId": "prod_loafers",
+    "userId": "user_demo_85",
+    "userName": "Laura Foster",
+    "rating": 4,
+    "comment": "Very nice loafers. Good quality and comfortable. The design is classic. Would recommend to others!",
+    "createdAt": {
+      "seconds": 1711411200,
+      "nanoseconds": 0
+    },
+    "updatedAt": {
+      "seconds": 1711411200,
+      "nanoseconds": 0
+    }
+  },
+  {
+    "id": "rev_necklace_1",
+    "productId": "prod_necklace",
+    "userId": "user_demo_86",
+    "userName": "Kimberly Gonzales",
+    "rating": 5,
+    "comment": "Beautiful necklace! The gold color is stunning and the pendant is elegant. Perfect accessory for special occasions. Love it!",
+    "createdAt": {
+      "seconds": 1711497600,
+      "nanoseconds": 0
+    },
+    "updatedAt": {
+      "seconds": 1711497600,
+      "nanoseconds": 0
+    }
+  },
+  {
+    "id": "rev_necklace_2",
+    "productId": "prod_necklace",
+    "userId": "user_demo_87",
+    "userName": "Deborah Bryant",
+    "rating": 5,
+    "comment": "Perfect necklace! The quality is excellent and it looks so elegant. I got the gold color and it's beautiful. Highly recommend!",
+    "createdAt": {
+      "seconds": 1711584000,
+      "nanoseconds": 0
+    },
+    "updatedAt": {
+      "seconds": 1711584000,
+      "nanoseconds": 0
+    }
+  },
+  {
+    "id": "rev_necklace_3",
+    "productId": "prod_necklace",
+    "userId": "user_demo_88",
+    "userName": "Lisa Alexander",
+    "rating": 4,
+    "comment": "Very nice necklace. Good quality and elegant design. Perfect for special occasions. Would recommend to others!",
+    "createdAt": {
+      "seconds": 1711670400,
+      "nanoseconds": 0
+    },
+    "updatedAt": {
+      "seconds": 1711670400,
+      "nanoseconds": 0
+    }
+  },
+  {
+    "id": "rev_necklace_4",
+    "productId": "prod_necklace",
+    "userId": "user_demo_89",
+    "userName": "Nancy Russell",
+    "rating": 5,
+    "comment": "Excellent necklace! The gold finish is beautiful and it's so versatile. I've worn it with many outfits. Highly recommend!",
+    "createdAt": {
+      "seconds": 1711756800,
+      "nanoseconds": 0
+    },
+    "updatedAt": {
+      "seconds": 1711756800,
+      "nanoseconds": 0
+    }
+  }
+]

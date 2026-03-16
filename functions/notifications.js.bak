@@ -1,0 +1,53 @@
+import {onDocumentCreated} from "firebase-functions/v2/firestore";
+import admin from "firebase-admin";
+
+if (!admin.apps || admin.apps.length === 0) {
+  admin.initializeApp();
+}
+
+export const sendNotification = onDocumentCreated(
+    "orders/{orderId}",
+    async (event) => {
+      const snap = event.data;
+      const context = event.params;
+      if (!snap) {
+        console.log("No data associated with the event");
+        return;
+      }
+      
+      const order = snap.data();
+      const userId = order.userId;
+
+      // Placeholder for sending a notification to the user
+      console.log(`New order ${context.orderId} created for user ${userId}. Sending notification...`);
+
+      // In a real application, you would fetch the user's FCM token
+      // and send a targeted notification using admin.messaging().sendToDevice()
+      // For example:
+      /*
+    const userDoc = await admin.firestore().collection('users').doc(userId).get();
+    const fcmToken = userDoc.data().fcmToken;
+
+    const payload = {
+      notification: {
+        title: 'New Order Placed!',
+        body: `Your order ${context.params.orderId} has been successfully placed.`,
+      },
+      data: {
+        orderId: context.params.orderId,
+        // Add any other data you want to send
+      },
+    };
+
+    return admin.messaging().sendToDevice(fcmToken, payload)
+      .then(response => {
+        console.log('Successfully sent message:', response);
+        return null;
+      })
+      .catch(error => {
+        console.log('Error sending message:', error);
+        return null;
+      });
+    */
+      return null;
+    });

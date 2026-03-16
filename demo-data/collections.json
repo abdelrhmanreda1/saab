@@ -1,0 +1,53 @@
+[
+  {
+    "id": "coll_spring_collection",
+    "name": "Spring Collection",
+    "slug": "spring-collection",
+    "description": "Fresh and vibrant designs for spring season",
+    "imageUrl": "https://images.unsplash.com/photo-1595777457583-95e059d581b8?w=800",
+    "parentCollection": null,
+    "translations": [],
+    "createdAt": {
+      "seconds": 1704067200,
+      "nanoseconds": 0
+    },
+    "updatedAt": {
+      "seconds": 1704067200,
+      "nanoseconds": 0
+    }
+  },
+  {
+    "id": "coll_elegant_evening",
+    "name": "Elegant Evening",
+    "slug": "elegant-evening",
+    "description": "Sophisticated pieces for special occasions",
+    "imageUrl": "https://images.unsplash.com/photo-1594633312681-425c7b97ccd1?w=800",
+    "parentCollection": null,
+    "translations": [],
+    "createdAt": {
+      "seconds": 1704067200,
+      "nanoseconds": 0
+    },
+    "updatedAt": {
+      "seconds": 1704067200,
+      "nanoseconds": 0
+    }
+  },
+  {
+    "id": "coll_casual_weekend",
+    "name": "Casual Weekend",
+    "slug": "casual-weekend",
+    "description": "Comfortable and stylish pieces for your weekend",
+    "imageUrl": "https://images.unsplash.com/photo-1549298916-b41d501d3772?w=800",
+    "parentCollection": null,
+    "translations": [],
+    "createdAt": {
+      "seconds": 1704067200,
+      "nanoseconds": 0
+    },
+    "updatedAt": {
+      "seconds": 1704067200,
+      "nanoseconds": 0
+    }
+  }
+]

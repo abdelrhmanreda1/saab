@@ -1,0 +1,171 @@
+[
+  {
+    "id": "XS",
+    "name": "Extra Small",
+    "code": "XS",
+    "order": 1
+  },
+  {
+    "id": "S",
+    "name": "Small",
+    "code": "S",
+    "order": 2
+  },
+  {
+    "id": "M",
+    "name": "Medium",
+    "code": "M",
+    "order": 3
+  },
+  {
+    "id": "L",
+    "name": "Large",
+    "code": "L",
+    "order": 4
+  },
+  {
+    "id": "XL",
+    "name": "Extra Large",
+    "code": "XL",
+    "order": 5
+  },
+  {
+    "id": "XXL",
+    "name": "2X Large",
+    "code": "XXL",
+    "order": 6
+  },
+  {
+    "id": "XXXL",
+    "name": "3X Large",
+    "code": "XXXL",
+    "order": 7
+  },
+  {
+    "id": "28",
+    "name": "28",
+    "code": "28",
+    "order": 8
+  },
+  {
+    "id": "30",
+    "name": "30",
+    "code": "30",
+    "order": 9
+  },
+  {
+    "id": "32",
+    "name": "32",
+    "code": "32",
+    "order": 10
+  },
+  {
+    "id": "34",
+    "name": "34",
+    "code": "34",
+    "order": 11
+  },
+  {
+    "id": "36",
+    "name": "36",
+    "code": "36",
+    "order": 12
+  },
+  {
+    "id": "38",
+    "name": "38",
+    "code": "38",
+    "order": 13
+  },
+  {
+    "id": "40",
+    "name": "40",
+    "code": "40",
+    "order": 14
+  },
+  {
+    "id": "42",
+    "name": "42",
+    "code": "42",
+    "order": 15
+  },
+  {
+    "id": "44",
+    "name": "44",
+    "code": "44",
+    "order": 16
+  },
+  {
+    "id": "46",
+    "name": "46",
+    "code": "46",
+    "order": 17
+  },
+  {
+    "id": "48",
+    "name": "48",
+    "code": "48",
+    "order": 18
+  },
+  {
+    "id": "50",
+    "name": "50",
+    "code": "50",
+    "order": 19
+  },
+  {
+    "id": "52",
+    "name": "52",
+    "code": "52",
+    "order": 20
+  },
+  {
+    "id": "5",
+    "name": "5",
+    "code": "5",
+    "order": 21
+  },
+  {
+    "id": "6",
+    "name": "6",
+    "code": "6",
+    "order": 22
+  },
+  {
+    "id": "7",
+    "name": "7",
+    "code": "7",
+    "order": 23
+  },
+  {
+    "id": "8",
+    "name": "8",
+    "code": "8",
+    "order": 24
+  },
+  {
+    "id": "9",
+    "name": "9",
+    "code": "9",
+    "order": 25
+  },
+  {
+    "id": "10",
+    "name": "10",
+    "code": "10",
+    "order": 26
+  },
+  {
+    "id": "11",
+    "name": "11",
+    "code": "11",
+    "order": 27
+  },
+  {
+    "id": "12",
+    "name": "12",
+    "code": "12",
+    "order": 28
+  }
+]
+

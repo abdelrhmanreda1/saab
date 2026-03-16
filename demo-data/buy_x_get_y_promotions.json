@@ -1,0 +1,130 @@
+[
+  {
+    "id": "buy2_get1_dresses",
+    "name": "Buy 2 Dresses, Get 1 Free",
+    "description": "Buy any 2 dresses and get 1 dress of equal or lesser value absolutely free! Perfect for building your wardrobe.",
+    "buyProductIds": [
+      "prod_floral_maxi_dress",
+      "prod_midi_dress",
+      "prod_wrap_dress",
+      "prod_bodycon_dress",
+      "prod_shirt_dress"
+    ],
+    "buyQuantity": 2,
+    "getProductIds": [
+      "prod_floral_maxi_dress",
+      "prod_midi_dress",
+      "prod_wrap_dress",
+      "prod_bodycon_dress",
+      "prod_shirt_dress"
+    ],
+    "getQuantity": 1,
+    "getDiscountType": "free",
+    "validFrom": {
+      "seconds": 1735689600,
+      "nanoseconds": 0
+    },
+    "validUntil": {
+      "seconds": 1738281600,
+      "nanoseconds": 0
+    },
+    "isActive": true,
+    "usageLimit": 100,
+    "usedCount": 0,
+    "createdBy": "admin",
+    "createdAt": {
+      "seconds": 1735603200,
+      "nanoseconds": 0
+    },
+    "updatedAt": {
+      "seconds": 1735603200,
+      "nanoseconds": 0
+    }
+  },
+  {
+    "id": "buy1_get1_50_tops",
+    "name": "Buy 1 Top, Get 1 at 50% Off",
+    "description": "Buy any top and get another top at 50% off! Mix and match from our collection of blouses, t-shirts, and jackets.",
+    "buyProductIds": [
+      "prod_silk_blouse",
+      "prod_casual_t_shirt",
+      "prod_tank_top",
+      "prod_denim_jacket",
+      "prod_cardigan"
+    ],
+    "buyQuantity": 1,
+    "getProductIds": [
+      "prod_silk_blouse",
+      "prod_casual_t_shirt",
+      "prod_tank_top",
+      "prod_denim_jacket",
+      "prod_cardigan"
+    ],
+    "getQuantity": 1,
+    "getDiscountType": "percentage",
+    "getDiscountValue": 50,
+    "validFrom": {
+      "seconds": 1735776000,
+      "nanoseconds": 0
+    },
+    "validUntil": {
+      "seconds": 1738368000,
+      "nanoseconds": 0
+    },
+    "isActive": true,
+    "usageLimit": 150,
+    "usedCount": 0,
+    "createdBy": "admin",
+    "createdAt": {
+      "seconds": 1735689600,
+      "nanoseconds": 0
+    },
+    "updatedAt": {
+      "seconds": 1735689600,
+      "nanoseconds": 0
+    }
+  },
+  {
+    "id": "buy_shoes_get_accessory",
+    "name": "Buy 2 Pairs of Shoes, Get Accessory Free",
+    "description": "Buy any 2 pairs of shoes and get a free accessory (handbag, watch, or sunglasses)! Perfect combo deal.",
+    "buyProductIds": [
+      "prod_leather_ankle_boots",
+      "prod_sneakers",
+      "prod_heels",
+      "prod_flat_sandals",
+      "prod_loafers"
+    ],
+    "buyQuantity": 2,
+    "getProductIds": [
+      "prod_designer_handbag",
+      "prod_watch",
+      "prod_sunglasses",
+      "prod_scarf",
+      "prod_necklace"
+    ],
+    "getQuantity": 1,
+    "getDiscountType": "free",
+    "validFrom": {
+      "seconds": 1736035200,
+      "nanoseconds": 0
+    },
+    "validUntil": {
+      "seconds": 1738627200,
+      "nanoseconds": 0
+    },
+    "isActive": true,
+    "usageLimit": 75,
+    "usedCount": 0,
+    "createdBy": "admin",
+    "createdAt": {
+      "seconds": 1735948800,
+      "nanoseconds": 0
+    },
+    "updatedAt": {
+      "seconds": 1735948800,
+      "nanoseconds": 0
+    }
+  }
+]
+
