@@ -145,12 +145,12 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" suppressHydrationWarning dir="ltr">
+    <html lang="ar" suppressHydrationWarning dir="rtl">
       <body
         className={`${inter.variable} ${poppins.variable} ${geistMono.variable} ${roboto.variable} ${openSans.variable} ${montserrat.variable} ${tajawal.variable} antialiased`}
       >
         <AuthProvider>
-          <LanguageProvider>
+          <LanguageProvider defaultLanguageCode="ar">
             <CurrencyProvider>
               <CartProvider>
                 <SettingsProvider>

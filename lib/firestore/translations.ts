@@ -55,6 +55,7 @@ export const DEFAULT_TRANSLATION_KEYS = {
   'common.live_chat': 'Live Chat',
   'header.open_menu': 'Open navigation menu',
   'header.close_menu': 'Close navigation menu',
+  'header.menu': 'Menu',
   'home.view_product': 'View product: {{name}}',
   'mobile_nav.open_cart': 'Open cart',
   

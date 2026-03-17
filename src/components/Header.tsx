@@ -123,9 +123,15 @@ const Header = () => {
               aria-expanded={isMenuOpen}
               aria-controls="mobile-menu"
             >
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
-              </svg>
+              {isMenuOpen ? (
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.8} stroke="currentColor" className="w-6 h-6">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M6 18 18 6M6 6l12 12" />
+                </svg>
+              ) : (
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+                </svg>
+              )}
             </button>
 
             <div className="flex justify-center">
@@ -150,7 +156,13 @@ const Header = () => {
               </Link>
             </div>
 
-            <div className="flex items-center justify-end gap-3">
+            <div className="flex items-center justify-end gap-2">
+              {/* Language (mobile, always visible) */}
+              {settings?.site?.enableLanguageSwitcher && (
+                <div className="rounded-full border border-[#ead6a7] bg-[#fffaf0] px-1 py-0.5">
+                  <LanguageSwitcher variant="minimal" />
+                </div>
+              )}
               {settings?.site?.enableUserAccountCreation !== false && (
                 <div className="relative">
                   <button 
@@ -333,8 +345,37 @@ const Header = () => {
 
         {/* Mobile Menu */}
         {isMenuOpen && (
-          <div className={`md:hidden absolute top-full w-full border-t border-[#ecd6a4] bg-[#fffdf8] shadow-[0_24px_60px_rgba(86,58,11,0.12)] ${isRTL ? 'right-0' : 'left-0'}`}>
-             <div className="space-y-4 p-4">
+          <>
+            <div
+              className="md:hidden fixed inset-0 z-40 bg-black/30"
+              onClick={() => setIsMenuOpen(false)}
+              aria-hidden="true"
+            />
+            <div
+              id="mobile-menu"
+              className="md:hidden fixed inset-x-0 top-0 z-50 h-[100dvh] bg-[#fffdf8] shadow-[0_24px_60px_rgba(86,58,11,0.12)]"
+              style={{ paddingTop: '4rem' }}
+            >
+              <div className="absolute left-0 right-0 top-0 h-16 border-b border-[#ecd6a4] bg-[#fffdf8]">
+                <div className="page-container flex h-16 items-center justify-between">
+                  <span className="text-sm font-semibold text-[#3a2a0d]">
+                    {t('header.menu') || (isRTL ? 'القائمة' : 'Menu')}
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => setIsMenuOpen(false)}
+                    className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-[#ead6a7] bg-[#fffaf0] text-[#4c3b17] hover:text-[#b8872f]"
+                    aria-label={t('header.close_menu') || 'Close navigation menu'}
+                  >
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.8} stroke="currentColor" className="h-5 w-5">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M6 18 18 6M6 6l12 12" />
+                    </svg>
+                  </button>
+                </div>
+              </div>
+
+              <div className="h-full overflow-y-auto px-4 pb-28 pt-4">
+                <div className="space-y-4">
                 <form onSubmit={handleSearch} className="relative">
                     <input 
                         type="text" 
@@ -356,12 +397,16 @@ const Header = () => {
                     </Link>
                   ))}
                 </nav>
-                {/* Language Selector for Mobile */}
+                {/* Language Selector for Mobile (kept as secondary, larger tap area) */}
                 {settings?.site?.enableLanguageSwitcher && (
                   <div className="border-t border-[#f1e1bb] pt-4">
-                    <div className="flex items-center justify-between">
-                      <span className="text-sm font-medium text-[#5d4620]">{t('common.language') || 'Language'}</span>
-                      <LanguageSwitcher />
+                    <div className="flex items-center justify-between gap-3">
+                      <span className="text-sm font-medium text-[#5d4620]">
+                        {t('common.language') || (isRTL ? 'اللغة' : 'Language')}
+                      </span>
+                      <div className="rounded-lg border border-gray-300 bg-white px-2 py-1.5">
+                        <LanguageSwitcher />
+                      </div>
                     </div>
                   </div>
                 )}
@@ -397,8 +442,10 @@ const Header = () => {
                     </span>
                   </button>
                 )}
-             </div>
-          </div>
+                </div>
+              </div>
+            </div>
+          </>
         )}
       </header>
       </div>
