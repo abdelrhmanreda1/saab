@@ -7,8 +7,29 @@ const nextConfig: NextConfig = {
   },
   turbopack: {},
   images: {
-    // Load Firebase-hosted images directly instead of using the image optimizer.
-    unoptimized: true,
+    // Use Next.js image optimizer for faster perceived loads (resized/cached).
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "firebasestorage.googleapis.com",
+      },
+      {
+        protocol: "https",
+        hostname: "*.firebasestorage.googleapis.com",
+      },
+      {
+        protocol: "https",
+        hostname: "firebasestorage.app",
+      },
+      {
+        protocol: "https",
+        hostname: "*.firebasestorage.app",
+      },
+      {
+        protocol: "https",
+        hostname: "images.unsplash.com",
+      },
+    ],
     qualities: [75, 85],
   },
   compress: true,

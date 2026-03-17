@@ -1,7 +1,7 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
-import { Banner } from '@/lib/firestore/banners';
+import React, { useMemo, useState, useEffect } from 'react';
+import { Banner, BannerTranslation } from '@/lib/firestore/banners';
 import { addBanner, updateBanner, getBanner } from '@/lib/firestore/banners_db';
 import { storage } from '@/lib/firebase';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
@@ -10,6 +10,7 @@ import { getSettings } from '@/lib/firestore/settings_db';
 import { Settings, defaultSettings } from '@/lib/firestore/settings';
 import Dialog from '../ui/Dialog';
 import { useLanguage } from '@/context/LanguageContext';
+import { Timestamp } from 'firebase/firestore';
 
 interface BannerFormProps {
   bannerId?: string;
@@ -40,11 +41,67 @@ const BannerForm: React.FC<BannerFormProps> = ({ bannerId, onSuccess, onCancel }
   const [infoDialogType, setInfoDialogType] = useState<'success' | 'error'>('error');
   const { t } = useLanguage();
 
+  const normalizeCode = (code?: string | null) => String(code || '').trim().toLowerCase();
+  const [selectedLanguageCode, setSelectedLanguageCode] = useState<'ar' | 'en'>('ar');
+
+  const selectedLabel = useMemo(() => (selectedLanguageCode === 'ar' ? 'AR' : 'EN'), [selectedLanguageCode]);
+
+  const getTranslation = (code: string, source: Partial<Banner>) => {
+    const translations = source.translations || [];
+    return translations.find(tr => normalizeCode(tr.languageCode) === normalizeCode(code)) || null;
+  };
+
+  const upsertTranslation = (code: string, patch: Partial<BannerTranslation>) => {
+    setBanner(prev => {
+      const translations = [...(prev.translations || [])];
+      const idx = translations.findIndex(tr => normalizeCode(tr.languageCode) === normalizeCode(code));
+      const next: BannerTranslation = {
+        languageCode: normalizeCode(code) || code,
+        ...(idx >= 0 ? translations[idx] : {}),
+        ...patch,
+        updatedAt: Timestamp.now(),
+      };
+      if (idx >= 0) translations[idx] = next;
+      else translations.push(next);
+      return { ...prev, translations };
+    });
+  };
+
+  const localizedTitle = useMemo(() => {
+    const tr = getTranslation(selectedLanguageCode, banner);
+    // Back-compat: if there are no translations yet, treat root title/subtitle as English
+    if (!tr && selectedLanguageCode === 'en') return String(banner.title || '');
+    return String(tr?.title || '');
+  }, [banner, selectedLanguageCode]);
+
+  const localizedSubtitle = useMemo(() => {
+    const tr = getTranslation(selectedLanguageCode, banner);
+    if (!tr && selectedLanguageCode === 'en') return String(banner.subtitle || '');
+    return String(tr?.subtitle || '');
+  }, [banner, selectedLanguageCode]);
+
   useEffect(() => {
     if (isEditMode && bannerId) {
       setLoading(true);
       getBanner(bannerId).then(fetched => {
-        if (fetched) setBanner(fetched);
+        if (fetched) {
+          // Ensure we always have a translations array for the UI.
+          const hasTranslations = Array.isArray(fetched.translations) && fetched.translations.length > 0;
+          const seeded: Partial<Banner> = hasTranslations
+            ? fetched
+            : {
+                ...fetched,
+                translations: [
+                  {
+                    languageCode: 'en',
+                    title: fetched.title || '',
+                    subtitle: fetched.subtitle || '',
+                    updatedAt: fetched.updatedAt,
+                  },
+                ],
+              };
+          setBanner(seeded);
+        }
       }).finally(() => setLoading(false));
     }
   }, [bannerId, isEditMode]);
@@ -83,10 +140,19 @@ const BannerForm: React.FC<BannerFormProps> = ({ bannerId, onSuccess, onCancel }
 
       const bannerData = { ...banner, imageUrl };
 
+      // Keep root title/subtitle as English for backward compatibility.
+      const englishTr = getTranslation('en', bannerData) || null;
+      const nextBannerData: Partial<Banner> = {
+        ...bannerData,
+        title: (englishTr?.title ?? bannerData.title ?? '') as string,
+        subtitle: (englishTr?.subtitle ?? bannerData.subtitle ?? '') as string,
+        translations: (bannerData.translations || []) as BannerTranslation[],
+      };
+
       if (isEditMode && bannerId) {
-        await updateBanner(bannerId, bannerData);
+        await updateBanner(bannerId, nextBannerData);
       } else {
-        await addBanner(bannerData as Omit<Banner, 'id'>);
+        await addBanner(nextBannerData as Omit<Banner, 'id'>);
       }
       setInfoDialogMessage(isEditMode ? (t('admin.banners_update_success') || 'Banner updated successfully!') : (t('admin.banners_create_success') || 'Banner created successfully!'));
       setInfoDialogType('success');
@@ -110,6 +176,14 @@ const BannerForm: React.FC<BannerFormProps> = ({ bannerId, onSuccess, onCancel }
       ...prev,
       [name]: type === 'checkbox' ? checked : (type === 'number' ? parseInt(value) : value)
     }));
+  };
+
+  const handleLocalizedTextChange = (field: 'title' | 'subtitle', value: string) => {
+    upsertTranslation(selectedLanguageCode, { [field]: value } as Partial<BannerTranslation>);
+    // Also keep English root fields in sync for legacy reads when editing EN.
+    if (selectedLanguageCode === 'en') {
+      setBanner(prev => ({ ...prev, [field]: value }));
+    }
   };
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -190,26 +264,66 @@ const BannerForm: React.FC<BannerFormProps> = ({ bannerId, onSuccess, onCancel }
           </div>
         </div>
         
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div>
-            <label className="block text-gray-700 text-sm font-bold mb-2">{t('admin.banners_table_title') || 'Title'}</label>
-            <input
-              type="text"
-              name="title"
-              value={banner.title}
-              onChange={handleChange}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none transition-all"
-            />
+        <div className="rounded-xl border border-gray-200 bg-gray-50 p-4">
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+            <div>
+              <div className="text-sm font-bold text-gray-900">
+                {t('admin.banners_translations_title') || 'Banner translations'}
+              </div>
+              <div className="text-xs text-gray-500">
+                {t('admin.banners_translations_hint') || 'Enter title/subtitle per language.'}
+              </div>
+            </div>
+            <div className="flex items-center gap-2">
+              <button
+                type="button"
+                onClick={() => setSelectedLanguageCode('ar')}
+                className={`px-3 py-2 rounded-lg text-sm font-semibold border transition-colors ${
+                  selectedLanguageCode === 'ar'
+                    ? 'bg-black text-white border-black'
+                    : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50'
+                }`}
+              >
+                AR
+              </button>
+              <button
+                type="button"
+                onClick={() => setSelectedLanguageCode('en')}
+                className={`px-3 py-2 rounded-lg text-sm font-semibold border transition-colors ${
+                  selectedLanguageCode === 'en'
+                    ? 'bg-black text-white border-black'
+                    : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50'
+                }`}
+              >
+                EN
+              </button>
+              <span className="ml-2 text-xs font-semibold text-gray-500">{selectedLabel}</span>
+            </div>
           </div>
-          <div>
-            <label className="block text-gray-700 text-sm font-bold mb-2">{t('admin.banners_table_subtitle') || 'Subtitle'}</label>
-            <input
-              type="text"
-              name="subtitle"
-              value={banner.subtitle}
-              onChange={handleChange}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none transition-all"
-            />
+
+          <div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+              <label className="block text-gray-700 text-sm font-bold mb-2">
+                {t('admin.banners_table_title') || 'Title'} ({selectedLanguageCode.toUpperCase()})
+              </label>
+              <input
+                type="text"
+                value={localizedTitle}
+                onChange={(e) => handleLocalizedTextChange('title', e.target.value)}
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none transition-all"
+              />
+            </div>
+            <div>
+              <label className="block text-gray-700 text-sm font-bold mb-2">
+                {t('admin.banners_table_subtitle') || 'Subtitle'} ({selectedLanguageCode.toUpperCase()})
+              </label>
+              <input
+                type="text"
+                value={localizedSubtitle}
+                onChange={(e) => handleLocalizedTextChange('subtitle', e.target.value)}
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none transition-all"
+              />
+            </div>
           </div>
         </div>
 

@@ -2,11 +2,19 @@
 
 import { Timestamp } from "firebase/firestore";
 
+export interface BannerTranslation {
+  languageCode: string;
+  title?: string;
+  subtitle?: string;
+  updatedAt?: Timestamp;
+}
+
 export interface Banner {
   id: string;
   imageUrl: string;
   title?: string;
   subtitle?: string;
+  translations?: BannerTranslation[];
   titleColor?: string; // Hex color for title text
   subtitleColor?: string; // Hex color for subtitle text
   linkTo?: string; // URL or product/category ID

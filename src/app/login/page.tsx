@@ -45,6 +45,10 @@ const LoginForm = () => {
   const { t } = useLanguage();
   const { settings } = useSettings();
   const { user, demoUser, loading: authLoading } = useAuth();
+  const isArabic =
+    typeof document !== 'undefined'
+      ? document.documentElement.dir === 'rtl' || document.documentElement.lang?.toLowerCase() === 'ar'
+      : false;
   
   // Check if user account creation is enabled
   const isAccountCreationEnabled = settings?.site?.enableUserAccountCreation !== false;
@@ -1043,7 +1047,7 @@ const LoginForm = () => {
   };
 
   return (
-    <div className="min-h-screen flex bg-white">
+    <div className="min-h-screen flex flex-col lg:flex-row bg-white">
       {/* Demo Mode Modal */}
       {showDemoModal && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
@@ -1074,33 +1078,82 @@ const LoginForm = () => {
         </div>
       )}
 
-      {/* Left Side - Image */}
+      {/* Mobile Top - Image */}
+      <div className="block lg:hidden w-full relative bg-gray-900 aspect-video max-h-[320px]">
+        <Link
+          href="/"
+          className={`absolute top-4 ${isArabic ? 'left-4' : 'right-4'} z-20 text-xs font-semibold text-white/90 hover:text-white transition-colors bg-black/35 backdrop-blur px-3 py-2 rounded-full`}
+        >
+          {t('login.back_home') || 'Back to Home'}
+        </Link>
+        {settings?.theme?.loginImageUrl && (
+          <Image
+            src={settings?.theme?.loginImageUrl}
+            alt="Login"
+            fill
+            priority
+            fetchPriority="high"
+            loading="eager"
+            quality={80}
+            sizes="100vw"
+            className="object-contain opacity-95"
+          />
+        )}
+        <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent" />
+        <div className="absolute inset-0 flex items-end">
+          <div className={`p-6 text-white max-w-xl ${isArabic ? 'text-right' : 'text-left'}`}>
+            <h2 className="text-2xl font-heading font-bold mb-2">
+              {t('login.sidebar_title') || (isArabic ? 'ذهب بثقة' : 'Gold you can trust')}
+            </h2>
+            <p className="text-sm text-gray-200">
+              {t('login.sidebar_description') ||
+                (isArabic
+                  ? 'تسوّق مجوهرات ذهبية أنيقة بتسعير واضح حسب العيار وخدمة موثوقة.'
+                  : 'Shop elegant gold jewelry with transparent pricing by karat and reliable service.')}
+            </p>
+          </div>
+        </div>
+      </div>
+
+      {/* Desktop Left Side - Image */}
       <div className="hidden lg:block lg:w-1/2 relative bg-gray-900">
         {settings?.theme?.loginImageUrl && (
           <Image
             src={settings?.theme?.loginImageUrl}
-            alt="Fashion Editorial"
+            alt="Login"
             fill
             priority
+            fetchPriority="high"
+            loading="eager"
+            quality={80}
+            sizes="(min-width: 1024px) 50vw, 100vw"
             className="object-cover opacity-80"
-            unoptimized
           />
         )}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
-        <div className="absolute bottom-12 left-12 text-white max-w-lg">
-          <h2 className="text-4xl font-heading font-bold mb-4">{t('login.sidebar_title') || 'Elevate Your Style'}</h2>
-          <p className="text-lg text-gray-200">{t('login.sidebar_description') || 'Discover the finest collection of modest fashion, curated just for you.'}</p>
+        <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent" />
+        <div className="absolute inset-0 flex items-end">
+          <div className={`p-10 xl:p-12 text-white max-w-lg ${isArabic ? 'text-right' : 'text-left'}`}>
+            <h2 className="text-3xl xl:text-4xl font-heading font-bold mb-3">
+              {t('login.sidebar_title') || (isArabic ? 'ذهب بثقة' : 'Gold you can trust')}
+            </h2>
+            <p className="text-base xl:text-lg text-gray-200">
+              {t('login.sidebar_description') ||
+                (isArabic
+                  ? 'تسوّق مجوهرات ذهبية أنيقة بتسعير واضح حسب العيار وخدمة موثوقة.'
+                  : 'Shop elegant gold jewelry with transparent pricing by karat and reliable service.')}
+            </p>
+          </div>
         </div>
       </div>
 
       {/* Right Side - Form */}
-      <div className="w-full lg:w-1/2 flex items-start lg:items-center justify-center pt-20 sm:pt-24 lg:pt-12 pb-8 sm:pb-12 px-8 sm:px-12 lg:px-16 relative">
-         <Link href="/" className="absolute top-8 right-8 text-sm font-medium text-gray-500 hover:text-black transition-colors">
+      <div className="w-full lg:w-1/2 flex items-start justify-center pt-10 sm:pt-12 lg:pt-24 xl:pt-28 pb-10 px-6 sm:px-10 lg:px-16 relative min-h-0 lg:min-h-screen">
+         <Link href="/" className="hidden lg:block absolute top-8 right-8 text-sm font-medium text-gray-500 hover:text-black transition-colors">
             {t('login.back_home') || 'Back to Home'}
          </Link>
 
-        <div className="w-full max-w-md">
-          <div className="text-center lg:text-left mb-4">
+        <div className={`w-full max-w-md ${isArabic ? 'text-right' : ''}`}>
+          <div className={`${isArabic ? 'text-right' : 'text-center lg:text-left'} mb-4`}>
             <h1 className="text-4xl font-heading font-bold text-gray-900 tracking-tight mb-0.5">
               {step === 'phone' 
                 ? (t('login.welcome_back') || 'Welcome Back')

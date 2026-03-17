@@ -670,11 +670,9 @@ const ShopClient: React.FC<ShopClientProps> = ({
   // Product Card Component
   const ProductCard = ({
     product,
-    isFeaturedLarge = false,
     prioritizeImage = false,
   }: {
     product: Product;
-    isFeaturedLarge?: boolean;
     prioritizeImage?: boolean;
   }) => {
     const categoryName = categories.find(c => c.id === product.category)?.name;
@@ -758,7 +756,7 @@ const ShopClient: React.FC<ShopClientProps> = ({
     };
 
   return (
-      <div className={`group relative flex flex-col rounded-2xl border-2 border-gray-200 bg-white overflow-hidden transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl hover:border-gray-300 shadow-lg hover:shadow-xl ${isFeaturedLarge ? 'md:h-full' : ''}`}>
+      <div className="group relative flex flex-col rounded-2xl border-2 border-gray-200 bg-white overflow-hidden transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl hover:border-gray-300 shadow-lg hover:shadow-xl h-full">
         <Link 
           href={`/products/${product.slug}`} 
           className="absolute inset-0 z-10"
@@ -802,9 +800,7 @@ const ShopClient: React.FC<ShopClientProps> = ({
         )}
 
         {/* Image Container */}
-        <div
-          className={`relative w-full overflow-hidden bg-gray-50 ${isFeaturedLarge ? 'aspect-[3/4] md:aspect-square' : 'aspect-[3/4]'}`}
-        >
+        <div className="relative w-full overflow-hidden bg-gray-50 aspect-square">
           {displayImage ? (
             <Image
               src={displayImage}
@@ -812,7 +808,7 @@ const ShopClient: React.FC<ShopClientProps> = ({
               width={800}
               height={1067}
               className="h-full w-full object-cover object-center transition-transform duration-700 group-hover:scale-110"
-              sizes={isFeaturedLarge ? "(max-width: 768px) 50vw, (max-width: 1024px) 50vw, 33vw" : "(max-width: 768px) 45vw, (max-width: 1024px) 33vw, 25vw"}
+              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
               priority={prioritizeImage}
               unoptimized
             />
@@ -894,8 +890,8 @@ const ShopClient: React.FC<ShopClientProps> = ({
           )}
         </div>
 
-        <div className={`p-3 md:p-4 ${isFeaturedLarge ? 'md:p-6' : ''}`}>
-          <h3 className={`font-semibold text-gray-900 truncate ${isFeaturedLarge ? 'text-base md:text-xl lg:text-2xl' : 'text-sm md:text-base lg:text-lg'}`}>
+        <div className="p-3 md:p-4 flex flex-col flex-1">
+          <h3 className="font-semibold text-gray-900 truncate text-sm md:text-base lg:text-lg">
             {searchQuery ? (
               <span dangerouslySetInnerHTML={{
                 __html: getProductName(product, languageCode).replace(
@@ -941,7 +937,7 @@ const ShopClient: React.FC<ShopClientProps> = ({
               </p>
             )}
           </div>
-          <div className="flex items-baseline gap-2 mt-2">
+          <div className="flex items-baseline gap-2 mt-auto pt-2">
             {pricing.originalPrice !== null && (
               <span className="text-sm md:text-base text-gray-500 line-through font-medium">
                 {formatPrice(pricing.originalPrice)}
@@ -1627,7 +1623,7 @@ const ShopClient: React.FC<ShopClientProps> = ({
                     ? getCategoryName(currentCategory, languageCode)
                     : currentCollection
                       ? currentCollection.name
-                      : (t('shop.title') || 'Shop')}
+                      : (t('shop.title') && t('shop.title') !== 'shop.title' ? t('shop.title') : 'Shop')}
                 </h1>
                 <span className="text-sm md:text-base text-gray-600 hidden md:inline font-medium">
                   {t('shop.showing_count', {
@@ -1708,7 +1704,7 @@ const ShopClient: React.FC<ShopClientProps> = ({
           </div>
 
           {isLoading ? (
-            <div className={viewMode === 'grid' ? 'grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6' : 'space-y-4'}>
+            <div className={viewMode === 'grid' ? 'grid grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6' : 'space-y-4'}>
               <SkeletonLoader type="product" count={productsPerPage} />
             </div>
           ) : filteredProducts.length === 0 ? (
@@ -1744,40 +1740,20 @@ const ShopClient: React.FC<ShopClientProps> = ({
               </div>
             </div>
           ) : viewMode === 'grid' ? (
-            <>
-              {/* Desktop Grid */}
-              <div 
-                data-section-id="product-grid"
-                className="hidden md:grid md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6"
-              >
-                {paginatedProducts.map((product, index) => {
-                  const isFeaturedLarge = product.isFeatured && index === 0;
-                  return (
-                    <div 
-                      key={product.id} 
-                      className={`${isFeaturedLarge ? 'md:col-span-2 md:row-span-2' : ''} transition-all duration-500 hover:scale-[1.02]`}
-                      style={{ transitionDelay: `${index * 50}ms` }}
-                    >
-                      <ProductCard
-                        product={product}
-                        isFeaturedLarge={isFeaturedLarge}
-                        prioritizeImage={index === 0}
-                      />
-                    </div>
-                  );
-                })}
-              </div>
-              {/* Mobile Horizontal Scroll */}
-              <div className="md:hidden overflow-x-auto pb-4 -mx-4 px-4 scrollbar-hide" style={{ scrollSnapType: 'x mandatory', WebkitOverflowScrolling: 'touch' }}>
-                <div className="flex gap-4" style={{ width: 'max-content' }}>
-                  {paginatedProducts.map((product, index) => (
-                    <div key={product.id} className={`flex-shrink-0 w-[45vw] ${index === 0 ? 'pl-4' : ''}`} style={{ scrollSnapAlign: 'start' }}>
-                      <ProductCard product={product} prioritizeImage={index === 0} />
-                    </div>
-                  ))}
+            <div
+              data-section-id="product-grid"
+              className="grid grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6"
+            >
+              {paginatedProducts.map((product, index) => (
+                <div
+                  key={product.id}
+                  className="transition-all duration-500 hover:scale-[1.02] h-full"
+                  style={{ transitionDelay: `${index * 50}ms` }}
+                >
+                  <ProductCard product={product} prioritizeImage={index === 0} />
                 </div>
-              </div>
-            </>
+              ))}
+            </div>
           ) : (
             <div className="space-y-4">
               {paginatedProducts.map((product, index) => (

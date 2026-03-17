@@ -16,11 +16,16 @@ export const getSettings = async (): Promise<Settings | null> => {
 
     if (docSnap.exists()) {
       const data = docSnap.data() as Partial<Settings>;
-      return {
+      const merged = {
         ...defaultSettings,
         ...data,
         goldPricing: normalizeGoldPricingSettings(data.goldPricing),
       } as Settings;
+
+      // Ensure the returned object is fully serializable (no Timestamp prototypes / toJSON methods).
+      // This prevents Next.js "Only plain objects..." errors when server components pass settings
+      // down into client components.
+      return JSON.parse(JSON.stringify(merged)) as Settings;
     } else {
       return null;
     }

@@ -51,8 +51,8 @@ export default function Home() {
   const { t, currentLanguage } = useLanguage();
   const { formatPrice } = useCurrency();
   const { settings } = useSettings();
-  const languageCode = currentLanguage?.code || 'en';
-  const isArabic = currentLanguage?.code === 'ar';
+  const languageCode = String(currentLanguage?.code || 'en').trim().toLowerCase();
+  const isArabic = languageCode === 'ar';
   const [banners, setBanners] = useState<Banner[]>([]);
   const [isMobile, setIsMobile] = useState(false);
   const [currentBannerIndex, setCurrentBannerIndex] = useState(0);
@@ -80,6 +80,24 @@ export default function Home() {
   const [goldBasePrice, setGoldBasePrice] = useState(0);
   const [goldPriceFetchedAt, setGoldPriceFetchedAt] = useState('');
   const [homepageSections, setHomepageSections] = useState(defaultHomepageSections);
+  const formatKaratLabel = (karat: string) => {
+    if (!isArabic) return karat;
+    const match = String(karat).match(/^(\d{2})K$/i);
+    return match ? `${t('gold_price.karat_prefix') || 'عيار'} ${match[1]}` : karat;
+  };
+
+  const getBannerText = React.useCallback(
+    (banner: Banner | undefined, field: 'title' | 'subtitle') => {
+      if (!banner) return '';
+      const normalize = (code?: string | null) => String(code || '').trim().toLowerCase();
+      const tr = (banner.translations || []).find(tl => normalize(tl.languageCode) === normalize(languageCode));
+      const candidate = String((tr && (tr as any)[field]) || '');
+      if (candidate.trim()) return candidate;
+      // Back-compat fallback to root fields (stored as English)
+      return String((banner as any)[field] || '');
+    },
+    [languageCode]
+  );
   const { user, demoUser } = useAuth();
   const { addToCart, setShowCartDialog, setCartDialogMessage } = useCart();
 
@@ -903,9 +921,10 @@ export default function Home() {
                 >
                   <SafeImage
                     src={getSafeImageUrl(banner.imageUrl)}
-                    alt={banner.title || settings?.company?.name || ''}
+                    alt={getBannerText(banner, 'title') || settings?.company?.name || ''}
                     className="absolute inset-0 h-full w-full object-cover"
                     loading={index === 0 ? 'eager' : 'lazy'}
+                    fetchPriority={index === 0 ? 'high' : 'auto'}
                   />
                 </div>
               ))}
@@ -925,13 +944,13 @@ export default function Home() {
                     className="mt-5 text-4xl md:text-6xl lg:text-7xl font-heading font-bold mb-5 md:mb-8 leading-[1.05] tracking-tight"
                     style={{ color: banners[currentBannerIndex].titleColor || '#24180a' }}
                   >
-                    {banners[currentBannerIndex].title || getHomepageSectionTitle('hero', t('home.banner_title') || "Discover Your Elegance")}
+                    {getBannerText(banners[currentBannerIndex], 'title') || getHomepageSectionTitle('hero', t('home.banner_title') || "Discover Your Elegance")}
                   </h1>
                   <p 
                     className="text-lg md:text-xl lg:text-2xl mb-8 md:mb-10 leading-relaxed max-w-xl"
                     style={{ color: banners[currentBannerIndex].subtitleColor || '#5e4b23' }}
                   >
-                    {banners[currentBannerIndex].subtitle || getHomepageSectionSubtitle('hero', t('home.banner_subtitle') || "Explore our latest collection of premium modest fashion designed for the modern woman.")}
+                    {getBannerText(banners[currentBannerIndex], 'subtitle') || getHomepageSectionSubtitle('hero', t('home.banner_subtitle') || "Explore our latest collection of premium modest fashion designed for the modern woman.")}
                   </p>
                   
                   {/* Countdown Timer for Flash Sales */}
@@ -1094,15 +1113,16 @@ export default function Home() {
                 <div className="flex flex-col justify-between">
                   <div>
                     <span className="inline-flex items-center rounded-full border border-[#d4b161] bg-[#fff6df] px-3 py-1 text-xs font-semibold uppercase tracking-[0.28em] text-[#8f6a1c]">
-                      {isArabic ? 'أسعار الذهب' : 'Gold Prices'}
+                      {t('home.gold_prices_label') || (isArabic ? 'أسعار الذهب' : 'Gold Prices')}
                     </span>
                     <h2 className="mt-4 text-3xl md:text-4xl lg:text-5xl font-heading font-bold leading-tight text-[#23190a]">
-                      {isArabic ? 'أسعار الذهب حسب العيارات في لمحة سريعة.' : 'Gold rates by karat at a glance.'}
+                      {t('home.gold_prices_title') || (isArabic ? 'أسعار الذهب حسب العيارات في لمحة سريعة.' : 'Gold rates by karat at a glance.')}
                     </h2>
                     <p className="mt-4 max-w-xl text-sm md:text-base leading-7 text-[#5d4c29]">
-                      {isArabic
-                        ? 'اعرض للمستخدم سعر الجرام الحالي لكل عيار مع ضريبة العيار المضبوطة داخل الإعدادات، ثم اترك التفاصيل الكاملة داخل صفحة أسعار الذهب.'
-                        : 'Show visitors the current gram rate for each karat together with the configured karat tax, then route them to the dedicated gold prices page for full details.'}
+                      {t('home.gold_prices_desc')
+                        || (isArabic
+                          ? 'اعرض للمستخدم سعر الجرام الحالي لكل عيار مع ضريبة العيار المضبوطة داخل الإعدادات، ثم اترك التفاصيل الكاملة داخل صفحة أسعار الذهب.'
+                          : 'Show visitors the current gram rate for each karat together with the configured karat tax, then route them to the dedicated gold prices page for full details.')}
                     </p>
                   </div>
 
@@ -1112,13 +1132,13 @@ export default function Home() {
                     </p>
                     <p className="mt-2 text-3xl font-bold text-[#23190a]">{formatGoldAmount(goldBasePrice)}</p>
                     <p className="mt-3 text-sm text-[#6f5d38]">
-                      {isArabic ? 'آخر تحديث:' : 'Last updated:'} {formattedGoldUpdate}
+                      {(isArabic ? 'آخر تحديث:' : 'Last updated:')} {formattedGoldUpdate}
                     </p>
                     <Link
                       href="/gold-price"
                       className="mt-5 inline-flex items-center rounded-full bg-[#1f1608] px-5 py-3 text-sm font-semibold text-white transition hover:bg-[#36280e]"
                     >
-                      {isArabic ? 'عرض صفحة الذهب كاملة' : 'View full gold page'}
+                      {t('home.gold_prices_view_full') || (isArabic ? 'عرض صفحة الذهب كاملة' : 'View full gold page')}
                     </Link>
                   </div>
                 </div>
@@ -1131,7 +1151,9 @@ export default function Home() {
                     >
                       <div className="flex items-start justify-between gap-3">
                         <div>
-                          <p className="text-xs font-semibold uppercase tracking-[0.25em] text-[#9b7a31]">{card.karat}</p>
+                          <p className="text-xs font-semibold uppercase tracking-[0.25em] text-[#9b7a31]">
+                            {formatKaratLabel(card.karat)}
+                          </p>
                           <h3 className="mt-2 text-2xl font-bold text-[#23190a]">{formatGoldAmount(card.marketPrice)}</h3>
                         </div>
                         <span className="rounded-full border border-[#e4cf98] bg-white px-3 py-1 text-xs font-medium text-[#7c6431]">
@@ -1141,12 +1163,12 @@ export default function Home() {
 
                       <div className="mt-5 space-y-3 text-sm">
                         <div className="flex items-center justify-between rounded-2xl bg-white/80 px-4 py-3 text-[#644f24]">
-                          <span>{isArabic ? 'ضريبة العيار' : 'Karat tax'}</span>
+                          <span>{t('home.gold_prices_karat_tax') || (isArabic ? 'ضريبة العيار' : 'Karat tax')}</span>
                           <strong className="text-[#23190a]">{card.taxRate}%</strong>
                         </div>
                         <div className="rounded-2xl bg-[#1f1608] px-4 py-4 text-white">
                           <div className="text-xs uppercase tracking-[0.22em] text-[#d9c18d]">
-                            {isArabic ? 'السعر بعد ضريبة العيار' : 'After karat tax'}
+                            {t('gold_price.after_karat_tax') || (isArabic ? 'السعر بعد ضريبة العيار' : 'After karat tax')}
                           </div>
                           <p className="mt-2 text-2xl font-bold">{formatGoldAmount(card.storePrice)}</p>
                         </div>

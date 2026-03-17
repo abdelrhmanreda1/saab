@@ -112,7 +112,10 @@ const SettingsPage = () => {
 
       await fetchSettings();
       setDialogMessage(
-        `Gold price updated: ${result.pricePerGram} ${result.currency || 'SAR'} / gram`
+        t('admin.gold_pricing_refresh_success', {
+          price: result.pricePerGram,
+          currency: result.currency || 'SAR',
+        }) || `Gold price updated: ${result.pricePerGram} ${result.currency || 'SAR'} / gram`
       );
       setDialogType('success');
       setShowDialog(true);
@@ -214,7 +217,7 @@ const SettingsPage = () => {
       label: t('admin.settings_tab_email_notifications') || 'Email Notifications',
     },
     { id: 'social', label: t('admin.settings_tab_social') || 'Social Media' },
-    { id: 'goldPricing', label: 'Gold Pricing' },
+    { id: 'goldPricing', label: t('admin.settings_tab_gold_pricing') || 'Gold Pricing' },
     { id: 'features', label: t('admin.settings_tab_features') || 'Features' },
     { id: 'pages', label: t('admin.settings_tab_pages') || 'Pages' },
     { id: 'geography', label: t('admin.settings_tab_geography') || 'Geography' },
@@ -1685,9 +1688,12 @@ const SettingsPage = () => {
             {activeTab === 'goldPricing' && (
               <div className="space-y-8 animate-fadeIn">
                 <div>
-                  <h3 className="text-xl font-bold text-gray-900 mb-1">Gold Pricing</h3>
+                  <h3 className="text-xl font-bold text-gray-900 mb-1">
+                    {t('admin.gold_pricing_title') || 'Gold Pricing'}
+                  </h3>
                   <p className="text-gray-500 text-sm">
-                    Control the gold pricing provider, refresh interval, cache, default margin, and tax used for gold-priced products.
+                    {t('admin.gold_pricing_subtitle') ||
+                      'Control the gold pricing provider, refresh interval, cache, default margin, and tax used for gold-priced products.'}
                   </p>
                 </div>
 
@@ -1700,31 +1706,37 @@ const SettingsPage = () => {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
                   <div className="md:col-span-2">
                     <Switch
-                      label="Enable Gold Pricing"
+                      label={t('admin.gold_pricing_enable') || 'Enable Gold Pricing'}
                       checked={settings.goldPricing?.enabled ?? false}
                       onChange={(e) => handleInputChange('goldPricing', 'enabled', e.target.checked)}
                     />
                   </div>
 
                   <div>
-                    <label className="block text-sm font-semibold text-gray-700 mb-2">Provider</label>
+                    <label className="block text-sm font-semibold text-gray-700 mb-2">
+                      {t('admin.gold_pricing_provider') || 'Provider'}
+                    </label>
                     <select
                       value={settings.goldPricing?.provider || 'manual'}
                       onChange={(e) => handleInputChange('goldPricing', 'provider', e.target.value)}
                       className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-black focus:border-transparent outline-none transition-all"
                     >
-                      <option value="manual">Manual</option>
-                      <option value="goldpricez">goldpricez API</option>
+                      <option value="manual">{t('admin.gold_pricing_provider_manual') || 'Manual'}</option>
+                      <option value="goldpricez">{t('admin.gold_pricing_provider_goldpricez') || 'goldpricez API'}</option>
                     </select>
                     <p className="mt-2 text-xs text-gray-500">
                       {isManualProvider
-                        ? 'The store will use the manual price per gram entered below.'
-                        : 'The store will use the cached gold price fetched from the API URL below.'}
+                        ? (t('admin.gold_pricing_provider_hint_manual') ||
+                          'The store will use the manual price per gram entered below.')
+                        : (t('admin.gold_pricing_provider_hint_api') ||
+                          'The store will use the cached gold price fetched from the API URL below.')}
                     </p>
                   </div>
 
                   <div>
-                    <label className="block text-sm font-semibold text-gray-700 mb-2">Refresh Interval (seconds)</label>
+                    <label className="block text-sm font-semibold text-gray-700 mb-2">
+                      {t('admin.gold_pricing_refresh_interval') || 'Refresh Interval (seconds)'}
+                    </label>
                     <input
                       type="number"
                       value={settings.goldPricing?.refreshIntervalSeconds ?? 60}
@@ -1733,12 +1745,14 @@ const SettingsPage = () => {
                       min="1"
                     />
                     <p className="mt-2 text-xs text-gray-500">
-                      Used only when the provider is API-based.
+                      {t('admin.gold_pricing_refresh_interval_hint') || 'Used only when the provider is API-based.'}
                     </p>
                   </div>
 
                   <div className="md:col-span-2">
-                    <label className="block text-sm font-semibold text-gray-700 mb-2">API URL</label>
+                    <label className="block text-sm font-semibold text-gray-700 mb-2">
+                      {t('admin.gold_pricing_api_url') || 'API URL'}
+                    </label>
                     <input
                       type="text"
                       value={settings.goldPricing?.apiUrl || ''}
@@ -1749,17 +1763,19 @@ const SettingsPage = () => {
                           ? 'border-gray-200 bg-gray-100 text-gray-400 cursor-not-allowed'
                           : 'border-gray-300 focus:ring-2 focus:ring-black focus:border-transparent'
                       }`}
-                      placeholder="https://goldpricez.com/api/rates/currency/sar/measure/gram"
+                      placeholder={t('admin.gold_pricing_api_url_placeholder') || 'https://goldpricez.com/api/rates/currency/sar/measure/gram'}
                     />
                     <p className="mt-2 text-xs text-gray-500">
                       {isManualProvider
-                        ? 'Disabled because Manual provider is selected.'
-                        : 'Used only when the provider is set to goldpricez API.'}
+                        ? (t('admin.gold_pricing_api_url_disabled_manual') || 'Disabled because Manual provider is selected.')
+                        : (t('admin.gold_pricing_api_url_hint') || 'Used only when the provider is set to goldpricez API.')}
                     </p>
                   </div>
 
                   <div>
-                    <label className="block text-sm font-semibold text-gray-700 mb-2">Manual Price Per Gram</label>
+                    <label className="block text-sm font-semibold text-gray-700 mb-2">
+                      {t('admin.gold_pricing_manual_price_per_gram') || 'Manual Price Per Gram'}
+                    </label>
                     <input
                       type="number"
                       value={settings.goldPricing?.manualPricePerGram ?? 0}
@@ -1775,30 +1791,36 @@ const SettingsPage = () => {
                     />
                     <p className="mt-2 text-xs text-gray-500">
                       {isApiProvider
-                        ? 'Disabled because API provider is selected.'
-                        : 'This value is used directly as the gold price per gram.'}
+                        ? (t('admin.gold_pricing_manual_price_disabled_api') || 'Disabled because API provider is selected.')
+                        : (t('admin.gold_pricing_manual_price_hint') || 'This value is used directly as the gold price per gram.')}
                     </p>
                   </div>
 
                   <div>
-                    <label className="block text-sm font-semibold text-gray-700 mb-2">Default Margin Type</label>
+                    <label className="block text-sm font-semibold text-gray-700 mb-2">
+                      {t('admin.gold_pricing_default_margin_type') || 'Default Margin Type'}
+                    </label>
                     <select
                       value={settings.goldPricing?.defaultMarginType || 'fixed'}
                       onChange={(e) => handleInputChange('goldPricing', 'defaultMarginType', e.target.value)}
                       className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-black focus:border-transparent outline-none transition-all"
                     >
-                      <option value="fixed">Fixed Amount</option>
-                      <option value="percentage">Percentage</option>
+                      <option value="fixed">{t('admin.gold_pricing_margin_type_fixed') || 'Fixed Amount'}</option>
+                      <option value="percentage">{t('admin.gold_pricing_margin_type_percentage') || 'Percentage'}</option>
                     </select>
                     <p className="mt-2 text-xs text-gray-500">
                       {(settings.goldPricing?.defaultMarginType || 'fixed') === 'fixed'
-                        ? 'Fixed Amount adds a constant value to the calculated gold base price. Example: if the base price is 500 SAR and the margin value is 50, the price becomes 550 SAR before tax.'
-                        : 'Percentage adds a percentage on top of the calculated gold base price. Example: if the base price is 500 SAR and the margin value is 10, the price becomes 550 SAR before tax.'}
+                        ? (t('admin.gold_pricing_margin_type_hint_fixed') ||
+                          'Fixed Amount adds a constant value to the calculated gold base price. Example: if the base price is 500 SAR and the margin value is 50, the price becomes 550 SAR before tax.')
+                        : (t('admin.gold_pricing_margin_type_hint_percentage') ||
+                          'Percentage adds a percentage on top of the calculated gold base price. Example: if the base price is 500 SAR and the margin value is 10, the price becomes 550 SAR before tax.')}
                     </p>
                   </div>
 
                   <div>
-                    <label className="block text-sm font-semibold text-gray-700 mb-2">Default Margin Value</label>
+                    <label className="block text-sm font-semibold text-gray-700 mb-2">
+                      {t('admin.gold_pricing_default_margin_value') || 'Default Margin Value'}
+                    </label>
                     <input
                       type="number"
                       value={settings.goldPricing?.defaultMarginValue ?? 0}
@@ -1809,13 +1831,17 @@ const SettingsPage = () => {
                     />
                     <p className="mt-2 text-xs text-gray-500">
                       {(settings.goldPricing?.defaultMarginType || 'fixed') === 'fixed'
-                        ? 'Enter the amount in SAR to add on top of the gold base price.'
-                        : 'Enter the percentage to add on top of the gold base price.'}
+                        ? (t('admin.gold_pricing_margin_value_hint_fixed') ||
+                          'Enter the amount in SAR to add on top of the gold base price.')
+                        : (t('admin.gold_pricing_margin_value_hint_percentage') ||
+                          'Enter the percentage to add on top of the gold base price.')}
                     </p>
                   </div>
 
                   <div className="md:col-span-2">
-                    <label className="block text-sm font-semibold text-gray-700 mb-3">Tax Rate By Karat (%)</label>
+                    <label className="block text-sm font-semibold text-gray-700 mb-3">
+                      {t('admin.gold_pricing_tax_rate_by_karat') || 'Tax Rate By Karat (%)'}
+                    </label>
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                       {(['24K', '22K', '21K', '18K'] as const).map((karat) => (
                         <div key={karat}>
@@ -1837,24 +1863,30 @@ const SettingsPage = () => {
                       ))}
                     </div>
                     <p className="mt-2 text-xs text-gray-500">
-                      Tax is applied after the gold base price and margin are added together. Each karat can have its own tax rate.
+                      {t('admin.gold_pricing_tax_hint') ||
+                        'Tax is applied after the gold base price and margin are added together. Each karat can have its own tax rate.'}
                     </p>
                   </div>
 
                   <div className="md:col-span-2 rounded-xl border border-amber-200 bg-amber-50 p-4">
                     <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
                       <div>
-                        <p className="text-sm font-semibold text-amber-900">Cached Gold Rate</p>
-                        <p className="text-xs text-amber-800 mt-1">
-                          {settings.goldPricing?.cache?.pricePerGram ?? 0} {settings.goldPricing?.cache?.currency || 'SAR'} / gram
+                        <p className="text-sm font-semibold text-amber-900">
+                          {t('admin.gold_pricing_cached_rate') || 'Cached Gold Rate'}
                         </p>
                         <p className="text-xs text-amber-800 mt-1">
-                          Last fetched: {settings.goldPricing?.cache?.fetchedAt || 'Not fetched yet'}
+                          {settings.goldPricing?.cache?.pricePerGram ?? 0} {settings.goldPricing?.cache?.currency || 'SAR'} / {t('admin.gold_pricing_gram') || 'gram'}
+                        </p>
+                        <p className="text-xs text-amber-800 mt-1">
+                          {t('admin.gold_pricing_last_fetched') || 'Last fetched'}:{' '}
+                          {settings.goldPricing?.cache?.fetchedAt || (t('admin.gold_pricing_not_fetched_yet') || 'Not fetched yet')}
                         </p>
                         <p className="text-xs text-amber-800 mt-1">
                           {isManualProvider
-                            ? 'This cached value is informational only while Manual provider is active.'
-                            : 'This cached value is the effective source used for gold-priced products.'}
+                            ? (t('admin.gold_pricing_cache_note_manual') ||
+                              'This cached value is informational only while Manual provider is active.')
+                            : (t('admin.gold_pricing_cache_note_api') ||
+                              'This cached value is the effective source used for gold-priced products.')}
                         </p>
                       </div>
                       <button
@@ -1863,7 +1895,11 @@ const SettingsPage = () => {
                         disabled={refreshingGoldPrice || isManualProvider}
                         className="px-4 py-2 bg-black text-white rounded-lg text-sm font-semibold hover:bg-gray-800 transition-colors disabled:opacity-60"
                       >
-                        {refreshingGoldPrice ? 'Refreshing...' : isManualProvider ? 'API Disabled in Manual Mode' : 'Refresh Gold Price'}
+                        {refreshingGoldPrice
+                          ? (t('admin.gold_pricing_refreshing') || 'Refreshing...')
+                          : isManualProvider
+                            ? (t('admin.gold_pricing_api_disabled_manual') || 'API Disabled in Manual Mode')
+                            : (t('admin.gold_pricing_refresh_button') || 'Refresh Gold Price')}
                       </button>
                     </div>
                   </div>

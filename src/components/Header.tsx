@@ -144,6 +144,7 @@ const Header = () => {
                     height={54}
                     className="h-12 w-auto object-contain"
                     loading="eager"
+                    fetchPriority="high"
                   />
                 ) : (
                   <span 
@@ -252,6 +253,7 @@ const Header = () => {
                     height={70}
                     className="h-12 w-auto object-contain lg:h-14"
                     loading="eager"
+                    fetchPriority="high"
                   />
                 ) : (
                   <span style={{ color: headerText }} className="text-center text-2xl font-heading font-bold tracking-[0.18em]">

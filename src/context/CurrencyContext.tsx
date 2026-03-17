@@ -64,10 +64,18 @@ export const CurrencyProvider: React.FC<CurrencyProviderProps> = ({
       maximumFractionDigits: defaultCurrency.decimalPlaces || 0,
     });
 
+    // Some Arabic currency symbols are stored with a trailing dot (e.g. "ر.س.")
+    // which looks odd in RTL. Strip only the trailing dots safely.
+    const isRtlDoc =
+      typeof document !== 'undefined' && document.documentElement?.dir === 'rtl';
+    const symbol = isRtlDoc
+      ? String(defaultCurrency.symbol || '').replace(/\.+\s*$/, '').trim()
+      : String(defaultCurrency.symbol || '').trim();
+
     if (defaultCurrency.symbolPosition === 'right') {
-      return `${formattedAmount} ${defaultCurrency.symbol}`;
+      return `${formattedAmount} ${symbol}`;
     } else {
-      return `${defaultCurrency.symbol} ${formattedAmount}`;
+      return `${symbol} ${formattedAmount}`;
     }
   };
 

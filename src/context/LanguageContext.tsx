@@ -1,10 +1,11 @@
 'use client';
 
-import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import React, { createContext, useContext, useState, useEffect, ReactNode, useRef } from 'react';
 import { Language } from '@/lib/firestore/internationalization';
 import { getAllLanguages } from '@/lib/firestore/internationalization_db';
 import { getTranslationsByLanguage } from '@/lib/firestore/translations_db';
 import { DEFAULT_TRANSLATION_KEYS } from '@/lib/firestore/translations';
+import arabicPack from '@/data/translations/ar.json';
 
 interface LanguageContextType {
   currentLanguage: Language | null;
@@ -42,18 +43,45 @@ export const LanguageProvider: React.FC<LanguageProviderProps> = ({
   // Load translations when language changes
   const normalizeCode = (code?: string | null) => String(code || '').trim().toLowerCase();
 
-  const setLanguage = async (language: Language) => {
+  // Cache translations to make language switching instant
+  const translationsCacheRef = useRef<Map<string, Record<string, string>>>(new Map());
+  const inFlightRef = useRef<Map<string, Promise<Record<string, string>>>>(new Map());
+
+  const getCacheKey = (code: string) => `translations_cache_${code}`;
+
+  const readCachedTranslations = (code: string): Record<string, string> | null => {
     try {
-      setIsLoading(true);
-      const languageCode = normalizeCode(language.code) || language.code;
-      const translationsData = await getTranslationsByLanguage(languageCode);
-      
-      // Merge with default translations (fallback)
-      setTranslations({
-        ...DEFAULT_TRANSLATION_KEYS,
-        ...translationsData,
-      });
-      
+      if (typeof window === 'undefined') return null;
+      const raw = localStorage.getItem(getCacheKey(code));
+      if (!raw) return null;
+      const parsed = JSON.parse(raw) as unknown;
+      if (!parsed || typeof parsed !== 'object') return null;
+      return parsed as Record<string, string>;
+    } catch {
+      return null;
+    }
+  };
+
+  const writeCachedTranslations = (code: string, data: Record<string, string>) => {
+    try {
+      if (typeof window === 'undefined') return;
+      localStorage.setItem(getCacheKey(code), JSON.stringify(data));
+    } catch {
+      // ignore
+    }
+  };
+
+  const getInstantFallback = (code: string) => {
+    if (code === 'ar') {
+      return { ...DEFAULT_TRANSLATION_KEYS, ...(arabicPack as Record<string, string>) };
+    }
+    return { ...DEFAULT_TRANSLATION_KEYS };
+  };
+
+  const setLanguage = async (language: Language) => {
+    const languageCode = normalizeCode(language.code) || language.code;
+    try {
+      // Instant UI switch (no waiting)
       setCurrentLanguage(language);
       
       // Save to localStorage
@@ -66,6 +94,41 @@ export const LanguageProvider: React.FC<LanguageProviderProps> = ({
         document.documentElement.dir = language.isRTL ? 'rtl' : 'ltr';
         document.documentElement.lang = languageCode;
       }
+
+      // Apply cached translations immediately
+      const memCached = translationsCacheRef.current.get(languageCode);
+      const diskCached = memCached ? null : readCachedTranslations(languageCode);
+      const instant = memCached || diskCached || getInstantFallback(languageCode);
+      setTranslations(instant);
+      if (diskCached && !memCached) {
+        translationsCacheRef.current.set(languageCode, diskCached);
+      }
+
+      // Refresh from Firestore in background (still toggles instantly)
+      setIsLoading(true);
+      const existingInFlight = inFlightRef.current.get(languageCode);
+      const promise =
+        existingInFlight ||
+        (async () => {
+          const remote = await getTranslationsByLanguage(languageCode);
+          if (languageCode === 'ar') {
+            // For Arabic, always prefer the bundled `ar.json` pack over remote values to avoid
+            // stale/incorrect Firestore translations overriding the curated UI copy.
+            return { ...DEFAULT_TRANSLATION_KEYS, ...remote, ...(arabicPack as Record<string, string>) };
+          }
+          return { ...DEFAULT_TRANSLATION_KEYS, ...remote };
+        })();
+      inFlightRef.current.set(languageCode, promise);
+
+      const mergedRemote = await promise;
+      inFlightRef.current.delete(languageCode);
+
+      // Only apply if user didn't switch again
+      if (normalizeCode(currentLanguage?.code) === languageCode) {
+        setTranslations(mergedRemote);
+      }
+      translationsCacheRef.current.set(languageCode, mergedRemote);
+      writeCachedTranslations(languageCode, mergedRemote);
     } catch {
       // Failed to load translations
     } finally {

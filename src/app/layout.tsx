@@ -146,6 +146,12 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="ar" suppressHydrationWarning dir="rtl">
+      <head>
+        <link rel="dns-prefetch" href="https://firebasestorage.googleapis.com" />
+        <link rel="preconnect" href="https://firebasestorage.googleapis.com" crossOrigin="anonymous" />
+        <link rel="dns-prefetch" href="https://firebasestorage.app" />
+        <link rel="preconnect" href="https://firebasestorage.app" crossOrigin="anonymous" />
+      </head>
       <body
         className={`${inter.variable} ${poppins.variable} ${geistMono.variable} ${roboto.variable} ${openSans.variable} ${montserrat.variable} ${tajawal.variable} antialiased`}
       >

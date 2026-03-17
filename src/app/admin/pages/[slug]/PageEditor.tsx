@@ -127,6 +127,98 @@ const PageEditor = () => {
   const quillRef = React.useRef<{ root: { innerHTML: string }; clipboard?: { convert: (html: string) => unknown } } | null>(null);
   const [isClient, setIsClient] = useState(false);
   const isLoadingRef = React.useRef(false);
+  const normalizeCode = React.useCallback((code?: string | null) => String(code || '').trim().toLowerCase(), []);
+  const tt = React.useCallback(
+    (key: string, fallback: string) => {
+      const v = t(key);
+      return v && v !== key ? v : fallback;
+    },
+    [t],
+  );
+
+  const localizedPageTitle = tt(`admin.pages.${slug}.title`, pageTitle);
+
+  const decodeHtmlEntities = React.useCallback((input: string) => {
+    const decodeOnce = (raw: string) => {
+      // Browser-safe decode
+      if (typeof document !== 'undefined') {
+        const textarea = document.createElement('textarea');
+        textarea.innerHTML = raw;
+        return textarea.value;
+      }
+
+      // SSR fallback decode (best-effort)
+      return raw
+        .replaceAll('&lt;', '<')
+        .replaceAll('&gt;', '>')
+        .replaceAll('&amp;', '&')
+        .replaceAll('&quot;', '"')
+        .replaceAll('&#39;', "'");
+    };
+
+    let s = String(input || '');
+    // Some content can be double-encoded (e.g. &amp;lt;h2&amp;gt;)
+    // Decode a few times until it stabilizes.
+    for (let i = 0; i < 3; i++) {
+      const decoded = decodeOnce(s);
+      if (decoded === s) break;
+      s = decoded;
+    }
+    return s;
+  }, []);
+  const getDraftKey = React.useCallback(
+    (draftSlug: string, code: string) => `page_editor_draft_${draftSlug}_${normalizeCode(code) || code}`,
+    [normalizeCode],
+  );
+
+  const readDraft = React.useCallback(
+    (draftSlug: string, code: string) => {
+      try {
+        if (typeof window === 'undefined') return null;
+        const raw = localStorage.getItem(getDraftKey(draftSlug, code));
+        if (!raw) return null;
+        const parsed = JSON.parse(raw) as unknown;
+        if (!parsed || typeof parsed !== 'object') return null;
+        return parsed as {
+          savedAt: number;
+          data: Pick<PageContentTranslation, 'languageCode' | 'title' | 'content' | 'metaTitle' | 'metaDescription'>;
+        };
+      } catch {
+        return null;
+      }
+    },
+    [getDraftKey],
+  );
+
+  const writeDraft = React.useCallback(
+    (draftSlug: string, code: string, data: Pick<PageContentTranslation, 'languageCode' | 'title' | 'content' | 'metaTitle' | 'metaDescription'>) => {
+      try {
+        if (typeof window === 'undefined') return;
+        localStorage.setItem(
+          getDraftKey(draftSlug, code),
+          JSON.stringify({
+            savedAt: Date.now(),
+            data,
+          }),
+        );
+      } catch {
+        // ignore
+      }
+    },
+    [getDraftKey],
+  );
+
+  const clearDraft = React.useCallback(
+    (draftSlug: string, code: string) => {
+      try {
+        if (typeof window === 'undefined') return;
+        localStorage.removeItem(getDraftKey(draftSlug, code));
+      } catch {
+        // ignore
+      }
+    },
+    [getDraftKey],
+  );
 
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -134,6 +226,7 @@ const PageEditor = () => {
   const [languages, setLanguages] = useState<Language[]>([]);
   const [selectedLanguageCode, setSelectedLanguageCode] = useState<string>('en');
   const [settings, setSettings] = useState<Settings>(defaultSettings);
+  const [editorMode, setEditorMode] = useState<'visual' | 'html'>('visual');
   const [showInfoDialog, setShowInfoDialog] = useState(false);
   const [infoDialogMessage, setInfoDialogMessage] = useState('');
   const [infoDialogType, setInfoDialogType] = useState<'success' | 'error'>('error');
@@ -443,19 +536,36 @@ const PageEditor = () => {
         const translations = pageData.translations || [];
         
         // Set default language to current language or first available
-        const defaultLang = translations.find(t => t.languageCode === currentLanguage?.code) 
-          || translations.find(t => t.languageCode === 'en')
+        const defaultLang = translations.find(tr => normalizeCode(tr.languageCode) === normalizeCode(currentLanguage?.code)) 
+          || translations.find(tr => normalizeCode(tr.languageCode) === 'en')
           || translations[0];
         
         if (defaultLang) {
           // Setting default language
-          setSelectedLanguageCode(defaultLang.languageCode);
+          setSelectedLanguageCode(normalizeCode(defaultLang.languageCode) || defaultLang.languageCode);
           // Ensure content is properly set
           const content = defaultLang.content || '';
           setFormData({
             ...defaultLang,
             content
           });
+
+          // Restore any local draft (so unsaved edits survive refresh)
+          const normalizedLang = normalizeCode(defaultLang.languageCode) || defaultLang.languageCode;
+          const draft = readDraft(slug, normalizedLang);
+          if (draft?.data) {
+            const remoteUpdatedAtMs =
+              typeof (defaultLang as unknown as { updatedAt?: { toDate?: () => Date } }).updatedAt?.toDate === 'function'
+                ? (defaultLang as unknown as { updatedAt?: { toDate?: () => Date } }).updatedAt!.toDate!().getTime()
+                : 0;
+            if (!remoteUpdatedAtMs || draft.savedAt >= remoteUpdatedAtMs) {
+              setFormData(prev => ({
+                ...prev,
+                ...draft.data,
+                languageCode: normalizedLang,
+              }));
+            }
+          }
           
           // Parse FAQ items if this is FAQ page
           if (slug === 'faq') {
@@ -481,9 +591,9 @@ const PageEditor = () => {
           }
         } else {
           // No translations exist, create default
-          setSelectedLanguageCode(currentLanguage?.code || 'en');
+          setSelectedLanguageCode(normalizeCode(currentLanguage?.code) || 'en');
           setFormData({
-            languageCode: currentLanguage?.code || 'en',
+            languageCode: normalizeCode(currentLanguage?.code) || 'en',
             title: pageTitle,
             content: '',
             metaTitle: '',
@@ -506,7 +616,7 @@ const PageEditor = () => {
         }
       } else {
         // Page doesn't exist, initialize with default language
-        const langCode = currentLanguage?.code || 'en';
+        const langCode = normalizeCode(currentLanguage?.code) || 'en';
         setSelectedLanguageCode(langCode);
         setFormData({
           languageCode: langCode,
@@ -533,7 +643,7 @@ const PageEditor = () => {
       isLoadingRef.current = false;
       setLoading(false);
     }
-  }, [slug, pageTitle, currentLanguage, parseFAQContent, parseJobContent, loadStoreLocations]);
+  }, [slug, pageTitle, currentLanguage, parseFAQContent, parseJobContent, loadStoreLocations, normalizeCode]);
 
   useEffect(() => {
     // Setting isClient to true
@@ -646,10 +756,19 @@ const PageEditor = () => {
       // Prepare data with latest content
       const dataToSave: Omit<PageContentTranslation, 'updatedAt'> = {
         ...formData,
-        content: latestContent
+        content: editorMode === 'html' ? decodeHtmlEntities(latestContent) : latestContent,
       };
 
-      await updatePageTranslation(slug, selectedLanguageCode, dataToSave);
+      const normalizedSelected = normalizeCode(selectedLanguageCode) || selectedLanguageCode;
+      const normalizedDataToSave = {
+        ...dataToSave,
+        languageCode: normalizeCode(dataToSave.languageCode) || normalizedSelected,
+      };
+
+      await updatePageTranslation(slug, normalizedSelected, normalizedDataToSave);
+
+      // Clear local draft after successful save
+      clearDraft(slug, normalizedSelected);
       
       // Update local state with saved content
       setFormData(prev => ({ ...prev, content: latestContent }));
@@ -837,15 +956,17 @@ const PageEditor = () => {
   ], []);
 
   const handleLanguageChange = (languageCode: string) => {
-    setSelectedLanguageCode(languageCode);
+    const normalized = normalizeCode(languageCode) || languageCode;
+    setSelectedLanguageCode(normalized);
     
     // Load translation for selected language
     if (page) {
       const translations = page.translations || [];
-      const translation = translations.find(t => t.languageCode === languageCode);
+      const translation = translations.find(tr => normalizeCode(tr.languageCode) === normalized);
       if (translation) {
         setFormData({
           ...translation,
+          languageCode: normalized,
           content: translation.content || ''
         });
         
@@ -858,7 +979,7 @@ const PageEditor = () => {
       } else {
         // Create new translation for this language
         setFormData({
-          languageCode,
+          languageCode: normalized,
           title: pageTitle,
           content: '',
           metaTitle: '',
@@ -871,7 +992,48 @@ const PageEditor = () => {
         }
       }
     }
+
+    // Restore draft for selected language (if exists)
+    const draft = readDraft(slug, normalized);
+    if (draft?.data) {
+      setFormData(prev => ({
+        ...prev,
+        ...draft.data,
+        languageCode: normalized,
+      }));
+    }
   };
+
+  const editorModeLabel =
+    editorMode === 'html'
+      ? tt('admin.page_editor_mode_html', currentLanguage?.isRTL ? 'وضع HTML' : 'HTML Mode')
+      : tt('admin.page_editor_mode_visual', currentLanguage?.isRTL ? 'الوضع المرئي' : 'Visual Mode');
+
+  // Auto-save draft locally (so refresh won't lose edits)
+  useEffect(() => {
+    const code = normalizeCode(selectedLanguageCode) || selectedLanguageCode || 'en';
+    const payload = {
+      languageCode: code,
+      title: formData.title || '',
+      content: formData.content || '',
+      metaTitle: formData.metaTitle || '',
+      metaDescription: formData.metaDescription || '',
+    };
+
+    const timer = setTimeout(() => {
+      // Only save draft if there's anything typed
+      const hasAny =
+        Boolean(payload.title.trim()) ||
+        Boolean(payload.content.trim()) ||
+        Boolean(payload.metaTitle.trim()) ||
+        Boolean(payload.metaDescription.trim());
+      if (hasAny) {
+        writeDraft(slug, code, payload);
+      }
+    }, 350);
+
+    return () => clearTimeout(timer);
+  }, [formData.title, formData.content, formData.metaTitle, formData.metaDescription, selectedLanguageCode, slug, normalizeCode, writeDraft]);
 
   // FAQ management functions
   const addFAQItem = () => {
@@ -1038,7 +1200,7 @@ const PageEditor = () => {
         <div className="relative">
           <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-gray-900"></div>
           <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-xs font-semibold">
-            {t('admin.common.loading') || 'Loading...'}
+            {tt('common.loading', currentLanguage?.isRTL ? 'جاري التحميل...' : 'Loading...')}
           </div>
         </div>
       </div>
@@ -1049,8 +1211,15 @@ const PageEditor = () => {
     <div className="p-4 sm:p-6 md:p-8 max-w-5xl mx-auto">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
         <div>
-          <h1 className="text-2xl sm:text-3xl font-semibold text-gray-900">{pageTitle}</h1>
-          <p className="text-gray-500 text-sm mt-1">{t('admin.page_editor_subtitle', { page: pageTitle }) || `Manage multi-language content and SEO for ${pageTitle}`}</p>
+          <h1 className="text-2xl sm:text-3xl font-semibold text-gray-900">{localizedPageTitle}</h1>
+          <p className="text-gray-500 text-sm mt-1">
+            {tt(
+              'admin.page_editor_subtitle',
+              currentLanguage?.isRTL
+                ? `إدارة المحتوى متعدد اللغات وتحسين محركات البحث لصفحة ${localizedPageTitle}`
+                : `Manage multi-language content and SEO for ${localizedPageTitle}`,
+            ).replace('{{page}}', localizedPageTitle)}
+          </p>
         </div>
         <div className="flex items-center gap-2 sm:gap-3 flex-wrap">
           <a 
@@ -1076,23 +1245,33 @@ const PageEditor = () => {
         <label className="block text-sm font-bold text-gray-700 mb-2">{t('admin.page_editor_select_language') || 'Select Language'}</label>
         <div className="flex flex-wrap gap-2">
           {languages.map((lang) => {
-            const hasTranslation = page?.translations.some(t => t.languageCode === lang.code);
-            const isSelected = selectedLanguageCode === lang.code;
+            const langCode = normalizeCode(lang.code) || lang.code;
+            const isSelected = (normalizeCode(selectedLanguageCode) || selectedLanguageCode) === langCode;
+            const hasTranslation = page?.translations.some(tr => (normalizeCode(tr.languageCode) || tr.languageCode) === langCode);
             return (
               <button
                 key={lang.code}
                 type="button"
                 onClick={() => handleLanguageChange(lang.code)}
-                className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
+                title={isSelected ? (t('admin.selected') || 'Selected') : ''}
+                className={`px-4 py-2 rounded-lg text-sm font-semibold transition-all flex items-center gap-2 ${
                   isSelected
-                    ? 'bg-black text-white'
+                    ? 'bg-black text-white ring-2 ring-black ring-offset-2 shadow-sm'
                     : hasTranslation
-                    ? 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                    ? 'bg-gray-100 text-gray-800 hover:bg-gray-200'
                     : 'bg-gray-50 text-gray-500 hover:bg-gray-100 border border-gray-200'
                 }`}
               >
+                <span className={`text-[11px] px-2 py-0.5 rounded-full ${isSelected ? 'bg-white/15' : 'bg-white border border-gray-200'}`}>
+                  {langCode.toUpperCase()}
+                </span>
                 {lang.name} {lang.nativeName && `(${lang.nativeName})`}
-                {!hasTranslation && <span className="ml-2 text-xs">{t('admin.page_editor_new') || 'New'}</span>}
+                {!hasTranslation && <span className="text-xs opacity-80">{t('admin.page_editor_new') || 'New'}</span>}
+                {isSelected && (
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" className="h-4 w-4 ms-1" stroke="currentColor" strokeWidth="2">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+                  </svg>
+                )}
               </button>
             );
           })}
@@ -1711,7 +1890,32 @@ const PageEditor = () => {
           ) : (
             // Regular Editor for other pages
             <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
-              <label className="block text-sm font-bold text-gray-700 mb-3">{t('admin.page_editor_content_title') || 'Page Content'}</label>
+              <div className="flex items-center justify-between gap-3 mb-3">
+                <label className="block text-sm font-bold text-gray-700">{t('admin.page_editor_content_title') || 'Page Content'}</label>
+                <div className="flex items-center gap-2">
+                  <span className="text-xs text-gray-500">{editorModeLabel}</span>
+                  <div className="inline-flex rounded-lg border border-gray-200 bg-gray-50 p-1">
+                    <button
+                      type="button"
+                      onClick={() => setEditorMode('visual')}
+                      className={`px-3 py-1.5 text-xs font-semibold rounded-md transition-colors ${
+                        editorMode === 'visual' ? 'bg-black text-white' : 'text-gray-700 hover:bg-gray-100'
+                      }`}
+                    >
+                      {tt('admin.page_editor_mode_visual_button', currentLanguage?.isRTL ? 'مرئي' : 'Visual')}
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setEditorMode('html')}
+                      className={`px-3 py-1.5 text-xs font-semibold rounded-md transition-colors ${
+                        editorMode === 'html' ? 'bg-black text-white' : 'text-gray-700 hover:bg-gray-100'
+                      }`}
+                    >
+                      {tt('admin.page_editor_mode_html_button', 'HTML')}
+                    </button>
+                  </div>
+                </div>
+              </div>
               <div className="relative" id="editor-container">
                 {(() => {
                   if (!isClient) {
@@ -1730,11 +1934,52 @@ const PageEditor = () => {
                     );
                   }
 
+                  if (editorMode === 'html') {
+                    return (
+                      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                        <div>
+                          <textarea
+                            value={decodeHtmlEntities(formData.content || '')}
+                            onChange={(e) => handleChange('content', e.target.value)}
+                            placeholder={
+                              tt(
+                                'admin.page_editor_html_placeholder',
+                                currentLanguage?.isRTL
+                                  ? 'اكتب HTML هنا (يمكنك إضافة style inline).'
+                                  : 'Write HTML here (you can add inline styles).',
+                              )
+                            }
+                            className="w-full min-h-[400px] font-mono text-sm px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-black focus:border-transparent outline-none"
+                          />
+                          <p className="text-xs text-gray-500 mt-2">
+                            {tt(
+                              'admin.page_editor_html_hint',
+                              currentLanguage?.isRTL
+                                ? 'ملاحظة: لو رجعت للوضع المرئي، قد يتم تبسيط/تنظيف بعض الـ HTML حسب قيود المحرر. لو محتاج CSS خاص، خليك على وضع HTML.'
+                                : 'Note: switching back to Visual may sanitize some HTML. For custom CSS, keep HTML mode.',
+                            )}
+                          </p>
+                        </div>
+                        <div>
+                          <div className="border border-gray-200 rounded-lg p-4 min-h-[400px] bg-white">
+                            <div className="text-xs font-semibold text-gray-500 mb-3">
+                              {tt('admin.page_editor_html_preview', currentLanguage?.isRTL ? 'معاينة' : 'Preview')}
+                            </div>
+                            <div
+                              className="quill-content prose prose-sm max-w-none"
+                              dangerouslySetInnerHTML={{ __html: decodeHtmlEntities(formData.content || '') }}
+                            />
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  }
+
                   return (
                     <ReactQuill
                       key={`editor-${selectedLanguageCode}`}
                       theme="snow"
-                      value={formData.content || ''}
+                      value={decodeHtmlEntities(formData.content || '')}
                       onChange={(value: string) => {
                         // Update formData when content changes
                         // This will be called automatically when image is inserted

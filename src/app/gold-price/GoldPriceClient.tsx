@@ -23,18 +23,23 @@ const KARAT_CONFIG = [
 ] as const;
 
 const GoldPriceClient = () => {
-  const { currentLanguage } = useLanguage();
+  const { currentLanguage, t } = useLanguage();
   const { settings } = useSettings();
   const [data, setData] = useState<GoldPriceResponse | null>(null);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const isArabic = currentLanguage?.code === 'ar';
+  const isArabic = String(currentLanguage?.code || '').trim().toLowerCase() === 'ar';
+  const formatKaratLabel = (karat: string) => {
+    if (!isArabic) return karat;
+    const match = String(karat).match(/^(\d{2})K$/i);
+    return match ? `${t('gold_price.karat_prefix') || 'عيار'} ${match[1]}` : karat;
+  };
   const locale = isArabic ? 'ar-SA' : 'en-SA';
   const goldPricing = settings?.goldPricing;
-  const companyName = settings?.company?.name || (isArabic ? 'المتجر' : 'Store');
-  const goldPricesLabel = isArabic ? 'أسعار الذهب' : 'Gold Prices';
+  const companyName = settings?.company?.name || (t('gold_price.store') || (isArabic ? 'المتجر' : 'Store'));
+  const goldPricesLabel = t('gold_price.title') || (isArabic ? 'أسعار الذهب' : 'Gold Prices');
 
   const formatAmount = (value: number, currency = data?.currency || 'SAR') =>
     new Intl.NumberFormat(locale, {
@@ -44,9 +49,9 @@ const GoldPriceClient = () => {
     }).format(value);
 
   const formatTimestamp = (value?: string) => {
-    if (!value) return isArabic ? 'غير متاح' : 'Not available';
+    if (!value) return t('gold_price.not_available') || (isArabic ? 'غير متاح' : 'Not available');
     const parsed = new Date(value);
-    if (Number.isNaN(parsed.getTime())) return isArabic ? 'غير متاح' : 'Not available';
+    if (Number.isNaN(parsed.getTime())) return t('gold_price.not_available') || (isArabic ? 'غير متاح' : 'Not available');
 
     return new Intl.DateTimeFormat(locale, {
       dateStyle: 'medium',
@@ -66,7 +71,7 @@ const GoldPriceClient = () => {
       const result = (await response.json()) as GoldPriceResponse;
 
       if (!response.ok || !result.success || !result.pricePerGram) {
-        throw new Error(result.error || 'Failed to load gold prices');
+        throw new Error(result.error || (t('gold_price.load_failed') || 'Failed to load gold prices'));
       }
 
       setData(result);
@@ -106,11 +111,12 @@ const GoldPriceClient = () => {
     });
   }, [data?.pricePerGram, goldPricing?.cache?.pricePerGram, goldPricing?.karatTaxRates]);
 
-  const sourceLabel = data?.source === 'remote'
-    ? (isArabic ? 'مباشر من المصدر' : 'Live source')
-    : data?.source === 'manual'
-      ? (isArabic ? 'تحديث يدوي' : 'Manual source')
-      : (isArabic ? 'الكاش الحالي' : 'Cached source');
+  const sourceLabel =
+    data?.source === 'remote'
+      ? (t('gold_price.source_live') || (isArabic ? 'مباشر من المصدر' : 'Live source'))
+      : data?.source === 'manual'
+        ? (t('gold_price.source_manual') || (isArabic ? 'تحديث يدوي' : 'Manual source'))
+        : (t('gold_price.source_cached') || (isArabic ? 'الكاش الحالي' : 'Cached source'));
 
   return (
     <main className="min-h-screen bg-[radial-gradient(circle_at_top,_rgba(251,191,36,0.18),_transparent_35%),linear-gradient(180deg,#fffdf8_0%,#f8f5ee_100%)]">
@@ -122,12 +128,13 @@ const GoldPriceClient = () => {
                 {goldPricesLabel}
               </span>
               <h1 className="mt-4 max-w-2xl text-3xl font-bold leading-tight text-[#23190a] md:text-5xl">
-                {isArabic ? 'متابعة أسعار الذهب حسب العيارات بشكل واضح ومباشر.' : 'Track live gold prices by karat with a cleaner storefront view.'}
+                {t('gold_price.hero_title') || (isArabic ? 'تابع أسعار الذهب حسب العيارات بشكل واضح ومباشر.' : 'Track live gold prices by karat with a cleaner storefront view.')}
               </h1>
               <p className="mt-4 max-w-2xl text-sm leading-7 text-[#5d4c29] md:text-base">
-                {isArabic
-                  ? 'الصفحة تعرض سعر الجرام الحالي لكل عيار، ونسبة الضريبة المضبوطة من الإعدادات، والسعر النهائي المستخدم داخل المتجر قبل إضافة هامش كل منتج.'
-                  : 'This page shows the current gram rate for each karat, the configured karat tax, and the effective store rate before each product-specific making charge is added.'}
+                {t('gold_price.hero_desc')
+                  || (isArabic
+                    ? 'تعرض الصفحة سعر الجرام الحالي لكل عيار، ونسبة ضريبة العيار المضبوطة من الإعدادات، والسعر النهائي المستخدم داخل المتجر قبل إضافة هامش أو مصنعية المنتج.'
+                    : 'This page shows the current gram rate for each karat, the configured karat tax, and the effective store rate before each product-specific making charge is added.')}
               </p>
 
               <div className="mt-6 flex flex-wrap items-center gap-3">
@@ -137,13 +144,15 @@ const GoldPriceClient = () => {
                   disabled={refreshing}
                   className="rounded-full bg-[#1f1608] px-5 py-3 text-sm font-semibold text-white transition hover:bg-[#3a2b10] disabled:cursor-not-allowed disabled:opacity-60"
                 >
-                  {refreshing ? (isArabic ? 'جارٍ التحديث...' : 'Refreshing...') : (isArabic ? 'تحديث الأسعار' : 'Refresh Prices')}
+                  {refreshing
+                    ? (t('gold_price.refreshing') || (isArabic ? 'جارٍ التحديث...' : 'Refreshing...'))
+                    : (t('gold_price.refresh_prices') || (isArabic ? 'تحديث الأسعار' : 'Refresh Prices'))}
                 </button>
                 <Link
                   href="/shop"
                   className="rounded-full border border-[#d8c18f] bg-white px-5 py-3 text-sm font-semibold text-[#4a3917] transition hover:border-[#b99751] hover:text-[#2f240f]"
                 >
-                  {isArabic ? 'تصفح المنتجات' : 'Browse Products'}
+                  {t('gold_price.browse_products') || (isArabic ? 'تصفح المنتجات' : 'Browse Products')}
                 </Link>
               </div>
             </div>
@@ -152,7 +161,7 @@ const GoldPriceClient = () => {
               <div className="flex items-start justify-between gap-4">
                 <div>
                   <p className="text-sm font-medium text-[#7c6330]">
-                    {isArabic ? 'سعر 24K الأساسي للجرام' : '24K base gram rate'}
+                    {t('gold_price.base_24k_label') || (isArabic ? 'سعر 24K الأساسي للجرام' : '24K base gram rate')}
                   </p>
                   <p className="mt-2 text-3xl font-bold text-[#23190a]">
                     {formatAmount(Number(data?.pricePerGram || goldPricing?.cache?.pricePerGram || 0))}
@@ -165,15 +174,15 @@ const GoldPriceClient = () => {
 
               <dl className="mt-6 space-y-4 text-sm text-[#6e5a30]">
                 <div className="flex items-center justify-between gap-4 border-b border-[#f0e2be] pb-4">
-                  <dt>{isArabic ? 'آخر تحديث' : 'Last update'}</dt>
+                  <dt>{t('gold_price.last_update') || (isArabic ? 'آخر تحديث' : 'Last update')}</dt>
                   <dd className="font-medium text-[#2c200c]">{formatTimestamp(data?.fetchedAt || goldPricing?.cache?.fetchedAt)}</dd>
                 </div>
                 <div className="flex items-center justify-between gap-4 border-b border-[#f0e2be] pb-4">
-                  <dt>{isArabic ? 'المصدر المستخدم في التسعير' : 'Pricing source'}</dt>
+                  <dt>{t('gold_price.pricing_source') || (isArabic ? 'المصدر المستخدم في التسعير' : 'Pricing source')}</dt>
                   <dd className="font-medium text-[#2c200c]">{goldPricing?.provider === 'manual' ? (isArabic ? 'يدوي' : 'Manual') : 'goldpricez'}</dd>
                 </div>
                 <div className="flex items-center justify-between gap-4">
-                  <dt>{isArabic ? 'المتجر' : 'Store'}</dt>
+                  <dt>{t('gold_price.store') || (isArabic ? 'المتجر' : 'Store')}</dt>
                   <dd className="font-medium text-[#2c200c]">{companyName}</dd>
                 </div>
               </dl>
@@ -190,12 +199,13 @@ const GoldPriceClient = () => {
             <div className="mb-6 flex items-end justify-between gap-4">
               <div>
                 <h2 className="text-2xl font-bold text-[#23190a]">
-                  {isArabic ? 'أسعار الذهب حسب العيار' : 'Gold rates by karat'}
+                  {t('gold_price.rates_by_karat_title') || (isArabic ? 'أسعار الذهب حسب العيار' : 'Gold rates by karat')}
                 </h2>
                 <p className="mt-2 text-sm text-[#6f5d38]">
-                  {isArabic
-                    ? 'كل بطاقة تعرض السعر السوقي للجرام ثم السعر بعد ضريبة العيار المضبوطة من لوحة التحكم.'
-                    : 'Each card shows the market gram price first, then the price after the configured karat tax.'}
+                  {t('gold_price.rates_by_karat_desc')
+                    || (isArabic
+                      ? 'كل بطاقة تعرض السعر السوقي للجرام ثم السعر بعد ضريبة العيار المضبوطة من لوحة التحكم.'
+                      : 'Each card shows the market gram price first, then the price after the configured karat tax.')}
                 </p>
               </div>
             </div>
@@ -209,7 +219,7 @@ const GoldPriceClient = () => {
                   <div className="flex items-start justify-between gap-3">
                     <div>
                       <p className="text-xs font-semibold uppercase tracking-[0.28em] text-[#9b7a31]">
-                        {card.karat}
+                        {formatKaratLabel(card.karat)}
                       </p>
                       <h3 className="mt-2 text-2xl font-bold text-[#23190a]">
                         {formatAmount(card.marketPrice)}
@@ -222,17 +232,17 @@ const GoldPriceClient = () => {
 
                   <div className="mt-6 space-y-3 text-sm">
                     <div className="flex items-center justify-between rounded-2xl bg-white/80 px-4 py-3 text-[#644f24]">
-                      <span>{isArabic ? 'السعر السوقي / جرام' : 'Market / gram'}</span>
+                      <span>{t('gold_price.market_per_gram') || (isArabic ? 'السعر السوقي / جرام' : 'Market / gram')}</span>
                       <strong className="text-[#23190a]">{formatAmount(card.marketPrice)}</strong>
                     </div>
                     <div className="flex items-center justify-between rounded-2xl bg-white/80 px-4 py-3 text-[#644f24]">
-                      <span>{isArabic ? 'ضريبة العيار' : 'Karat tax'}</span>
+                      <span>{t('gold_price.karat_tax') || (isArabic ? 'ضريبة العيار' : 'Karat tax')}</span>
                       <strong className="text-[#23190a]">{card.taxRate}%</strong>
                     </div>
                     <div className="rounded-2xl bg-[#1f1608] px-4 py-4 text-white">
                       <div className="flex items-center justify-between gap-4 text-xs uppercase tracking-[0.22em] text-[#d9c18d]">
-                        <span>{isArabic ? 'السعر بعد ضريبة العيار' : 'After karat tax'}</span>
-                        <span>{card.karat}</span>
+                        <span>{t('gold_price.after_karat_tax') || (isArabic ? 'السعر بعد ضريبة العيار' : 'After karat tax')}</span>
+                        <span>{formatKaratLabel(card.karat)}</span>
                       </div>
                       <p className="mt-2 text-2xl font-bold">{formatAmount(card.storePrice)}</p>
                     </div>
@@ -243,12 +253,13 @@ const GoldPriceClient = () => {
 
             <div className="mt-8 rounded-[1.75rem] border border-[#ead9b2] bg-[#fff9ec] p-6">
               <h3 className="text-lg font-bold text-[#23190a]">
-                {isArabic ? 'كيف يتم التسعير داخل المتجر؟' : 'How pricing works in the store'}
+                {t('gold_price.how_pricing_works_title') || (isArabic ? 'كيف يتم التسعير داخل المتجر؟' : 'How pricing works in the store')}
               </h3>
               <p className="mt-3 text-sm leading-7 text-[#634f24]">
-                {isArabic
-                  ? 'السعر النهائي للمنتج الذهبي يعتمد على: سعر الذهب العالمي الحالي حسب العيار، ثم الوزن، ثم ضريبة نفس العيار من الإعدادات، وبعد ذلك يضاف هامش أو مصنعية المنتج نفسه إذا كانت مضبوطة داخل بيانات المنتج.'
-                  : 'A gold-priced product is calculated from the current gold market rate for its karat, then the product weight, then that karat tax from settings, and finally the product-specific making charge or manual adjustment if configured.'}
+                {t('gold_price.how_pricing_works_desc')
+                  || (isArabic
+                    ? 'السعر النهائي للمنتج الذهبي يعتمد على: سعر الذهب الحالي حسب العيار، ثم الوزن، ثم ضريبة نفس العيار من الإعدادات، وبعد ذلك تُضاف المصنعية/الهامش الخاص بالمنتج إذا كان مضبوطًا داخل بيانات المنتج.'
+                    : 'A gold-priced product is calculated from the current gold market rate for its karat, then the product weight, then that karat tax from settings, and finally the product-specific making charge or manual adjustment if configured.')}
               </p>
             </div>
           </div>

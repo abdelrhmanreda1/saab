@@ -41,7 +41,33 @@ const AboutClient: React.FC<AboutClientProps> = ({ initialPage }) => {
     () => (languageContext?.t ? languageContext.t : (key: string) => key),
     [languageContext],
   );
-  const isArabic = (currentLanguage?.code || 'en').toLowerCase() === 'ar';
+  const normalizeCode = (code?: string | null) => String(code || '').trim().toLowerCase();
+  const langCode = normalizeCode(currentLanguage?.code) || 'en';
+  const isArabic = langCode === 'ar';
+
+  const decodeHtmlEntities = (input: string) => {
+    const decodeOnce = (raw: string) => {
+      if (typeof document !== 'undefined') {
+        const textarea = document.createElement('textarea');
+        textarea.innerHTML = raw;
+        return textarea.value;
+      }
+      return raw
+        .replaceAll('&lt;', '<')
+        .replaceAll('&gt;', '>')
+        .replaceAll('&amp;', '&')
+        .replaceAll('&quot;', '"')
+        .replaceAll('&#39;', "'");
+    };
+
+    let s = String(input || '');
+    for (let i = 0; i < 3; i++) {
+      const decoded = decodeOnce(s);
+      if (decoded === s) break;
+      s = decoded;
+    }
+    return s;
+  };
 
   const defaultTitle = t('about.default_title') || (isArabic ? 'من نحن' : 'About Us');
   const defaultSubtitle =
@@ -79,13 +105,23 @@ const AboutClient: React.FC<AboutClientProps> = ({ initialPage }) => {
     }
 
     const translations = page.translations || [];
-    const langCode = currentLanguage?.code || 'en';
-    const pageTranslation = translations.find(t => t.languageCode === langCode)
-      || translations.find(t => t.languageCode === 'en')
-      || translations[0];
-    
-    setTranslation(pageTranslation || null);
-  }, [page, currentLanguage]);
+    const pickByCode = (code: string) =>
+      translations.find(tr => normalizeCode(tr.languageCode) === normalizeCode(code));
+
+    const exact = pickByCode(langCode);
+    const english = pickByCode('en');
+
+    // Important: When UI language is Arabic and there's no Arabic content,
+    // do NOT fall back to English content (to avoid showing English on Arabic UI).
+    if (langCode === 'ar') {
+      const hasArabic = Boolean(exact?.title?.trim() || exact?.content?.trim());
+      setTranslation(hasArabic ? exact! : null);
+      return;
+    }
+
+    const fallback = exact || english || translations[0] || null;
+    setTranslation(fallback);
+  }, [page, langCode]);
 
   const hasTranslationContent = Boolean(translation?.title?.trim() || translation?.content?.trim());
 
@@ -123,7 +159,7 @@ const AboutClient: React.FC<AboutClientProps> = ({ initialPage }) => {
         <div className="bg-white border border-gray-100 rounded-xl p-6 md:p-8">
           <div 
             className="quill-content prose prose-sm max-w-none prose-headings:font-heading prose-headings:font-semibold prose-headings:text-gray-900 prose-h2:text-base prose-h3:text-sm prose-p:text-xs prose-p:text-gray-600 prose-p:leading-relaxed prose-p:my-2"
-            dangerouslySetInnerHTML={{ __html: translation.content }}
+            dangerouslySetInnerHTML={{ __html: decodeHtmlEntities(translation.content) }}
           />
         </div>
       </div>
