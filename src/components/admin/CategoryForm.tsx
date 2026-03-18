@@ -145,8 +145,8 @@ const CategoryForm: React.FC<CategoryFormProps> = ({ categoryId, onSuccess, onCa
     const { name, value } = e.target;
     setCategory(prev => ({ ...prev, [name]: value === '' ? undefined : value }));
     
-    // Update translation if editing a specific language
-    if (selectedLanguageCode !== 'en' && (name === 'name' || name === 'description')) {
+    // Update translation for the currently selected language (ALL languages, including English)
+    if (name === 'name' || name === 'description') {
       setTranslations((prev: CategoryTranslation[]) => {
         const existing = prev.find((t: CategoryTranslation) => t.languageCode === selectedLanguageCode);
         if (existing) {
@@ -167,15 +167,41 @@ const CategoryForm: React.FC<CategoryFormProps> = ({ categoryId, onSuccess, onCa
     }
   };
 
-  // Handle language change
+  // Handle language change — save current language values first, then load new language
   const handleLanguageChange = (languageCode: string) => {
+    // Save current language values before switching
+    setTranslations((prev: CategoryTranslation[]) => {
+      const existingIndex = prev.findIndex((t: CategoryTranslation) => t.languageCode === selectedLanguageCode);
+      const currentTranslation: CategoryTranslation = {
+        languageCode: selectedLanguageCode,
+        name: category.name,
+        description: category.description,
+        updatedAt: Timestamp.now()
+      };
+      if (existingIndex >= 0) {
+        const updated = [...prev];
+        updated[existingIndex] = currentTranslation;
+        return updated;
+      } else {
+        return [...prev, currentTranslation];
+      }
+    });
+
+    // Switch to new language
     setSelectedLanguageCode(languageCode);
     const translation = translations.find((t: CategoryTranslation) => t.languageCode === languageCode);
     if (translation) {
       setCategory(prev => ({
         ...prev,
-        name: translation.name || prev.name,
-        description: translation.description || prev.description
+        name: translation.name || '',
+        description: translation.description || ''
+      }));
+    } else {
+      // New language with no translation yet — clear fields
+      setCategory(prev => ({
+        ...prev,
+        name: '',
+        description: ''
       }));
     }
   };
@@ -237,21 +263,19 @@ const CategoryForm: React.FC<CategoryFormProps> = ({ categoryId, onSuccess, onCa
         imageUrl = await getDownloadURL(uploadResult.ref);
       }
 
-      // Save current translation if editing a specific language
+      // Save current translation for the currently selected language (all languages)
       const finalTranslations = [...translations];
-      if (selectedLanguageCode !== 'en') {
-        const existingIndex = finalTranslations.findIndex((t: CategoryTranslation) => t.languageCode === selectedLanguageCode);
-        const currentTranslation: CategoryTranslation = {
-          languageCode: selectedLanguageCode,
-          name: category.name,
-          description: category.description,
-          updatedAt: Timestamp.now()
-        };
-        if (existingIndex >= 0) {
-          finalTranslations[existingIndex] = currentTranslation;
-        } else {
-          finalTranslations.push(currentTranslation);
-        }
+      const existingIndex = finalTranslations.findIndex((t: CategoryTranslation) => t.languageCode === selectedLanguageCode);
+      const currentTranslation: CategoryTranslation = {
+        languageCode: selectedLanguageCode,
+        name: category.name,
+        description: category.description,
+        updatedAt: Timestamp.now()
+      };
+      if (existingIndex >= 0) {
+        finalTranslations[existingIndex] = currentTranslation;
+      } else {
+        finalTranslations.push(currentTranslation);
       }
 
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
