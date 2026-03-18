@@ -781,7 +781,7 @@ const CheckoutPage = () => {
       }
 
       if (!phoneNumberString.startsWith('+966')) {
-        setOtpError('Only Saudi phone numbers are allowed.');
+        setOtpError(t('checkout.error_saudi_only') || 'Only Saudi phone numbers are allowed.');
         setSendingOtp(false);
         return;
       }
@@ -1322,13 +1322,13 @@ const CheckoutPage = () => {
           if (coupon && coupon.isActive) {
               const now = new Date();
               if (now < coupon.validFrom.toDate() || now > coupon.validUntil.toDate()) {
-                  setCouponError("Coupon is expired or not yet valid.");
+                  setCouponError(t('checkout.coupon_expired') || "Coupon is expired or not yet valid.");
                   return;
               }
 
               // Check total usage limit
               if (coupon.usageLimit && coupon.usedCount >= coupon.usageLimit) {
-                  setCouponError("This coupon has reached its usage limit.");
+                  setCouponError(t('checkout.coupon_usage_limit') || "This coupon has reached its usage limit.");
                   return;
               }
 
@@ -1336,7 +1336,7 @@ const CheckoutPage = () => {
               if (user?.uid && coupon.perUserLimit) {
                   const userUsage = await getUserCouponUsage(user.uid, coupon.code);
                   if (userUsage >= coupon.perUserLimit) {
-                      setCouponError(`You have already used this coupon ${coupon.perUserLimit} time${coupon.perUserLimit > 1 ? 's' : ''}.`);
+                      setCouponError(t('checkout.coupon_user_limit', { limit: coupon.perUserLimit }) || `You have already used this coupon ${coupon.perUserLimit} time${coupon.perUserLimit > 1 ? 's' : ''}.`);
                       return;
                   }
               }
@@ -1348,18 +1348,18 @@ const CheckoutPage = () => {
               });
               setCouponCode('');
           } else {
-              setCouponError("Invalid or inactive coupon code.");
+              setCouponError(t('checkout.coupon_invalid') || "Invalid or inactive coupon code.");
           }
       } catch (err: unknown) {
           // Failed to apply coupon
           // Check if it's a permissions error
           const errorObj = err as { message?: string; code?: string };
           if (errorObj?.message?.includes('permissions') || errorObj?.message?.includes('insufficient') || errorObj?.code === 'permission-denied') {
-              setCouponError("Unable to verify coupon due to permissions. Please try again later or contact support.");
+              setCouponError(t('checkout.coupon_permission_error') || "Unable to verify coupon due to permissions. Please try again later or contact support.");
           } else if (errorObj?.message?.includes('not found') || errorObj?.code === 'not-found') {
-              setCouponError("Invalid coupon code. Please check and try again.");
+              setCouponError(t('checkout.coupon_not_found') || "Invalid coupon code. Please check and try again.");
           } else {
-              setCouponError("Failed to apply coupon. Please check the code and try again.");
+              setCouponError(t('checkout.coupon_failed') || "Failed to apply coupon. Please check the code and try again.");
           }
       }
   };
@@ -1753,10 +1753,10 @@ const CheckoutPage = () => {
                 </svg>
             </div>
             <h1 className="text-3xl font-heading font-bold mb-2 text-gray-900">
-              Order Sent Successfully
+              {t('checkout.order_sent_success') || 'Order Sent Successfully'}
             </h1>
             <p className="text-gray-500 mb-6">
-              Your order has been saved and sent automatically to the store on WhatsApp.
+              {t('checkout.order_sent_desc') || 'Your order has been saved and sent automatically to the store on WhatsApp.'}
             </p>
             <div className="bg-gray-50 rounded-xl p-4 mb-8 space-y-4">
                 <div>
@@ -1767,7 +1767,7 @@ const CheckoutPage = () => {
                 </div>
                 
                 <div className="border-t border-gray-200 pt-4 mt-4 text-sm text-gray-600">
-                  The store has received your order details on WhatsApp. You can continue shopping now.
+                  {t('checkout.order_received_whatsapp') || 'The store has received your order details on WhatsApp. You can continue shopping now.'}
                 </div>
             </div>
             <Link href="/shop" className="block w-full bg-black text-white px-6 py-4 rounded-xl font-bold hover:bg-gray-800 transition-all transform hover:-translate-y-1 shadow-lg">
@@ -1803,21 +1803,21 @@ const CheckoutPage = () => {
               </svg>
             </div>
             <h3 className="text-xl font-heading font-bold text-gray-900 text-center mb-3">
-              Demo Mode
+              {t('checkout.demo_mode_title') || 'Demo Mode'}
             </h3>
             <p className="text-gray-600 text-center mb-6">
-              Phone verification is disabled in demo mode. Use any 6-digit code to verify.
+              {t('checkout.demo_mode_desc') || 'Phone verification is disabled in demo mode. Use any 6-digit code to verify.'}
             </p>
             <div className="bg-gray-50 rounded-lg p-4 mb-6">
               <p className="text-sm text-gray-700 text-center font-medium">
-                Example: <span className="font-mono bg-white px-2 py-1 rounded border">123456</span>
+                {t('checkout.demo_mode_example') || 'Example:'} <span className="font-mono bg-white px-2 py-1 rounded border">123456</span>
               </p>
             </div>
             <button
               onClick={() => setShowDemoModal(false)}
               className="w-full bg-black text-white px-6 py-3 rounded-lg font-bold hover:bg-gray-800 transition-colors"
             >
-              Got it
+              {t('checkout.demo_mode_ok') || 'Got it'}
             </button>
           </div>
         </div>
@@ -1854,7 +1854,7 @@ const CheckoutPage = () => {
                           <path fillRule="evenodd" d="M10 18a8 8 0 1 0 0-16 8 8 0 0 0 0 16Zm3.857-9.809a.75.75 0 0 0-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 1 0-1.06 1.061l2.5 2.5a.75.75 0 0 0 1.137-.089l4-5.5Z" clipRule="evenodd" />
                         </svg>
                         <div className="flex-1">
-                          <p className="font-medium text-green-900">Phone Already Verified</p>
+                          <p className="font-medium text-green-900">{t('checkout.phone_already_verified') || 'Phone Already Verified'}</p>
                           <p className="text-sm text-green-700">{user.phoneNumber}</p>
                         </div>
                       </div>
@@ -1862,7 +1862,7 @@ const CheckoutPage = () => {
                         onClick={nextStep} 
                         className="w-full bg-black text-white py-3 rounded-lg font-bold hover:bg-gray-800 transition-colors"
                       >
-                        Continue
+                        {t('checkout.continue') || 'Continue'}
                       </button>
                     </div>
                   ) : !otpSent ? (
@@ -2141,7 +2141,7 @@ const CheckoutPage = () => {
                             </option>
                           ))}
                         </select>
-                        <p className="text-xs text-gray-500 mt-2">Shipping is available for Saudi Arabia only.</p>
+                        <p className="text-xs text-gray-500 mt-2">{t('checkout.country_sa_only_note') || 'Shipping is available for Saudi Arabia only.'}</p>
                       </div>
 
                       {/* State */}
@@ -2263,10 +2263,10 @@ const CheckoutPage = () => {
                   {shippingRates.length === 0 ? (
                     <div className="text-center py-8">
                       <p className="text-gray-900 font-medium mb-3">
-                        Shipping will be confirmed on WhatsApp.
+                        {t('checkout.shipping_confirmed_whatsapp') || 'Shipping will be confirmed on WhatsApp.'}
                       </p>
                       <p className="text-sm text-gray-500">
-                        You can continue now and complete the order. Shipping cost and delivery method will be confirmed manually on WhatsApp until admin shipping is configured.
+                        {t('checkout.shipping_confirmed_whatsapp_desc') || 'You can continue now and complete the order. Shipping cost and delivery method will be confirmed manually on WhatsApp until admin shipping is configured.'}
                       </p>
                     </div>
                   ) : (
@@ -2374,16 +2374,16 @@ const CheckoutPage = () => {
                         {selectedShippingRate.name}
                       </p>
                       <p className="text-sm text-gray-500">
-                        {`${shippingCost === 0 ? 'Free Shipping' : formatPrice(shippingCost)} - ${selectedShippingRate.estimatedDays} day${selectedShippingRate.estimatedDays !== 1 ? 's' : ''}`}
+                        {`${shippingCost === 0 ? (t('checkout.free_shipping') || 'Free Shipping') : formatPrice(shippingCost)} - ${selectedShippingRate.estimatedDays} ${t('checkout.estimated_delivery', { days: selectedShippingRate.estimatedDays }) || `day${selectedShippingRate.estimatedDays !== 1 ? 's' : ''}`}`}
                       </p>
                     </>
                   ) : (
                     <>
                       <p className="font-medium text-gray-900">
-                        Shipping to be confirmed on WhatsApp
+                        {t('checkout.shipping_tbc_whatsapp_summary') || 'Shipping to be confirmed on WhatsApp'}
                       </p>
                       <p className="text-sm text-gray-500">
-                        Shipping cost and delivery method will be confirmed manually after the order is received.
+                        {t('checkout.shipping_tbc_whatsapp_summary_desc') || 'Shipping cost and delivery method will be confirmed manually after the order is received.'}
                       </p>
                     </>
                   )}
@@ -2403,13 +2403,12 @@ const CheckoutPage = () => {
               {currentStep === 5 && (
                 <div className="space-y-6">
                   <div className="rounded-2xl border border-green-200 bg-green-50 p-5">
-                    <h3 className="text-lg font-bold text-gray-900 mb-2">Order via WhatsApp</h3>
+                    <h3 className="text-lg font-bold text-gray-900 mb-2">{t('checkout.order_via_whatsapp') || 'Order via WhatsApp'}</h3>
                     <p className="text-sm text-gray-700 leading-6">
-                      All checkout details, discounts, shipping, and totals remain active. When you confirm, the order
-                      will be saved and a WhatsApp message with the full order summary will open automatically.
+                      {t('checkout.order_via_whatsapp_desc') || 'All checkout details, discounts, shipping, and totals remain active. When you confirm, the order will be saved and a WhatsApp message with the full order summary will open automatically.'}
                     </p>
                     <p className="text-sm text-gray-700 mt-3">
-                      WhatsApp number: <span className="font-bold">+{getWhatsAppOrderNumber()}</span>
+                      {t('checkout.whatsapp_number') || 'WhatsApp number'}: <span className="font-bold">+{getWhatsAppOrderNumber()}</span>
                     </p>
                   </div>
 
@@ -2437,7 +2436,7 @@ const CheckoutPage = () => {
                     >
                       {isProcessing
                         ? t('checkout.processing') || 'Processing...'
-                        : 'Send Order via WhatsApp'}
+                        : t('checkout.send_order_whatsapp') || 'Send Order via WhatsApp'}
                     </button>
                   </div>
                 </div>
@@ -2448,7 +2447,7 @@ const CheckoutPage = () => {
           {/* Right Column: Order Summary */}
           <div className="w-full lg:w-1/3 sticky top-24">
             <div className="bg-white p-6 rounded-2xl shadow-xl shadow-gray-100/50 border border-gray-100">
-              <h2 className="text-xl font-bold mb-6 pb-4 border-b border-gray-100 text-gray-900">Order Summary</h2>
+              <h2 className="text-xl font-bold mb-6 pb-4 border-b border-gray-100 text-gray-900">{t('checkout.order_summary') || 'Order Summary'}</h2>
               
               <div className="space-y-4 max-h-[400px] overflow-y-auto pr-2 custom-scrollbar">
                 {cart.map((item) => {
@@ -2535,7 +2534,7 @@ const CheckoutPage = () => {
                             <h4 className="text-sm font-medium text-gray-900 line-clamp-2">{item.productName}</h4>
                             {flashSale && (
                               <span className="bg-red-600 text-white text-[10px] font-bold px-2 py-0.5 uppercase tracking-wider rounded whitespace-nowrap">
-                                Flash Sale
+                                {t('checkout.flash_sale') || 'Flash Sale'}
                               </span>
                             )}
                           </div>
@@ -2567,7 +2566,7 @@ const CheckoutPage = () => {
                         onClick={applyCoupon} 
                         className="bg-gray-900 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-black transition-colors"
                     >
-                        Apply
+                        {t('checkout.apply') || 'Apply'}
                     </button>
                 </div>
                 {couponError && <p className="text-red-500 text-xs mt-2 flex items-center gap-1">
@@ -2580,7 +2579,7 @@ const CheckoutPage = () => {
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-3 h-3">
                         <path fillRule="evenodd" d="M10 18a8 8 0 1 0 0-16 8 8 0 0 0 0 16Zm3.857-9.809a.75.75 0 0 0-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 1 0-1.06 1.061l2.5 2.5a.75.75 0 0 0 1.137-.089l4-5.5Z" clipRule="evenodd" />
                     </svg>
-                    Code &quot;{appliedCoupon.code}&quot; applied!
+                    {t('checkout.coupon_applied', { code: appliedCoupon.code }) || `Code "${appliedCoupon.code}" applied!`}
                 </p>}
               </div>
 
@@ -2619,7 +2618,7 @@ const CheckoutPage = () => {
                     <span>{t('checkout.shipping') || 'Shipping'}</span>
                     <span className="text-sm text-gray-500 italic">
                       {shippingRates.length === 0
-                        ? 'To be confirmed on WhatsApp'
+                         ? (t('checkout.shipping_tbc_whatsapp') || 'To be confirmed on WhatsApp')
                         : t('checkout.select_shipping_hint') || 'Select shipping method'}
                     </span>
                   </div>
@@ -2648,8 +2647,8 @@ const CheckoutPage = () => {
               </div>
               
               <div className="mt-6 flex items-center justify-center gap-3 opacity-60 grayscale">
-                  <div className="text-[10px] font-bold border border-gray-300 rounded px-2 py-1">SSL SECURE</div>
-                  <div className="text-[10px] font-bold border border-gray-300 rounded px-2 py-1">MONEY BACK</div>
+                  <div className="text-[10px] font-bold border border-gray-300 rounded px-2 py-1">{t('checkout.ssl_secure') || 'SSL SECURE'}</div>
+                  <div className="text-[10px] font-bold border border-gray-300 rounded px-2 py-1">{t('checkout.money_back') || 'MONEY BACK'}</div>
               </div>
             </div>
           </div>

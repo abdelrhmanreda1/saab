@@ -414,8 +414,8 @@ const ProductClient: React.FC<ProductClientProps> = ({
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50">
         <div className="text-center">
-          <h1 className="text-3xl font-heading font-bold mb-4 text-gray-900">Product Not Found</h1>
-          <p className="text-gray-500">The product you are looking for does not exist or has been removed.</p>
+          <h1 className="text-3xl font-heading font-bold mb-4 text-gray-900">{t('product.not_found') || 'Product Not Found'}</h1>
+          <p className="text-gray-500">{t('product.not_found_desc') || 'The product you are looking for does not exist or has been removed.'}</p>
         </div>
       </div>
     );
@@ -847,11 +847,11 @@ const ProductClient: React.FC<ProductClientProps> = ({
                 </div>
                 {averageRating > 0 && (
                   <span className="text-sm text-gray-600">
-                    {averageRating.toFixed(1)} ({reviewCount} {reviewCount === 1 ? 'review' : 'reviews'})
+                    {averageRating.toFixed(1)} ({reviewCount} {reviewCount === 1 ? (t('product.review_singular') || 'review') : (t('product.review_plural') || 'reviews')})
                   </span>
                 )}
                 {averageRating === 0 && reviewCount === 0 && (
-                  <span className="text-sm text-gray-400">No reviews yet</span>
+                  <span className="text-sm text-gray-400">{t('product.no_reviews_yet') || 'No reviews yet'}</span>
                 )}
               </div>
               
@@ -925,7 +925,7 @@ const ProductClient: React.FC<ProductClientProps> = ({
                     <path fillRule="evenodd" d="M10.788 3.21c.448-1.077 1.976-1.077 2.424 0l2.082 5.007 5.404.433c1.164.093 1.636 1.545.749 2.305l-4.117 3.527 1.257 5.273c.271 1.136-.964 2.033-1.96 1.425L12 18.354 7.373 21.18c-.996.608-2.231-.29-1.96-1.425l1.257-5.273-4.117-3.527c-.887-.76-.415-2.212.749-2.305l5.404-.433 2.082-5.006z" clipRule="evenodd" />
                   </svg>
                   <span className="text-sm font-medium text-yellow-900">
-                    Earn <span className="font-bold">{product.loyaltyPoints}</span> loyalty points on purchase
+                    {t('product.earn_loyalty_points', { points: product.loyaltyPoints }) || (<>Earn <span className="font-bold">{product.loyaltyPoints}</span> loyalty points on purchase</>)}
                   </span>
                 </div>
               )}
@@ -936,7 +936,7 @@ const ProductClient: React.FC<ProductClientProps> = ({
                   {/* Colors Section */}
                   {product.variants.some(v => v.name.toLowerCase() === 'color') && (
                     <div>
-                      <h3 className="text-xs font-bold text-gray-900 uppercase tracking-wide mb-2">Color</h3>
+                      <h3 className="text-xs font-bold text-gray-900 uppercase tracking-wide mb-2">{t('product.color') || 'Color'}</h3>
                       <div className="flex gap-2 flex-wrap">
                         {Array.from(new Set(product.variants.filter(v => v.name.toLowerCase() === 'color').map(v => v.value))).map(colorValue => {
                           const colorObj = colors.find(c => c.name === colorValue);
@@ -959,7 +959,7 @@ const ProductClient: React.FC<ProductClientProps> = ({
                               title={`${(() => {
                                 const colorObj = colors.find(c => c.name === colorValue);
                                 return colorObj ? getColorName(colorObj, languageCode) : colorValue;
-                              })()} ${!hasStock ? '(Out of Stock)' : ''}`}
+                              })()} ${!hasStock ? `(${t('product.out_of_stock') || 'Out of Stock'})` : ''}`}
                             >
                               {colorObj ? (
                                   <span className="w-full h-full rounded-full block border border-black/5" style={{ backgroundColor: colorObj.hexCode }} />
@@ -976,7 +976,7 @@ const ProductClient: React.FC<ProductClientProps> = ({
                   {/* Size Section */}
                   {product.variants.some(v => v.name.toLowerCase() === 'size') && (
                     <div>
-                      <h3 className="text-xs font-bold text-gray-900 uppercase tracking-wide mb-2">Size</h3>
+                      <h3 className="text-xs font-bold text-gray-900 uppercase tracking-wide mb-2">{t('product.size_label') || 'Size'}</h3>
                       <div className="flex gap-2 flex-wrap">
                         {Array.from(new Set(product.variants.filter(v => v.name.toLowerCase() === 'size').map(v => v.value))).map(sizeValue => {
                           const isSelected = selectedSize === sizeValue;
@@ -1013,7 +1013,7 @@ const ProductClient: React.FC<ProductClientProps> = ({
                               title={`${(() => {
                                 const sizeObj = sizes.find(s => s.name === sizeValue);
                                 return sizeObj ? getSizeName(sizeObj, languageCode) : sizeValue;
-                              })()} ${!hasStock ? '(Out of Stock)' : ''}`}
+                              })()} ${!hasStock ? `(${t('product.out_of_stock') || 'Out of Stock'})` : ''}`}
                             >
                               {(() => {
                                 const sizeObj = sizes.find(s => s.name === sizeValue);
@@ -1079,7 +1079,7 @@ const ProductClient: React.FC<ProductClientProps> = ({
                   }}
                   className="flex-1 border-2 px-6 py-3 rounded-lg font-bold hover:opacity-90 transition-all transform active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
                   >
-                  {isOutOfStock ? 'Out of Stock' : needsVariantSelection ? 'Select Variant' : (t('products.add_to_cart') || 'Add to Cart')}
+                  {isOutOfStock ? (t('product.out_of_stock') || 'Out of Stock') : needsVariantSelection ? (t('product.select_variant') || 'Select Variant') : (t('products.add_to_cart') || 'Add to Cart')}
                   </button>
                   <button
                     onClick={handleBuyNow}
@@ -1140,11 +1140,11 @@ const ProductClient: React.FC<ProductClientProps> = ({
 
               {/* Product Specifications */}
               <div className="mt-8 pt-8 border-t border-gray-100">
-                <h3 className="text-lg font-bold text-gray-900 mb-4">Product Details</h3>
+                <h3 className="text-lg font-bold text-gray-900 mb-4">{t('product.product_details') || 'Product Details'}</h3>
                 <div className="space-y-3">
                   {category && (
                     <div className="flex justify-between py-2 border-b border-gray-100">
-                      <span className="text-sm font-medium text-gray-600">Category</span>
+                      <span className="text-sm font-medium text-gray-600">{t('product.category') || 'Category'}</span>
                       <Link href={`/shop?category=${category.slug}`} className="text-sm text-black hover:underline font-medium">
                         {getCategoryName(category, languageCode)}
                       </Link>
@@ -1152,7 +1152,7 @@ const ProductClient: React.FC<ProductClientProps> = ({
                   )}
                   {brand && (
                     <div className="flex justify-between py-2 border-b border-gray-100">
-                      <span className="text-sm font-medium text-gray-600">Brand</span>
+                      <span className="text-sm font-medium text-gray-600">{t('product.brand') || 'Brand'}</span>
                       <Link href={`/shop?brand=${brand.slug}`} className="text-sm text-black hover:underline font-medium">
                         {getBrandName(brand, languageCode)}
                       </Link>
@@ -1160,7 +1160,7 @@ const ProductClient: React.FC<ProductClientProps> = ({
                   )}
                   {product.variants && product.variants.length > 0 && (
                     <div className="flex justify-between py-2 border-b border-gray-100">
-                      <span className="text-sm font-medium text-gray-600">Available Variants</span>
+                      <span className="text-sm font-medium text-gray-600">{t('product.available_variants') || 'Available Variants'}</span>
                       <span className="text-sm text-black font-medium">
                         {Array.from(new Set(product.variants.map(v => v.name))).join(', ')}
                       </span>
@@ -1168,15 +1168,15 @@ const ProductClient: React.FC<ProductClientProps> = ({
                   )}
                   {selectedVariant && (
                     <div className="flex justify-between py-2 border-b border-gray-100">
-                      <span className="text-sm font-medium text-gray-600">Selected Variant</span>
+                      <span className="text-sm font-medium text-gray-600">{t('product.selected_variant') || 'Selected Variant'}</span>
                       <span className="text-sm text-black font-medium">{selectedVariant.value}</span>
                     </div>
                   )}
                   {selectedVariant && selectedVariant.stock !== undefined && (
                     <div className="flex justify-between py-2 border-b border-gray-100">
-                      <span className="text-sm font-medium text-gray-600">Stock Available</span>
+                      <span className="text-sm font-medium text-gray-600">{t('product.stock_available') || 'Stock Available'}</span>
                       <span className={`text-sm font-medium ${selectedVariant.stock > 0 ? 'text-green-600' : 'text-red-600'}`}>
-                        {selectedVariant.stock} units
+                        {selectedVariant.stock} {t('product.units') || 'units'}
                       </span>
                     </div>
                   )}
@@ -1315,7 +1315,7 @@ const ProductClient: React.FC<ProductClientProps> = ({
             }}
             className="flex-1 border-2 px-4 py-3 rounded-lg font-bold hover:opacity-90 transition-all transform active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none text-sm"
           >
-            {isOutOfStock ? 'Out of Stock' : needsVariantSelection ? 'Select Variant' : (t('products.add_to_cart') || 'Add to Cart')}
+            {isOutOfStock ? (t('product.out_of_stock') || 'Out of Stock') : needsVariantSelection ? (t('product.select_variant') || 'Select Variant') : (t('products.add_to_cart') || 'Add to Cart')}
           </button>
           <button
             onClick={handleBuyNow}

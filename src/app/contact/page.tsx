@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import { addContactSubmission } from '@/lib/firestore/contact_db';
 import { useSettings } from '../../context/SettingsContext';
 import { validateEmail, validateName, validateRequired } from '@/lib/utils/validation';
+import { useLanguage } from '@/context/LanguageContext';
 
 interface FormErrors {
   name?: string;
@@ -14,6 +15,7 @@ interface FormErrors {
 
 const ContactPage = () => {
   const { settings } = useSettings();
+  const { t } = useLanguage();
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -101,7 +103,7 @@ const ContactPage = () => {
       setErrors({});
     } catch {
       // Failed to submit contact form
-      setErrors({ message: 'Failed to send message. Please try again.' });
+      setErrors({ message: t('contact.error_send_failed') || 'Failed to send message. Please try again.' });
     } finally {
       setIsSubmitting(false);
     }
@@ -111,8 +113,8 @@ const ContactPage = () => {
     <div className="bg-white min-h-screen pb-20">
       <div className="bg-gray-50 border-b border-gray-100 py-8 mb-6">
         <div className="page-container text-center">
-          <h1 className="text-4xl md:text-5xl font-heading font-bold text-gray-900 mb-2">Contact Us</h1>
-          <p className="text-sm text-gray-500">Have questions or feedback? We&apos;d love to hear from you.</p>
+          <h1 className="text-4xl md:text-5xl font-heading font-bold text-gray-900 mb-2">{t('contact.title') || 'Contact Us'}</h1>
+          <p className="text-sm text-gray-500">{t('contact.subtitle') || "Have questions or feedback? We'd love to hear from you."}</p>
         </div>
       </div>
 
@@ -121,9 +123,9 @@ const ContactPage = () => {
           
           {/* Contact Info */}
           <div>
-            <h2 className="text-base font-semibold text-gray-900 mb-4">Get in Touch</h2>
+            <h2 className="text-base font-semibold text-gray-900 mb-4">{t('contact.get_in_touch') || 'Get in Touch'}</h2>
             <p className="text-xs text-gray-600 mb-6 leading-relaxed">
-              Our team is available Monday through Friday, 9am to 6pm to assist you with any inquiries regarding your order, our products, or general feedback.
+              {t('contact.availability') || 'Our team is available Monday through Friday, 9am to 6pm to assist you with any inquiries regarding your order, our products, or general feedback.'}
             </p>
 
             <div className="space-y-4">
@@ -135,7 +137,7 @@ const ContactPage = () => {
                     </svg>
                   </div>
                   <div>
-                    <h3 className="text-sm font-semibold text-gray-900 mb-1">Email</h3>
+                    <h3 className="text-sm font-semibold text-gray-900 mb-1">{t('contact.email') || 'Email'}</h3>
                     <p className="text-xs text-gray-500">{settings.company.email}</p>
                   </div>
                 </div>
@@ -149,7 +151,7 @@ const ContactPage = () => {
                     </svg>
                   </div>
                   <div>
-                    <h3 className="text-sm font-semibold text-gray-900 mb-1">Phone</h3>
+                    <h3 className="text-sm font-semibold text-gray-900 mb-1">{t('contact.phone') || 'Phone'}</h3>
                     <p className="text-xs text-gray-500">{settings.company.phone}</p>
                   </div>
                 </div>
@@ -164,7 +166,7 @@ const ContactPage = () => {
                     </svg>
                   </div>
                   <div>
-                    <h3 className="text-sm font-semibold text-gray-900 mb-1">Location</h3>
+                    <h3 className="text-sm font-semibold text-gray-900 mb-1">{t('contact.location') || 'Location'}</h3>
                     <p className="text-xs text-gray-500">
                       {settings.company.address && <>{settings.company.address}<br/></>}
                       {settings.company.city && `${settings.company.city}`}
@@ -189,15 +191,15 @@ const ContactPage = () => {
                     <path strokeLinecap="round" strokeLinejoin="round" d="m4.5 12.75 6 6 9-13.5" />
                   </svg>
                 </div>
-                <h3 className="text-base font-semibold mb-2">Message Sent!</h3>
-                <p className="text-xs text-gray-500">Thank you for contacting us. We will get back to you shortly.</p>
-                <button onClick={() => setSubmitted(false)} className="mt-4 text-xs underline font-medium">Send another message</button>
+                <h3 className="text-base font-semibold mb-2">{t('contact.success_title') || 'Message Sent!'}</h3>
+                <p className="text-xs text-gray-500">{t('contact.success_desc') || 'Thank you for contacting us. We will get back to you shortly.'}</p>
+                <button onClick={() => setSubmitted(false)} className="mt-4 text-xs underline font-medium">{t('contact.send_another') || 'Send another message'}</button>
               </div>
             ) : (
               <form onSubmit={handleSubmit} className="space-y-4">
                 <div className="grid grid-cols-2 gap-4">
                     <div>
-                        <label className="block text-xs font-medium mb-1.5 text-gray-700">Name</label>
+                        <label className="block text-xs font-medium mb-1.5 text-gray-700">{t('contact.name_label') || 'Name'}</label>
                         <input 
                             type="text" 
                             name="name" 
@@ -207,14 +209,14 @@ const ContactPage = () => {
                             className={`w-full bg-gray-50 border rounded-lg px-4 py-2 text-sm focus:ring-1 focus:ring-black outline-none transition-all ${
                               touched.name && errors.name ? 'border-red-300 focus:border-red-500' : 'border-gray-200 focus:border-black'
                             }`}
-                            placeholder="Your Name"
+                            placeholder={t('contact.name_placeholder') || 'Your Name'}
                         />
                         {touched.name && errors.name && (
                           <p className="mt-1 text-xs text-red-600">{errors.name}</p>
                         )}
                     </div>
                     <div>
-                        <label className="block text-xs font-medium mb-1.5 text-gray-700">Email</label>
+                        <label className="block text-xs font-medium mb-1.5 text-gray-700">{t('contact.email_label') || 'Email'}</label>
                         <input 
                             type="email" 
                             name="email" 
@@ -224,7 +226,7 @@ const ContactPage = () => {
                             className={`w-full bg-gray-50 border rounded-lg px-4 py-2 text-sm focus:ring-1 focus:ring-black outline-none transition-all ${
                               touched.email && errors.email ? 'border-red-300 focus:border-red-500' : 'border-gray-200 focus:border-black'
                             }`}
-                            placeholder="your@email.com"
+                            placeholder={t('contact.email_placeholder') || 'your@email.com'}
                         />
                         {touched.email && errors.email && (
                           <p className="mt-1 text-xs text-red-600">{errors.email}</p>
@@ -232,7 +234,7 @@ const ContactPage = () => {
                     </div>
                 </div>
                 <div>
-                    <label className="block text-xs font-medium mb-1.5 text-gray-700">Subject</label>
+                    <label className="block text-xs font-medium mb-1.5 text-gray-700">{t('contact.subject_label') || 'Subject'}</label>
                     <input 
                         type="text" 
                         name="subject" 
@@ -242,14 +244,14 @@ const ContactPage = () => {
                         className={`w-full bg-gray-50 border rounded-lg px-4 py-2 text-sm focus:ring-1 focus:ring-black outline-none transition-all ${
                           touched.subject && errors.subject ? 'border-red-300 focus:border-red-500' : 'border-gray-200 focus:border-black'
                         }`}
-                        placeholder="How can we help?"
+                        placeholder={t('contact.subject_placeholder') || 'How can we help?'}
                     />
                     {touched.subject && errors.subject && (
                       <p className="mt-1 text-xs text-red-600">{errors.subject}</p>
                     )}
                 </div>
                 <div>
-                    <label className="block text-xs font-medium mb-1.5 text-gray-700">Message</label>
+                    <label className="block text-xs font-medium mb-1.5 text-gray-700">{t('contact.message_label') || 'Message'}</label>
                     <textarea 
                         name="message" 
                         value={formData.message} 
@@ -259,7 +261,7 @@ const ContactPage = () => {
                         className={`w-full bg-gray-50 border rounded-lg px-4 py-2 text-sm focus:ring-1 focus:ring-black outline-none transition-all resize-none ${
                           touched.message && errors.message ? 'border-red-300 focus:border-red-500' : 'border-gray-200 focus:border-black'
                         }`}
-                        placeholder="Write your message here..."
+                        placeholder={t('contact.message_placeholder') || 'Write your message here...'}
                     ></textarea>
                     {touched.message && errors.message && (
                       <p className="mt-1 text-xs text-red-600">{errors.message}</p>
@@ -292,7 +294,7 @@ const ContactPage = () => {
                         ></path>
                       </svg>
                     )}
-                    {isSubmitting ? 'Sending...' : 'Send Message'}
+                    {isSubmitting ? (t('contact.sending') || 'Sending...') : (t('contact.send') || 'Send Message')}
                 </button>
               </form>
             )}

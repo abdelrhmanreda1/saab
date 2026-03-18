@@ -942,13 +942,13 @@ export default function Home() {
                   </span>
                   <h1 
                     className="mt-5 text-4xl md:text-6xl lg:text-7xl font-heading font-bold mb-5 md:mb-8 leading-[1.05] tracking-tight"
-                    style={{ color: banners[currentBannerIndex].titleColor || '#24180a' }}
+                    style={{ color: banners[currentBannerIndex].titleColor || '#fff' }}
                   >
                     {getBannerText(banners[currentBannerIndex], 'title') || getHomepageSectionTitle('hero', t('home.banner_title') || "Discover Your Elegance")}
                   </h1>
                   <p 
                     className="text-lg md:text-xl lg:text-2xl mb-8 md:mb-10 leading-relaxed max-w-xl"
-                    style={{ color: banners[currentBannerIndex].subtitleColor || '#5e4b23' }}
+                    style={{ color: banners[currentBannerIndex].subtitleColor || '#fff' }}
                   >
                     {getBannerText(banners[currentBannerIndex], 'subtitle') || getHomepageSectionSubtitle('hero', t('home.banner_subtitle') || "Explore our latest collection of premium modest fashion designed for the modern woman.")}
                   </p>
