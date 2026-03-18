@@ -80,3 +80,14 @@ export const deletePost = async (id: string) => {
   return await deleteDoc(docRef);
 };
 
+export const getLatestPosts = async (count: number = 3): Promise<BlogPost[]> => {
+  const q = query(
+    collection(db, BLOG_COLLECTION),
+    where('isPublished', '==', true),
+    orderBy('publishedAt', 'desc'),
+    limit(count)
+  );
+  const snapshot = await getDocs(q);
+  return snapshot.docs.map(d => ({ id: d.id, ...d.data() } as BlogPost));
+};
+

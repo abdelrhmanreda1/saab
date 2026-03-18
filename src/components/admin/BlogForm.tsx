@@ -103,11 +103,15 @@ const BlogForm: React.FC<BlogFormProps> = ({ postId, onSuccess, onCancel }) => {
   const [isClient, setIsClient] = useState(false);
   // const [, setQuillReady] = useState(false); // Currently unused but may be needed for future quill initialization tracking
 
+  const [activeTab, setActiveTab] = useState<'en' | 'ar'>('en');
   const [post, setPost] = useState<Partial<BlogPost>>({
     title: '',
+    title_ar: '',
     slug: '',
     excerpt: '',
+    excerpt_ar: '',
     content: '',
+    content_ar: '',
     coverImage: '',
     author: '',
     isPublished: false,
@@ -579,18 +583,49 @@ const BlogForm: React.FC<BlogFormProps> = ({ postId, onSuccess, onCancel }) => {
             ? `${t('common.edit') || 'Edit'} ${t('admin.blog_post') || 'Post'}`
             : `${t('common.add') || 'Add'} ${t('admin.blog_post') || 'Post'}`}
         </h2>
+
+        {/* Language Tab Toggle */}
+        <div className="flex gap-2 mb-6 p-1 bg-gray-100 rounded-lg w-fit">
+          <button
+            type="button"
+            onClick={() => setActiveTab('en')}
+            className={`flex items-center gap-2 px-4 py-2 rounded-md text-sm font-medium transition-all ${
+              activeTab === 'en'
+                ? 'bg-white text-gray-900 shadow-sm'
+                : 'text-gray-500 hover:text-gray-700'
+            }`}
+          >
+            🇬🇧 English
+          </button>
+          <button
+            type="button"
+            onClick={() => setActiveTab('ar')}
+            className={`flex items-center gap-2 px-4 py-2 rounded-md text-sm font-medium transition-all ${
+              activeTab === 'ar'
+                ? 'bg-white text-gray-900 shadow-sm'
+                : 'text-gray-500 hover:text-gray-700'
+            }`}
+          >
+            🇸🇦 العربية
+          </button>
+        </div>
         
         <form onSubmit={handleSubmit} className="space-y-6">
+          {/* Title + Slug */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
             <div>
-              <label className="block text-gray-700 text-sm font-semibold mb-2">{t('admin.blog_title_label') || 'Title'}</label>
+              <label className="block text-gray-700 text-sm font-semibold mb-2">
+                {activeTab === 'ar' ? 'العنوان (عربي)' : (t('admin.blog_title_label') || 'Title')}
+              </label>
               <input
                 type="text"
-                name="title"
-                value={post.title}
+                name={activeTab === 'ar' ? 'title_ar' : 'title'}
+                value={activeTab === 'ar' ? (post.title_ar || '') : post.title}
                 onChange={handleChange}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-900 focus:border-transparent outline-none transition-all"
-                required
+                className={`w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-900 focus:border-transparent outline-none transition-all ${activeTab === 'ar' ? 'text-right' : ''}`}
+                dir={activeTab === 'ar' ? 'rtl' : 'ltr'}
+                required={activeTab === 'en'}
+                placeholder={activeTab === 'ar' ? 'أدخل العنوان بالعربي' : 'Enter title in English'}
               />
             </div>
             <div>
@@ -668,38 +703,48 @@ const BlogForm: React.FC<BlogFormProps> = ({ postId, onSuccess, onCancel }) => {
         </div>
 
         <div>
-          <label className="block text-gray-700 text-sm font-semibold mb-2">{t('admin.blog_excerpt_label') || 'Excerpt'}</label>
+          <label className="block text-gray-700 text-sm font-semibold mb-2">
+            {activeTab === 'ar' ? 'المقتطف (عربي)' : (t('admin.blog_excerpt_label') || 'Excerpt')}
+          </label>
           <textarea
-            name="excerpt"
-            value={post.excerpt}
+            name={activeTab === 'ar' ? 'excerpt_ar' : 'excerpt'}
+            value={activeTab === 'ar' ? (post.excerpt_ar || '') : post.excerpt}
             onChange={handleChange}
             rows={3}
-            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-900 focus:border-transparent outline-none transition-all"
-            placeholder={t('admin.blog_excerpt_placeholder') || 'Brief summary of the post...'}
-            required
+            className={`w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-900 focus:border-transparent outline-none transition-all ${activeTab === 'ar' ? 'text-right' : ''}`}
+            dir={activeTab === 'ar' ? 'rtl' : 'ltr'}
+            placeholder={activeTab === 'ar' ? 'ملخص قصير للمقال...' : (t('admin.blog_excerpt_placeholder') || 'Brief summary of the post...')}
+            required={activeTab === 'en'}
           />
         </div>
 
         {/* Quill Editor for Content */}
         <div>
-          <label className="block text-gray-700 text-sm font-semibold mb-2">{t('admin.blog_content_label') || 'Content'}</label>
+          <label className="block text-gray-700 text-sm font-semibold mb-2">
+            {activeTab === 'ar' ? 'المحتوى (عربي)' : (t('admin.blog_content_label') || 'Content')}
+          </label>
           <div className="relative" id="blog-editor-container">
             {!isClient ? (
               <div className="w-full h-[300px] sm:h-[400px] border border-gray-300 rounded-lg flex items-center justify-center bg-gray-50">
                 <div className="text-gray-500 text-sm">{t('admin.products_editor_initializing') || 'Initializing editor...'}</div>
               </div>
             ) : (
-              <div className="bg-white rounded-lg border border-gray-300 overflow-hidden">
+              <div className={`bg-white rounded-lg border border-gray-300 overflow-hidden ${activeTab === 'ar' ? 'quill-rtl' : ''}`}>
                 <ReactQuill
+                  key={activeTab}
                   theme="snow"
-                  value={post.content || ''}
+                  value={activeTab === 'ar' ? (post.content_ar || '') : (post.content || '')}
                   onChange={(value: string) => {
-                    setPost(prev => ({ ...prev, content: value }));
+                    if (activeTab === 'ar') {
+                      setPost(prev => ({ ...prev, content_ar: value }));
+                    } else {
+                      setPost(prev => ({ ...prev, content: value }));
+                    }
                   }}
-                  placeholder={t('admin.blog_content_placeholder') || 'Start writing your blog post here...'}
+                  placeholder={activeTab === 'ar' ? 'ابدأ كتابة المقال هنا...' : (t('admin.blog_content_placeholder') || 'Start writing your blog post here...')}
                   modules={quillModules}
                   formats={quillFormats}
-                  style={{ minHeight: '300px' }}
+                  style={{ minHeight: '300px', direction: activeTab === 'ar' ? 'rtl' : 'ltr', textAlign: activeTab === 'ar' ? 'right' : 'left' }}
                   className="bg-white"
                   preserveWhitespace={true}
                 />

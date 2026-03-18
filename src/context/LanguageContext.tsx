@@ -35,9 +35,29 @@ export const LanguageProvider: React.FC<LanguageProviderProps> = ({
   children, 
   defaultLanguageCode = 'en' 
 }) => {
+  // Read saved preference synchronously to avoid flash of wrong language
+  const getInitialTranslations = (): Record<string, string> => {
+    let langCode = defaultLanguageCode;
+    if (typeof window !== 'undefined') {
+      const saved = (localStorage.getItem('preferredLanguage') || '').trim().toLowerCase();
+      if (saved) {
+        langCode = saved;
+      }
+    }
+    if (langCode === 'ar') {
+      // Set RTL direction immediately to prevent layout flash
+      if (typeof document !== 'undefined') {
+        document.documentElement.dir = 'rtl';
+        document.documentElement.lang = 'ar';
+      }
+      return { ...DEFAULT_TRANSLATION_KEYS, ...(arabicPack as Record<string, string>) };
+    }
+    return DEFAULT_TRANSLATION_KEYS;
+  };
+
   const [currentLanguage, setCurrentLanguage] = useState<Language | null>(null);
   const [languages, setLanguages] = useState<Language[]>([]);
-  const [translations, setTranslations] = useState<Record<string, string>>(DEFAULT_TRANSLATION_KEYS);
+  const [translations, setTranslations] = useState<Record<string, string>>(getInitialTranslations);
   const [isLoading, setIsLoading] = useState(true);
 
   // Load translations when language changes

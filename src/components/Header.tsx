@@ -34,12 +34,12 @@ const Header = () => {
     { name: t('nav.shop'), key: 'shop', path: '/shop', show: true },
     { name: goldPricesLabel, key: 'gold-prices', path: '/gold-price', show: true },
     { name: t('nav.categories'), key: 'categories', path: '/categories', show: true },
-    { name: t('common.brands'), key: 'brands', path: '/brands', show: true },
+    { name: t('nav.blog') || 'Blog', key: 'blog', path: '/blog', show: settings?.features?.blog },
     { name: t('nav.about'), key: 'about', path: '/about', show: settings?.pages?.aboutUs },
     { name: t('nav.contact'), key: 'contact', path: '/contact', show: settings?.pages?.contactUs },
   ].filter(link => link.show !== false);
   const leftNavLinks = navLinks.slice(0, 3);
-  const rightNavLinks = navLinks.slice(3, 6);
+  const rightNavLinks = navLinks.slice(3);
 
   // Calculate cart count only after mount to avoid hydration mismatch
   const cartItemCount = mounted ? cart.reduce((total, item) => total + item.quantity, 0) : 0;

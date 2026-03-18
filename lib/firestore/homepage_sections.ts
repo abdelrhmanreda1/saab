@@ -143,7 +143,7 @@ export const defaultHomepageSections: HomepageSection[] = [
     title: null,
     subtitle: null,
     enabled: true,
-    order: 12,
+    order: 13,
     itemLimit: null,
   },
   {
@@ -153,7 +153,7 @@ export const defaultHomepageSections: HomepageSection[] = [
     title: null,
     subtitle: null,
     enabled: true,
-    order: 13,
+    order: 12,
     itemLimit: 3,
   },
   {

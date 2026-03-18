@@ -1,21 +1,44 @@
 'use client';
 
-import React, { useState } from 'react';
-import Image from 'next/image';
+import React from 'react';
 import { useLanguage } from '../context/LanguageContext';
 import { Language } from '@/lib/firestore/internationalization';
+
+// Hardcoded fallback language objects so the toggle works immediately,
+// even before Firebase finishes loading the languages list.
+const FALLBACK_AR: Language = {
+  code: 'ar',
+  name: 'Arabic',
+  nativeName: 'العربية',
+  isRTL: true,
+  isActive: true,
+  flag: '',
+  createdAt: null as any,
+  updatedAt: null as any,
+};
+
+const FALLBACK_EN: Language = {
+  code: 'en',
+  name: 'English',
+  nativeName: 'English',
+  isRTL: false,
+  isActive: true,
+  flag: '',
+  createdAt: null as any,
+  updatedAt: null as any,
+};
 
 interface LanguageSwitcherProps {
   variant?: 'default' | 'minimal';
 }
 
 const LanguageSwitcher: React.FC<LanguageSwitcherProps> = ({ variant = 'default' }) => {
-  const { currentLanguage, languages, setLanguage, isLoading } = useLanguage();
-  const isRTL = currentLanguage?.isRTL || false;
-  const [isOpen, setIsOpen] = useState(false);
+  const { currentLanguage, languages, setLanguage } = useLanguage();
   const isMinimal = variant === 'minimal';
 
-  const getFallbackCode = () => {
+  // Determine current language code
+  const getCurrentCode = (): string => {
+    if (currentLanguage?.code) return currentLanguage.code.toLowerCase();
     if (typeof document !== 'undefined') {
       const fromHtml = (document.documentElement.lang || '').trim().toLowerCase();
       if (fromHtml) return fromHtml;
@@ -27,115 +50,63 @@ const LanguageSwitcher: React.FC<LanguageSwitcherProps> = ({ variant = 'default'
     return 'ar';
   };
 
-  const handleLanguageChange = async (language: Language) => {
-    await setLanguage(language);
-    setIsOpen(false);
+  const currentCode = getCurrentCode();
+  const isArabic = currentCode === 'ar';
+
+  const handleToggle = async () => {
+    const targetCode = isArabic ? 'en' : 'ar';
+
+    // Try to find the language in the Firebase-loaded list first
+    let targetLang = languages.find(
+      (l) => l.code.toLowerCase() === targetCode
+    );
+
+    // If Firebase hasn't loaded yet, use the hardcoded fallback
+    if (!targetLang) {
+      targetLang = targetCode === 'ar' ? FALLBACK_AR : FALLBACK_EN;
+    }
+
+    await setLanguage(targetLang);
   };
 
-  const effectiveCode = (currentLanguage?.code || getFallbackCode()).toUpperCase();
-  const canOpen = !isLoading && languages.length > 0;
+  // Label: show the language we'll switch TO
+  const toggleLabel = isArabic ? 'EN' : 'AR';
 
   return (
-    <div className="relative">
-      <button
-        onClick={() => {
-          if (!canOpen) return;
-          setIsOpen((prev) => !prev);
-        }}
-        className={`flex items-center gap-2 transition-colors ${
-          isMinimal
-            ? 'min-w-[56px] justify-center rounded-full bg-transparent px-2 py-1.5 text-[#6f6148] hover:bg-[#fff7e8]'
-            : 'rounded-lg border border-gray-300 px-3 py-2 hover:bg-gray-50'
-        } ${canOpen ? '' : 'cursor-default opacity-80'}`}
-        aria-label="Change language"
-        aria-disabled={!canOpen}
-        disabled={!canOpen}
+    <button
+      onClick={handleToggle}
+      className={`relative flex items-center gap-1.5 transition-all duration-200 ${
+        isMinimal
+          ? 'min-w-[48px] justify-center rounded-full px-2.5 py-1.5 text-[#6f6148] hover:bg-[#fff7e8] active:scale-95'
+          : 'rounded-lg border border-gray-300 px-3 py-2 hover:bg-gray-50 active:scale-95'
+      }`}
+      aria-label={`Switch to ${isArabic ? 'English' : 'Arabic'}`}
+      title={isArabic ? 'Switch to English' : 'التبديل إلى العربية'}
+    >
+      {/* Globe icon */}
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        fill="none"
+        viewBox="0 0 24 24"
+        strokeWidth={1.5}
+        stroke="currentColor"
+        className={isMinimal ? 'h-3.5 w-3.5' : 'h-4 w-4'}
       >
-        {currentLanguage?.flag && (
-          currentLanguage.flag.startsWith('http') ? (
-            <Image
-              src={currentLanguage.flag}
-              alt={`${currentLanguage.name} flag`}
-              width={20}
-              height={20}
-              className={`${isMinimal ? 'h-4 w-4' : 'h-5 w-5'} rounded object-cover`}
-              unoptimized
-            />
-          ) : (
-            <span className={isMinimal ? 'text-sm leading-none' : 'text-lg'}>{currentLanguage.flag}</span>
-          )
-        )}
+        <path
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          d="M12 21a9.004 9.004 0 0 0 8.716-6.747M12 21a9.004 9.004 0 0 1-8.716-6.747M12 21c2.485 0 4.5-4.03 4.5-9S14.485 3 12 3m0 18c-2.485 0-4.5-4.03-4.5-9S9.515 3 12 3m0 0a8.997 8.997 0 0 1 7.843 4.582M12 3a8.997 8.997 0 0 0-7.843 4.582m15.686 0A11.953 11.953 0 0 1 12 10.5c-2.998 0-5.74-1.1-7.843-2.918m15.686 0A8.959 8.959 0 0 1 21 12c0 .778-.099 1.533-.284 2.253m0 0A17.919 17.919 0 0 1 12 16.5c-3.162 0-6.133-.815-8.716-2.247m0 0A9.015 9.015 0 0 1 3 12c0-1.605.42-3.113 1.157-4.418"
+        />
+      </svg>
 
-        <span className={`${isMinimal ? 'text-[11px] font-semibold uppercase tracking-[0.08em]' : 'text-sm font-medium'}`}>
-          {isMinimal
-            ? effectiveCode
-            : currentLanguage?.nativeName || currentLanguage?.name || 'Language'}
-        </span>
-
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          fill="none"
-          viewBox="0 0 24 24"
-          strokeWidth={1.5}
-          stroke="currentColor"
-          className={`${isMinimal ? 'h-3.5 w-3.5' : 'h-4 w-4'} transition-transform ${isOpen ? 'rotate-180' : ''} ${
-            canOpen ? '' : 'opacity-60'
-          }`}
-        >
-          <path strokeLinecap="round" strokeLinejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
-        </svg>
-      </button>
-
-      {isOpen && canOpen && (
-        <>
-          <div className="fixed inset-0 z-10" onClick={() => setIsOpen(false)} />
-          <div className="absolute end-0 top-full z-20 mt-2 max-h-64 min-w-[180px] overflow-y-auto rounded-lg border border-gray-200 bg-white shadow-lg">
-            {languages.map((language) => (
-              <button
-                key={language.id || language.code}
-                onClick={() => handleLanguageChange(language)}
-                className={`flex w-full items-center gap-3 px-4 py-2.5 transition-colors hover:bg-gray-50 ${
-                  currentLanguage?.code === language.code ? 'bg-[#fff7e8] text-[#a87923]' : ''
-                } ${isRTL ? 'text-right' : 'text-left'}`}
-              >
-                {language.flag && (
-                  language.flag.startsWith('http') ? (
-                    <Image
-                      src={language.flag}
-                      alt={`${language.name} flag`}
-                      width={20}
-                      height={20}
-                      className="h-5 w-5 rounded object-cover"
-                      unoptimized
-                    />
-                  ) : (
-                    <span className="text-lg">{language.flag}</span>
-                  )
-                )}
-
-                <div className="flex flex-col">
-                  <span className="text-sm font-medium">{language.nativeName}</span>
-                  <span className="text-xs text-gray-500">{language.name}</span>
-                </div>
-
-                {currentLanguage?.code === language.code && (
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    strokeWidth={2}
-                    stroke="currentColor"
-                    className="ms-auto h-4 w-4"
-                  >
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
-                  </svg>
-                )}
-              </button>
-            ))}
-          </div>
-        </>
-      )}
-    </div>
+      <span
+        className={`font-bold tracking-wide ${
+          isMinimal ? 'text-[11px] uppercase tracking-[0.08em]' : 'text-xs'
+        }`}
+      >
+        {toggleLabel}
+      </span>
+    </button>
   );
 };
 

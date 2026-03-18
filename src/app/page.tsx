@@ -632,7 +632,7 @@ export default function Home() {
 
     return (
       <>
-        <div className="group relative flex flex-col rounded-2xl border-2 border-gray-200 bg-white overflow-hidden transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl hover:border-gray-300 shadow-lg">
+        <div className="group relative flex flex-col h-full rounded-2xl border-2 border-gray-200 bg-white overflow-hidden transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl hover:border-gray-300 shadow-lg">
           <Link 
             href={`/products/${product.slug}`} 
             className="absolute inset-0 z-10"
@@ -1196,7 +1196,7 @@ export default function Home() {
                     <p className="text-base md:text-lg lg:text-xl text-gray-600 font-medium">{getHomepageSectionSubtitle('featured', t('home.featured_desc') || 'Curated picks just for you')}</p>
                 </div>
                 <Link href="/shop" className="text-sm font-medium text-gray-900 border-b-2 border-gray-900 pb-1 hover:opacity-70 transition-opacity hidden md:block">
-                  {t('home.view_all') || 'View All'} →
+                  {t('home.view_all') || 'View All'} {isArabic ? '←' : '→'}
                 </Link>
             </div>
             {/* Desktop Grid */}
@@ -1207,9 +1207,9 @@ export default function Home() {
             </div>
             {/* Mobile Horizontal Scroll - Swipeable */}
             <div className="md:hidden overflow-x-auto pb-4 -mx-4 px-4 scrollbar-hide" style={{ scrollSnapType: 'x mandatory', WebkitOverflowScrolling: 'touch' }}>
-              <div className="flex gap-4" style={{ width: 'max-content' }}>
+              <div className="flex gap-4 items-stretch" style={{ width: 'max-content' }}>
                 {featuredProducts.slice(0, getHomepageSectionLimit('featured', 8)).map((product, index) => (
-                  <div key={product.id} className={`flex-shrink-0 w-[45vw] ${index === 0 ? 'pl-4' : ''}`} style={{ scrollSnapAlign: 'start' }}>
+                  <div key={product.id} className={`flex-shrink-0 w-[45vw] h-full ${index === 0 ? 'pl-4' : ''}`} style={{ scrollSnapAlign: 'start' }}>
                     <ProductCard product={product} />
                   </div>
                 ))}
@@ -1217,7 +1217,7 @@ export default function Home() {
             </div>
             <div className="text-center mt-10 md:hidden">
               <Link href="/shop" className="text-sm font-medium text-gray-900 border-b-2 border-gray-900 pb-1 hover:opacity-70 transition-opacity">
-                {t('home.view_all') || 'View All'} →
+                {t('home.view_all') || 'View All'} {isArabic ? '←' : '→'}
               </Link>
             </div>
           </div>
@@ -1328,9 +1328,9 @@ export default function Home() {
                 </div>
                 {/* Mobile Horizontal Scroll - Swipeable */}
                 <div className="md:hidden overflow-x-auto pb-4 -mx-4 px-4 scrollbar-hide" style={{ scrollSnapType: 'x mandatory', WebkitOverflowScrolling: 'touch' }}>
-                  <div className="flex gap-4" style={{ width: 'max-content' }}>
+                  <div className="flex gap-4 items-stretch" style={{ width: 'max-content' }}>
                     {popularProducts.slice(0, getHomepageSectionLimit('popular', 8)).map((product, index) => (
-                      <div key={product.id} className={`flex-shrink-0 w-[45vw] ${index === 0 ? 'pl-4' : ''}`} style={{ scrollSnapAlign: 'start' }}>
+                      <div key={product.id} className={`flex-shrink-0 w-[45vw] h-full ${index === 0 ? 'pl-4' : ''}`} style={{ scrollSnapAlign: 'start' }}>
                         <ProductCard product={product} />
                       </div>
                     ))}
@@ -1359,7 +1359,7 @@ export default function Home() {
                     key={category.id} 
                     href={`/shop?category=${category.slug}`} 
                     className={`group relative rounded-2xl overflow-hidden bg-gray-100 border-2 border-gray-200 hover:border-gray-300 transition-all shadow-lg hover:shadow-xl ${
-                      index === 0 ? 'md:col-span-2 md:row-span-2 h-64 md:h-96' : 'h-48 md:h-64'
+                      index === 0 ? 'md:col-span-2 md:row-span-2 h-48 md:h-96' : 'h-48 md:h-64'
                     }`}
                   >
                       {category.imageUrl ? (
@@ -1376,7 +1376,7 @@ export default function Home() {
                       <div className="absolute inset-0 flex flex-col items-center justify-center z-20 p-4 text-center">
                           <span className="text-white text-xl md:text-2xl font-heading font-bold">{getCategoryName(category, languageCode)}</span>
                           <span className="text-white/90 text-xs mt-2 opacity-0 group-hover:opacity-100 transition-opacity transform translate-y-2 group-hover:translate-y-0 duration-300">
-                              {t('home.explore') || 'Explore'} →
+                              {t('home.explore') || 'Explore'} {isArabic ? '←' : '→'}
                           </span>
                       </div>
                   </Link>
@@ -1411,9 +1411,9 @@ export default function Home() {
           </div>
           {/* Mobile Horizontal Scroll - Swipeable */}
           <div className="md:hidden overflow-x-auto pb-4 -mx-4 px-4 scrollbar-hide" style={{ scrollSnapType: 'x mandatory', WebkitOverflowScrolling: 'touch' }}>
-            <div className="flex gap-4" style={{ width: 'max-content' }}>
+            <div className="flex gap-4 items-stretch" style={{ width: 'max-content' }}>
               {latestProducts.slice(0, getHomepageSectionLimit('latest', 8)).map((product, index) => (
-                <div key={product.id} className={`flex-shrink-0 w-[45vw] ${index === 0 ? 'pl-4' : ''}`} style={{ scrollSnapAlign: 'start' }}>
+                <div key={product.id} className={`flex-shrink-0 w-[45vw] h-full ${index === 0 ? 'pl-4' : ''}`} style={{ scrollSnapAlign: 'start' }}>
                   <ProductCard product={product} />
                 </div>
               ))}
@@ -1459,7 +1459,7 @@ export default function Home() {
                       <p className="text-white/90 text-sm line-clamp-2">{collection.description}</p>
                     )}
                     <span className="inline-block mt-3 text-white text-sm font-medium border-b border-white/50 pb-1 group-hover:border-white transition-colors">
-                      {t('home.explore_collection') || 'Explore Collection'} →
+                      {t('home.explore_collection') || 'Explore Collection'} {isArabic ? '←' : '→'}
                     </span>
                   </div>
                 </Link>
@@ -1579,7 +1579,7 @@ export default function Home() {
                       </div>
                     </div>
                     <div className="flex items-center text-sm font-medium text-gray-900 group-hover:text-gray-600 transition-colors">
-                      {t('home.view_bundle') || 'View Bundle'} →
+                      {t('home.view_bundle') || 'View Bundle'} {isArabic ? '←' : '→'}
                     </div>
                   </div>
                 </Link>
@@ -1731,7 +1731,7 @@ export default function Home() {
                 </p>
               </div>
               <Link href="/blog" className="text-sm font-medium text-gray-900 border-b-2 border-gray-900 pb-1 hover:opacity-70 transition-opacity hidden md:block">
-                {t('home.view_all_blog') || 'View All'} →
+                {t('home.view_all_blog') || 'View All'} {isArabic ? '←' : '→'}
               </Link>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
@@ -1739,27 +1739,33 @@ export default function Home() {
               <Link
                 key={post.id}
                 href={`/blog/${post.slug}`}
-                className="group bg-white rounded-2xl overflow-hidden border border-gray-200 hover:border-gray-300 transition-all shadow-sm hover:shadow-lg"
+                className="group bg-white rounded-2xl overflow-hidden border border-gray-200 hover:border-gray-300 transition-all shadow-sm hover:shadow-lg h-full flex flex-col"
               >
-                {post.coverImage && (
-                  <div className="relative h-48 w-full overflow-hidden">
+                <div className="relative h-48 w-full overflow-hidden bg-gray-100 flex-shrink-0">
+                  {post.coverImage ? (
                     <SafeImage
                       src={getSafeImageUrl(post.coverImage)}
-                      alt={post.title}
+                      alt={isArabic && post.title_ar ? post.title_ar : post.title}
                       className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
                       loading="lazy"
                     />
-                  </div>
-                )}
-                <div className="p-6">
+                  ) : (
+                    <div className="absolute inset-0 flex items-center justify-center text-gray-400">
+                      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1} stroke="currentColor" className="w-12 h-12">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 001.5-1.5V6a1.5 1.5 0 00-1.5-1.5H3.75A1.5 1.5 0 002.25 6v12a1.5 1.5 0 001.5 1.5zm10.5-11.25h.008v.008h-.008V8.25zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z" />
+                      </svg>
+                    </div>
+                  )}
+                </div>
+                <div className="p-6 flex flex-col flex-grow">
                   <h3 className="text-xl font-heading font-bold text-gray-900 mb-2 group-hover:text-gray-600 transition-colors line-clamp-2">
-                    {post.title}
+                    {isArabic && post.title_ar ? post.title_ar : post.title}
                   </h3>
-                  <p className="text-gray-600 text-sm mb-4 line-clamp-3">
-                    {post.excerpt}
+                  <p className="text-gray-600 text-sm mb-4 line-clamp-3 flex-grow">
+                    {isArabic && post.excerpt_ar ? post.excerpt_ar : post.excerpt}
                   </p>
-                  <div className="flex items-center text-sm font-medium text-gray-900 group-hover:text-gray-600 transition-colors">
-                    {t('home.read_more') || 'Read More'} →
+                  <div className="flex items-center text-sm font-medium text-gray-900 group-hover:text-gray-600 transition-colors mt-auto">
+                    {t('home.read_more') || 'Read More'} {isArabic ? '←' : '→'}
                   </div>
                 </div>
               </Link>
@@ -1767,7 +1773,7 @@ export default function Home() {
           </div>
           <div className="text-center mt-10 md:hidden">
             <Link href="/blog" className="text-sm font-medium text-gray-900 border-b-2 border-gray-900 pb-1 hover:opacity-70 transition-opacity">
-              {t('home.view_all_blog') || 'View All'} →
+              {t('home.view_all_blog') || 'View All'} {isArabic ? '←' : '→'}
             </Link>
           </div>
           </div>

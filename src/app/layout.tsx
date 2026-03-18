@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Inter, Poppins, Geist_Mono, Roboto, Open_Sans, Montserrat, Tajawal } from "next/font/google";
+import { Inter, Poppins, Geist_Mono, Roboto, Open_Sans, Montserrat, Cairo } from "next/font/google";
 import "./globals.css";
 import { getSettings } from '@/lib/firestore/settings_db';
 import { getSEOSettings, getPageSEO } from '@/lib/firestore/seo_db';
@@ -56,11 +56,12 @@ const montserrat = Montserrat({
   display: "swap",
 });
 
-// Arabic font for RTL languages (clean + readable)
-const tajawal = Tajawal({
+// Arabic font for RTL languages – Cairo is the most popular Arabic Google Font
+// with excellent letter connectivity and readability
+const cairo = Cairo({
   variable: "--font-arabic",
-  subsets: ["arabic"],
-  weight: ["300", "400", "500", "700", "800"],
+  subsets: ["arabic", "latin"],
+  weight: ["300", "400", "500", "600", "700", "800"],
   display: "swap",
 });
 
@@ -153,7 +154,7 @@ export default function RootLayout({
         <link rel="preconnect" href="https://firebasestorage.app" crossOrigin="anonymous" />
       </head>
       <body
-        className={`${inter.variable} ${poppins.variable} ${geistMono.variable} ${roboto.variable} ${openSans.variable} ${montserrat.variable} ${tajawal.variable} antialiased`}
+        className={`${inter.variable} ${poppins.variable} ${geistMono.variable} ${roboto.variable} ${openSans.variable} ${montserrat.variable} ${cairo.variable} antialiased`}
       >
         <AuthProvider>
           <LanguageProvider defaultLanguageCode="ar">

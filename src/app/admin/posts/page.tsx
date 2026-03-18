@@ -332,7 +332,7 @@ const BlogList = () => {
                         <span className={`px-2.5 py-1 inline-flex text-xs font-semibold rounded-md ${
                           post.isPublished ? 'bg-green-50 text-green-700' : 'bg-yellow-50 text-yellow-700'
                         }`}>
-                          {post.isPublished ? 'Published' : 'Draft'}
+                          {post.isPublished ? (t('admin.posts_status_published') || 'Published') : (t('admin.posts_status_draft') || 'Draft')}
                         </span>
                       </td>
                       <td className="px-4 sm:px-6 py-4">
@@ -394,7 +394,7 @@ const BlogList = () => {
                         <span className={`px-2.5 py-1 inline-flex text-xs font-semibold rounded-md ${
                           post.isPublished ? 'bg-green-50 text-green-700' : 'bg-yellow-50 text-yellow-700'
                         }`}>
-                          {post.isPublished ? 'Published' : 'Draft'}
+                          {post.isPublished ? (t('admin.posts_status_published') || 'Published') : (t('admin.posts_status_draft') || 'Draft')}
                         </span>
                         {post.createdAt?.toDate && (
                           <span className="text-xs text-gray-500">
