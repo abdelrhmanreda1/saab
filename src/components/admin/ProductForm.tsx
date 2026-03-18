@@ -137,6 +137,9 @@ const ProductForm: React.FC<ProductFormProps> = ({ productId, onSuccess, onCance
   const [translations, setTranslations] = useState<ProductTranslation[]>([]);
   const [settings, setSettings] = useState<Settings>(defaultSettings);
   const { t, currentLanguage } = useLanguage();
+  // Use ref for t to prevent imageHandler/quillModules from recreating when translations load
+  const tRef = useRef(t);
+  useEffect(() => { tRef.current = t; }, [t]);
 
   useEffect(() => {
     setIsClient(true);
@@ -302,7 +305,7 @@ const ProductForm: React.FC<ProductFormProps> = ({ productId, onSuccess, onCance
 
       // Validate file size (max 5MB)
       if (file.size > 5 * 1024 * 1024) {
-        setInfoDialogMessage(t('common.image_size_error') || 'Image size must be less than 5MB. Please compress the image and try again.');
+        setInfoDialogMessage(tRef.current('common.image_size_error') || 'Image size must be less than 5MB. Please compress the image and try again.');
         setShowInfoDialog(true);
         return;
       }
@@ -310,7 +313,7 @@ const ProductForm: React.FC<ProductFormProps> = ({ productId, onSuccess, onCance
       // Show loading state
       const loadingMsg = document.createElement('div');
       loadingMsg.id = 'image-upload-loading';
-      loadingMsg.textContent = t('admin.products_uploading_image') || 'Uploading image...';
+      loadingMsg.textContent = tRef.current('admin.products_uploading_image') || 'Uploading image...';
       loadingMsg.style.cssText = 'position: fixed; top: 20px; right: 20px; background: #000; color: #fff; padding: 12px 20px; border-radius: 4px; z-index: 10000;';
       document.body.appendChild(loadingMsg);
 
@@ -379,7 +382,7 @@ const ProductForm: React.FC<ProductFormProps> = ({ productId, onSuccess, onCance
         // Remove loading message
         const loadingElement = document.getElementById('image-upload-loading');
         if (loadingElement) {
-          loadingElement.textContent = t('admin.products_image_upload_success') || 'Image uploaded successfully!';
+          loadingElement.textContent = tRef.current('admin.products_image_upload_success') || 'Image uploaded successfully!';
           loadingElement.style.background = '#10b981';
           setTimeout(() => {
             if (loadingElement.parentNode) {
@@ -395,25 +398,25 @@ const ProductForm: React.FC<ProductFormProps> = ({ productId, onSuccess, onCance
           loadingElement.parentNode?.removeChild(loadingElement);
         }
 
-        let errorMessage = t('admin.products_upload_failed_prefix') || 'Failed to upload image. ';
+        let errorMessage = tRef.current('admin.products_upload_failed_prefix') || 'Failed to upload image. ';
         const errorObj = error as { code?: string; message?: string };
         if (errorObj.code === 'storage/unauthorized') {
-          errorMessage += t('admin.products_upload_unauthorized') || 'You are not authorized to upload images.';
+          errorMessage += tRef.current('admin.products_upload_unauthorized') || 'You are not authorized to upload images.';
         } else if (errorObj.code === 'storage/canceled') {
-          errorMessage += t('admin.products_upload_canceled') || 'Upload was canceled.';
+          errorMessage += tRef.current('admin.products_upload_canceled') || 'Upload was canceled.';
         } else if (errorObj.code === 'storage/unknown') {
-          errorMessage += t('admin.products_upload_unknown') || 'An unknown error occurred.';
+          errorMessage += tRef.current('admin.products_upload_unknown') || 'An unknown error occurred.';
         } else if (errorObj.message) {
           errorMessage += errorObj.message;
         } else {
-          errorMessage += t('common.please_try_again') || 'Please try again.';
+          errorMessage += tRef.current('common.please_try_again') || 'Please try again.';
         }
         
         setInfoDialogMessage(errorMessage);
         setShowInfoDialog(true);
       }
     };
-  }, [getQuillInstance, t]);
+  }, [getQuillInstance]);
 
   const quillModules = useMemo(() => ({
     toolbar: {
@@ -667,31 +670,35 @@ const ProductForm: React.FC<ProductFormProps> = ({ productId, onSuccess, onCance
       }
 
       // Firestore does not allow undefined field values – clean them before save
-      const cleanedProductData: Omit<Product, 'id' | 'createdAt' | 'updatedAt' | 'analytics'> & { 
-        images: string[];
-        translations?: ProductTranslation[];
-      } = { ...finalProductData };
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const cleanedProductData: any = { ...finalProductData };
       if (!finalProductData.discountType) {
-        delete (cleanedProductData as Partial<typeof cleanedProductData>).discountType;
-        delete (cleanedProductData as Partial<typeof cleanedProductData>).discountValue;
+        delete cleanedProductData.discountType;
+        delete cleanedProductData.discountValue;
       } else if (finalProductData.discountValue === undefined || Number.isNaN(finalProductData.discountValue as number)) {
-        delete (cleanedProductData as Partial<typeof cleanedProductData>).discountValue;
+        delete cleanedProductData.discountValue;
       }
       if (finalProductData.salePrice === undefined || Number.isNaN(finalProductData.salePrice as number)) {
-        delete (cleanedProductData as Partial<typeof cleanedProductData>).salePrice;
+        delete cleanedProductData.salePrice;
       }
       if (finalProductData.pricingMode !== 'gold') {
-        delete (cleanedProductData as Partial<typeof cleanedProductData>).goldKarat;
-        delete (cleanedProductData as Partial<typeof cleanedProductData>).goldWeight;
-        delete (cleanedProductData as Partial<typeof cleanedProductData>).makingChargeType;
-        delete (cleanedProductData as Partial<typeof cleanedProductData>).makingChargeValue;
-        delete (cleanedProductData as Partial<typeof cleanedProductData>).manualPriceAdjustment;
-        delete (cleanedProductData as Partial<typeof cleanedProductData>).goldPricingSnapshot;
+        delete cleanedProductData.goldKarat;
+        delete cleanedProductData.goldWeight;
+        delete cleanedProductData.makingChargeType;
+        delete cleanedProductData.makingChargeValue;
+        delete cleanedProductData.manualPriceAdjustment;
+        delete cleanedProductData.goldPricingSnapshot;
       } else {
-        delete (cleanedProductData as Partial<typeof cleanedProductData>).salePrice;
-        delete (cleanedProductData as Partial<typeof cleanedProductData>).discountType;
-        delete (cleanedProductData as Partial<typeof cleanedProductData>).discountValue;
+        delete cleanedProductData.salePrice;
+        delete cleanedProductData.discountType;
+        delete cleanedProductData.discountValue;
       }
+      // Generic cleanup: remove ALL remaining undefined fields
+      Object.keys(cleanedProductData).forEach(key => {
+        if (cleanedProductData[key] === undefined) {
+          delete cleanedProductData[key];
+        }
+      });
 
       // Save current translation if editing a specific language
       const finalTranslations = [...translations];
@@ -748,9 +755,9 @@ const ProductForm: React.FC<ProductFormProps> = ({ productId, onSuccess, onCance
       }
 
       onSuccess();
-    } catch {
-      setError('Failed to save product.');
-      // Failed to save product
+    } catch (err) {
+      console.error('Failed to save product:', err);
+      setError(t('admin.products_save_failed') || 'Failed to save product.');
     } finally {
       setLoading(false);
     }
@@ -890,13 +897,13 @@ const ProductForm: React.FC<ProductFormProps> = ({ productId, onSuccess, onCance
               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-900 focus:border-transparent outline-none transition-all"
               min="0"
               step="0.01"
-              placeholder="Enter sale price"
+              placeholder={t('admin.products_enter_sale_price') || 'Enter sale price'}
               disabled={product.pricingMode === 'gold'}
             />
-            <p className="text-xs text-gray-500 mt-1">If set, this will be the discounted price</p>
+            <p className="text-xs text-gray-500 mt-1">{t('admin.products_sale_price_hint') || 'If set, this will be the discounted price'}</p>
           </div>
           <div>
-            <label htmlFor="discountType" className="block text-gray-700 text-sm font-semibold mb-2">Discount Type</label>
+            <label htmlFor="discountType" className="block text-gray-700 text-sm font-semibold mb-2">{t('admin.products_discount_type') || 'Discount Type'}</label>
             <select
               id="discountType"
               name="discountType"
@@ -907,14 +914,14 @@ const ProductForm: React.FC<ProductFormProps> = ({ productId, onSuccess, onCance
               }}
               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-900 focus:border-transparent outline-none transition-all bg-white"
             >
-              <option value="">None</option>
-              <option value="percentage">Percentage (%)</option>
-              <option value="fixed">Fixed Amount</option>
+              <option value="">{t('admin.products_discount_none') || 'None'}</option>
+              <option value="percentage">{t('admin.products_discount_percentage') || 'Percentage (%)'}</option>
+              <option value="fixed">{t('admin.products_discount_fixed_amount') || 'Fixed Amount'}</option>
             </select>
           </div>
           <div>
             <label htmlFor="discountValue" className="block text-gray-700 text-sm font-semibold mb-2">
-              Discount Value {product.discountType === 'percentage' ? '(%)' : ''}
+              {t('admin.products_discount_value') || 'Discount Value'} {product.discountType === 'percentage' ? '(%)' : ''}
             </label>
             <input
               type="number"
@@ -947,15 +954,15 @@ const ProductForm: React.FC<ProductFormProps> = ({ productId, onSuccess, onCance
         {product.pricingMode === 'gold' && (
           <div className="border-t border-gray-200 pt-6">
             <div className="mb-4">
-              <h3 className="text-base font-semibold text-gray-900">Gold Pricing</h3>
+              <h3 className="text-base font-semibold text-gray-900">{t('admin.products_gold_pricing') || 'Gold Pricing'}</h3>
               <p className="text-xs text-gray-500 mt-1">
-                Dynamic price is based on cached gold rate, product weight, making charge, manual adjustment, and gold tax settings.
+                {t('admin.products_gold_pricing_hint') || 'Dynamic price is based on cached gold rate, product weight, making charge, manual adjustment, and gold tax settings.'}
               </p>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
               <div>
-                <label htmlFor="goldKarat" className="block text-gray-700 text-sm font-semibold mb-2">Gold Karat</label>
+                <label htmlFor="goldKarat" className="block text-gray-700 text-sm font-semibold mb-2">{t('admin.products_gold_karat') || 'Gold Karat'}</label>
                 <select
                   id="goldKarat"
                   name="goldKarat"
@@ -971,7 +978,7 @@ const ProductForm: React.FC<ProductFormProps> = ({ productId, onSuccess, onCance
               </div>
 
               <div>
-                <label htmlFor="goldWeight" className="block text-gray-700 text-sm font-semibold mb-2">Weight (grams)</label>
+                <label htmlFor="goldWeight" className="block text-gray-700 text-sm font-semibold mb-2">{t('admin.products_gold_weight') || 'Weight (grams)'}</label>
                 <input
                   type="number"
                   id="goldWeight"
@@ -986,7 +993,7 @@ const ProductForm: React.FC<ProductFormProps> = ({ productId, onSuccess, onCance
               </div>
 
               <div>
-                <label htmlFor="makingChargeType" className="block text-gray-700 text-sm font-semibold mb-2">Making Charge Type</label>
+                <label htmlFor="makingChargeType" className="block text-gray-700 text-sm font-semibold mb-2">{t('admin.products_making_charge_type') || 'Making Charge Type'}</label>
                 <select
                   id="makingChargeType"
                   name="makingChargeType"
@@ -994,14 +1001,14 @@ const ProductForm: React.FC<ProductFormProps> = ({ productId, onSuccess, onCance
                   onChange={handleChange}
                   className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-900 focus:border-transparent outline-none transition-all bg-white"
                 >
-                  <option value="fixed">Fixed Amount</option>
-                  <option value="percentage">Percentage</option>
+                  <option value="fixed">{t('admin.products_discount_fixed_amount') || 'Fixed Amount'}</option>
+                  <option value="percentage">{t('admin.products_discount_percentage_short') || 'Percentage'}</option>
                 </select>
               </div>
 
               <div>
                 <label htmlFor="makingChargeValue" className="block text-gray-700 text-sm font-semibold mb-2">
-                  Making Charge {product.makingChargeType === 'percentage' ? '(%)' : ''}
+                  {t('admin.products_making_charge') || 'Making Charge'} {product.makingChargeType === 'percentage' ? '(%)' : ''}
                 </label>
                 <input
                   type="number"
@@ -1017,7 +1024,7 @@ const ProductForm: React.FC<ProductFormProps> = ({ productId, onSuccess, onCance
               </div>
 
               <div>
-                <label htmlFor="manualPriceAdjustment" className="block text-gray-700 text-sm font-semibold mb-2">Manual Adjustment</label>
+                <label htmlFor="manualPriceAdjustment" className="block text-gray-700 text-sm font-semibold mb-2">{t('admin.products_manual_adjustment') || 'Manual Adjustment'}</label>
                 <input
                   type="number"
                   id="manualPriceAdjustment"
@@ -1032,7 +1039,7 @@ const ProductForm: React.FC<ProductFormProps> = ({ productId, onSuccess, onCance
 
               <div className="md:col-span-2 lg:col-span-3">
                 <div className="h-full rounded-lg border border-amber-200 bg-amber-50 px-4 py-3">
-                  <p className="text-sm font-semibold text-amber-900">Current Gold Pricing Settings</p>
+                  <p className="text-sm font-semibold text-amber-900">{t('admin.products_gold_pricing_settings') || 'Current Gold Pricing Settings'}</p>
                   <p className="text-xs text-amber-800 mt-1">
                     Provider: {settings.goldPricing?.provider || 'manual'} | Refresh: {settings.goldPricing?.refreshIntervalSeconds || 60}s
                   </p>
@@ -1209,7 +1216,7 @@ const ProductForm: React.FC<ProductFormProps> = ({ productId, onSuccess, onCance
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {settings?.features?.category && (
             <div>
-              <label htmlFor="category" className="block text-gray-700 text-sm font-bold mb-2">Category</label>
+              <label htmlFor="category" className="block text-gray-700 text-sm font-bold mb-2">{t('admin.categories') || 'Category'}</label>
               <select
                 id="category"
                 name="category"
@@ -1218,7 +1225,7 @@ const ProductForm: React.FC<ProductFormProps> = ({ productId, onSuccess, onCance
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-900 focus:border-transparent outline-none transition-all"
                 required
               >
-                <option value="">Select Category</option>
+                <option value="">{t('admin.products_select_category') || 'Select Category'}</option>
                 {categories.map(cat => (
                   <option key={cat.id} value={cat.id}>{cat.name}</option>
                 ))}
@@ -1228,7 +1235,7 @@ const ProductForm: React.FC<ProductFormProps> = ({ productId, onSuccess, onCance
 
           {settings?.features?.collections && (
             <div>
-              <label htmlFor="collectionId" className="block text-gray-700 text-sm font-bold mb-2">Collection (Optional)</label>
+              <label htmlFor="collectionId" className="block text-gray-700 text-sm font-bold mb-2">{t('admin.products_collection_optional') || 'Collection (Optional)'}</label>
               <select
                 id="collectionId"
                 name="collectionId"
@@ -1239,7 +1246,7 @@ const ProductForm: React.FC<ProductFormProps> = ({ productId, onSuccess, onCance
                 }}
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-900 focus:border-transparent outline-none transition-all"
               >
-                <option value="">Select Collection</option>
+                <option value="">{t('admin.products_select_collection') || 'Select Collection'}</option>
                 {collections.map(collection => (
                   <option key={collection.id} value={collection.id}>{collection.name}</option>
                 ))}
@@ -1251,7 +1258,7 @@ const ProductForm: React.FC<ProductFormProps> = ({ productId, onSuccess, onCance
         {settings?.features?.brands && (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
-              <label htmlFor="brandId" className="block text-gray-700 text-sm font-bold mb-2">Brand</label>
+              <label htmlFor="brandId" className="block text-gray-700 text-sm font-bold mb-2">{t('admin.brands') || 'Brand'}</label>
               <select
                 id="brandId"
                 name="brandId"
@@ -1259,7 +1266,7 @@ const ProductForm: React.FC<ProductFormProps> = ({ productId, onSuccess, onCance
                 onChange={handleChange}
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-900 focus:border-transparent outline-none transition-all"
               >
-                <option value="">Select Brand</option>
+                <option value="">{t('admin.products_select_brand') || 'Select Brand'}</option>
                 {brands.map(brand => (
                   <option key={brand.id} value={brand.id}>{brand.name}</option>
                 ))}
@@ -1269,7 +1276,7 @@ const ProductForm: React.FC<ProductFormProps> = ({ productId, onSuccess, onCance
         )}
 
         <div className="border-t border-gray-200 pt-6">
-          <label className="block text-gray-700 text-sm font-bold mb-4">Variants</label>
+          <label className="block text-gray-700 text-sm font-bold mb-4">{t('admin.products_variants') || 'Variants'}</label>
           {product.variants.map((variant, index) => (
             <div key={variant.id} className="flex flex-col md:flex-row gap-4 mb-4 items-start md:items-center bg-gray-50 p-4 rounded-lg">
               {/* Variant Type Selector */}
@@ -1284,9 +1291,9 @@ const ProductForm: React.FC<ProductFormProps> = ({ productId, onSuccess, onCance
                     }}
                     className="w-full px-3 py-2 border border-gray-300 rounded bg-white"
                  >
-                    <option value="Size">Size</option>
-                    <option value="Color">Color</option>
-                    <option value="Material">Material (Custom)</option>
+                    <option value="Size">{t('admin.products_variant_size') || 'Size'}</option>
+                    <option value="Color">{t('admin.products_variant_color') || 'Color'}</option>
+                    <option value="Material">{t('admin.products_variant_material') || 'Material (Custom)'}</option>
                  </select>
               </div>
 
@@ -1298,7 +1305,7 @@ const ProductForm: React.FC<ProductFormProps> = ({ productId, onSuccess, onCance
                         onChange={(e) => handleVariantChange(index, 'sizeId', e.target.value)}
                         className="w-full px-3 py-2 border border-gray-300 rounded bg-white"
                       >
-                          <option value="">Select Size</option>
+                          <option value="">{t('admin.products_select_size') || 'Select Size'}</option>
                           {sizes.map(size => (
                               <option key={size.id} value={size.id}>{size.name} ({size.code})</option>
                           ))}
@@ -1309,7 +1316,7 @@ const ProductForm: React.FC<ProductFormProps> = ({ productId, onSuccess, onCance
                         onChange={(e) => handleVariantChange(index, 'colorId', e.target.value)}
                         className="w-full px-3 py-2 border border-gray-300 rounded bg-white"
                       >
-                          <option value="">Select Color</option>
+                          <option value="">{t('admin.products_select_color') || 'Select Color'}</option>
                           {colors.map(color => (
                               <option key={color.id} value={color.id}>{color.name}</option>
                           ))}
@@ -1396,7 +1403,7 @@ const ProductForm: React.FC<ProductFormProps> = ({ productId, onSuccess, onCance
             </div>
 
             <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-2">Keywords (comma-separated)</label>
+              <label className="block text-sm font-semibold text-gray-700 mb-2">{t('admin.products_seo_keywords_label') || 'Keywords (comma-separated)'}</label>
               <input
                 type="text"
                 value={seoData.keywords}
@@ -1504,7 +1511,7 @@ const ProductForm: React.FC<ProductFormProps> = ({ productId, onSuccess, onCance
               onChange={handleChange}
               className="form-checkbox h-5 w-5 text-blue-600 rounded focus:ring-blue-500"
             />
-            <span className="ml-2 text-gray-700 font-medium">Featured Product</span>
+            <span className="ml-2 text-gray-700 font-medium">{t('admin.products_featured') || 'Featured Product'}</span>
           </label>
           <label className="inline-flex items-center cursor-pointer">
             <input
@@ -1514,7 +1521,7 @@ const ProductForm: React.FC<ProductFormProps> = ({ productId, onSuccess, onCance
               onChange={handleChange}
               className="form-checkbox h-5 w-5 text-green-600 rounded focus:ring-green-500"
             />
-            <span className="ml-2 text-gray-700 font-medium">Active Product</span>
+            <span className="ml-2 text-gray-700 font-medium">{t('admin.products_active') || 'Active Product'}</span>
           </label>
         </div>
 
@@ -1527,7 +1534,7 @@ const ProductForm: React.FC<ProductFormProps> = ({ productId, onSuccess, onCance
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m3.75 9v6m-3-3h6.375M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
               </svg>
-              Save as Template
+              {t('admin.products_save_as_template') || 'Save as Template'}
             </Link>
           )}
           <div className="flex items-center gap-3 sm:gap-4 sm:ml-auto">
@@ -1537,7 +1544,7 @@ const ProductForm: React.FC<ProductFormProps> = ({ productId, onSuccess, onCance
               className="px-4 sm:px-6 py-2 border border-gray-300 rounded-lg text-gray-700 text-sm font-medium hover:bg-gray-50 transition-colors"
               disabled={loading}
             >
-              Cancel
+              {t('common.cancel') || 'Cancel'}
             </button>
             <button
               type="submit"
@@ -1550,10 +1557,10 @@ const ProductForm: React.FC<ProductFormProps> = ({ productId, onSuccess, onCance
                     <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                     <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                   </svg>
-                  Saving...
+                  {t('common.saving') || 'Saving...'}
                 </>
               ) : (
-                productId ? 'Update Product' : 'Create Product'
+                productId ? (t('admin.products_update_button') || 'Update Product') : (t('admin.products_create_button') || 'Create Product')
               )}
             </button>
           </div>

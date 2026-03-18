@@ -52,11 +52,14 @@ export const CurrencyProvider: React.FC<CurrencyProviderProps> = ({
   // Format price using default currency
   const formatPrice = (amount: number): string => {
     if (!defaultCurrency) {
-      // Fallback to generic format if no default currency
-      return amount.toLocaleString(PRICE_FORMAT_LOCALE, {
+      // Fallback to SAR format if no default currency loaded yet
+      const fallbackAmount = amount.toLocaleString(PRICE_FORMAT_LOCALE, {
         minimumFractionDigits: 0,
         maximumFractionDigits: 0,
       });
+      const isRtl = typeof document !== 'undefined' && document.documentElement?.dir === 'rtl';
+      const fallbackSymbol = isRtl ? 'ر.س' : 'SAR';
+      return `${fallbackAmount} ${fallbackSymbol}`;
     }
 
     const formattedAmount = amount.toLocaleString(PRICE_FORMAT_LOCALE, {

@@ -4442,5 +4442,17 @@ export const DEFAULT_TRANSLATION_KEYS = {
   // 'admin.posts_batch_delete_confirm': 'Are you sure you want to delete {{count}} post(s)?',
   // 'admin.posts_batch_delete_success': '{{count}} post(s) deleted successfully!',
   // 'admin.posts_batch_delete_failed': 'Failed to delete posts.',
+
+  // Gold Prices Section
+  'home.gold_section_title': 'Your First Destination to Know Gold Prices Today in Saudi Arabia',
+  'home.gold_section_desc': 'We provide you with real-time gold prices for all karats, buy and sell prices, analytical tools and accurate calculators for gold and zakat, and in-depth content supervised by experts in the gold market, enabling you to make your investment decisions with confidence and full awareness.',
+  'home.gold_tab_price_now': 'Current Price',
+  'home.gold_tab_karats': 'Karats',
+  'home.gold_tab_buy_sell': 'Buy & Sell',
+  'home.gold_tab_chart': 'Price Chart',
+  'home.gold_ounce_sar': 'Gold Ounce in SAR',
+  'home.gold_ounce_usd': 'Gold Ounce in USD',
+  'home.silver_ounce_sar': 'Silver Ounce in SAR',
+  'home.silver_ounce_usd': 'Silver Ounce in USD',
 };
 

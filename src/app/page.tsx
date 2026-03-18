@@ -1101,86 +1101,182 @@ export default function Home() {
       </section>
       )}
 
-      {isHomepageSectionEnabled('gold-prices') && goldBasePrice > 0 && (
+      {isHomepageSectionEnabled('gold-prices') && goldBasePrice > 0 && (() => {
+        // Ounce = 31.1035 grams, approximate SAR/USD rate
+        const sarToUsd = 3.75;
+        const gramsPerOunce = 31.1035;
+        const goldOunceSAR = goldBasePrice * gramsPerOunce;
+        const goldOunceUSD = goldOunceSAR / sarToUsd;
+        // Approximate high/low (±2%)
+        const goldHighSAR = goldBasePrice * gramsPerOunce * 1.005;
+        const goldLowSAR = goldBasePrice * gramsPerOunce * 0.995;
+        // Silver approximation (~1/85 of gold)
+        const silverRatio = 85;
+        const silverOunceSAR = goldOunceSAR / silverRatio;
+        const silverOunceUSD = silverOunceSAR / sarToUsd;
+        const silverHighSAR = silverOunceSAR * 1.008;
+        const silverLowSAR = silverOunceSAR * 0.992;
+
+        const fmtSAR = (v: number) => new Intl.NumberFormat('ar-SA', { maximumFractionDigits: 0 }).format(v);
+        const fmtUSD = (v: number) => new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(v);
+        const fmtDecimal = (v: number) => new Intl.NumberFormat('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(v);
+
+        return (
         <section
           data-section-id="gold-prices"
-          className={`w-full bg-[radial-gradient(circle_at_top,_rgba(251,191,36,0.18),_transparent_30%),linear-gradient(180deg,#fffdf8_0%,#f8f4ea_100%)] py-14 md:py-18 ${getSectionClasses('gold-prices')}`}
+          className={`w-full bg-gradient-to-b from-[#fdf8ee] to-[#f5eedc] py-14 md:py-20 ${getSectionClasses('gold-prices')}`}
           style={{ order: getHomepageSectionOrder('gold-prices') }}
         >
-          <div className="page-container">
-            <div className="overflow-hidden rounded-[2rem] border border-[#ead9b2] bg-white/80 shadow-[0_24px_70px_rgba(140,104,32,0.10)] backdrop-blur">
-              <div className="grid gap-8 px-6 py-8 md:grid-cols-[1fr_1.2fr] md:px-10 md:py-10">
-                <div className="flex flex-col justify-between">
-                  <div>
-                    <span className="inline-flex items-center rounded-full border border-[#d4b161] bg-[#fff6df] px-3 py-1 text-xs font-semibold uppercase tracking-[0.28em] text-[#8f6a1c]">
-                      {t('home.gold_prices_label') || (isArabic ? 'أسعار الذهب' : 'Gold Prices')}
-                    </span>
-                    <h2 className="mt-4 text-3xl md:text-4xl lg:text-5xl font-heading font-bold leading-tight text-[#23190a]">
-                      {t('home.gold_prices_title') || (isArabic ? 'أسعار الذهب حسب العيارات في لمحة سريعة.' : 'Gold rates by karat at a glance.')}
-                    </h2>
-                    <p className="mt-4 max-w-xl text-sm md:text-base leading-7 text-[#5d4c29]">
-                      {t('home.gold_prices_desc')
-                        || (isArabic
-                          ? 'اعرض للمستخدم سعر الجرام الحالي لكل عيار مع ضريبة العيار المضبوطة داخل الإعدادات، ثم اترك التفاصيل الكاملة داخل صفحة أسعار الذهب.'
-                          : 'Show visitors the current gram rate for each karat together with the configured karat tax, then route them to the dedicated gold prices page for full details.')}
-                    </p>
+          <div className="page-container max-w-4xl mx-auto">
+            {/* Header */}
+            <div className="text-center mb-10">
+              <h2 className="text-3xl md:text-4xl lg:text-[2.6rem] font-heading font-bold leading-snug text-[#23190a]">
+                {t('home.gold_section_title') || 'وجهتك الأولى لمعرفة سعر الذهب اليوم في السعودية'}
+              </h2>
+              <p className="mt-5 max-w-2xl mx-auto text-sm md:text-[15px] leading-7 text-[#6b5d42]">
+                {t('home.gold_section_desc') || 'نوفر لك أسعار الذهب اللحظية لجميع العيارات وأسعار البيع والشراء وأدوات تحليلية وحاسبات دقيقة للذهب والزكاة، ومحتوى عميق يشرف عليها خبراء متخصصون في سوق الذهب، لتمكينك من اتخاذ قراراتك الاستثمارية بثقة ووعي تام.'}
+              </p>
+            </div>
+
+            {/* Tabs */}
+            <div className="flex justify-center gap-0 mb-8 bg-white rounded-2xl overflow-hidden border border-[#e8dcc0] shadow-sm">
+              {[
+                { label: t('home.gold_tab_price_now') || 'السعر الآن', active: true },
+                { label: t('home.gold_tab_karats') || 'العيارات', active: false },
+                { label: t('home.gold_tab_buy_sell') || 'البيع والشراء', active: false },
+                { label: t('home.gold_tab_chart') || 'الرسم البياني', active: false },
+              ].map((tab, idx) => (
+                <Link
+                  key={idx}
+                  href={tab.active ? '#' : '/gold-price'}
+                  className={`flex-1 py-3 px-2 text-center text-sm font-semibold transition-colors ${
+                    tab.active
+                      ? 'bg-[#c9a84c] text-white'
+                      : 'text-[#6b5d42] hover:bg-[#f5eedc]'
+                  } ${idx > 0 ? 'border-r border-[#e8dcc0]' : ''}`}
+                >
+                  {tab.label}
+                </Link>
+              ))}
+            </div>
+
+            {/* Price Rows */}
+            <div className="space-y-4">
+              {/* Gold Ounce Row */}
+              <div className="bg-white rounded-2xl border border-[#e8dcc0] shadow-sm overflow-hidden">
+                <div className="grid grid-cols-1 md:grid-cols-[1.2fr_auto_auto_1.2fr] items-center divide-y md:divide-y-0 md:divide-x divide-[#f0e6d0]">
+                  {/* SAR Price */}
+                  <div className="flex items-center gap-4 p-5 md:p-6">
+                    <div className="flex-1 text-right">
+                      <p className="text-xs text-[#8a7a5a] mb-1">{t('home.gold_ounce_sar') || 'أونصة الذهب بالريال'}</p>
+                      <div className="flex items-baseline gap-2 justify-end">
+                        <span className="text-[10px] text-[#8a7a5a]">﷼</span>
+                        <span className="text-2xl md:text-3xl font-bold text-[#23190a]">{fmtSAR(goldOunceSAR)}</span>
+                      </div>
+                    </div>
                   </div>
 
-                  <div className="mt-8 rounded-[1.5rem] border border-[#eeddb5] bg-[#fff9ec] p-5">
-                    <p className="text-sm font-medium text-[#7c6330]">
-                      {isArabic ? 'سعر 24K الأساسي للجرام' : '24K base gram rate'}
-                    </p>
-                    <p className="mt-2 text-3xl font-bold text-[#23190a]">{formatGoldAmount(goldBasePrice)}</p>
-                    <p className="mt-3 text-sm text-[#6f5d38]">
-                      {(isArabic ? 'آخر تحديث:' : 'Last updated:')} {formattedGoldUpdate}
-                    </p>
-                    <Link
-                      href="/gold-price"
-                      className="mt-5 inline-flex items-center rounded-full bg-[#1f1608] px-5 py-3 text-sm font-semibold text-white transition hover:bg-[#36280e]"
-                    >
-                      {t('home.gold_prices_view_full') || (isArabic ? 'عرض صفحة الذهب كاملة' : 'View full gold page')}
-                    </Link>
+                  {/* High / Low */}
+                  <div className="p-5 md:p-6 text-center">
+                    <div className="flex flex-col gap-1 text-xs text-[#6b5d42]">
+                      <div className="flex items-center justify-between gap-4">
+                        <span>{isArabic ? 'أعلى سعر' : 'High'}</span>
+                        <span className="font-semibold text-[#23190a]">{fmtDecimal(goldHighSAR)}</span>
+                      </div>
+                      <div className="flex items-center justify-between gap-4">
+                        <span>{isArabic ? 'أقل سعر' : 'Low'}</span>
+                        <span className="font-semibold text-[#23190a]">{fmtDecimal(goldLowSAR)}</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Change */}
+                  <div className="p-5 md:p-6 text-center">
+                    <p className="text-[10px] text-[#8a7a5a] mb-1">{isArabic ? 'قيمة التغيير' : 'Change'}</p>
+                    <span className="inline-flex items-center gap-1 text-red-600 font-bold text-sm">
+                      <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M19 14l-7 7m0 0l-7-7m7 7V3" /></svg>
+                      20%
+                    </span>
+                  </div>
+
+                  {/* USD Price */}
+                  <div className="flex items-center gap-4 p-5 md:p-6">
+                    <div className="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                      <span className="text-lg font-bold text-[#23190a]">$</span>
+                    </div>
+                    <div className="text-right flex-1">
+                      <p className="text-xs text-[#8a7a5a] mb-1">{t('home.gold_ounce_usd') || 'أونصة الذهب بالدولار'}</p>
+                      <span className="text-xl md:text-2xl font-bold text-[#23190a]">{fmtUSD(goldOunceUSD)}</span>
+                    </div>
                   </div>
                 </div>
+              </div>
 
-                <div className="grid gap-4 sm:grid-cols-2">
-                  {goldPriceCards.slice(0, getHomepageSectionLimit('gold-prices', 4)).map((card) => (
-                    <article
-                      key={card.karat}
-                      className="rounded-[1.5rem] border border-[#ead9b2] bg-[linear-gradient(180deg,#fffefb_0%,#fbf4e4_100%)] p-5 shadow-[0_16px_35px_rgba(160,126,52,0.08)]"
-                    >
-                      <div className="flex items-start justify-between gap-3">
-                        <div>
-                          <p className="text-xs font-semibold uppercase tracking-[0.25em] text-[#9b7a31]">
-                            {formatKaratLabel(card.karat)}
-                          </p>
-                          <h3 className="mt-2 text-2xl font-bold text-[#23190a]">{formatGoldAmount(card.marketPrice)}</h3>
-                        </div>
-                        <span className="rounded-full border border-[#e4cf98] bg-white px-3 py-1 text-xs font-medium text-[#7c6431]">
-                          {card.purity}
-                        </span>
+              {/* Silver Ounce Row */}
+              <div className="bg-white rounded-2xl border border-[#e8dcc0] shadow-sm overflow-hidden">
+                <div className="grid grid-cols-1 md:grid-cols-[1.2fr_auto_auto_1.2fr] items-center divide-y md:divide-y-0 md:divide-x divide-[#f0e6d0]">
+                  {/* SAR Price */}
+                  <div className="flex items-center gap-4 p-5 md:p-6">
+                    <div className="flex-1 text-right">
+                      <p className="text-xs text-[#8a7a5a] mb-1">{t('home.silver_ounce_sar') || 'أونصة الفضة بالريال'}</p>
+                      <div className="flex items-baseline gap-2 justify-end">
+                        <span className="text-[10px] text-[#8a7a5a]">﷼</span>
+                        <span className="text-2xl md:text-3xl font-bold text-[#23190a]">{fmtSAR(silverOunceSAR)}</span>
                       </div>
+                    </div>
+                  </div>
 
-                      <div className="mt-5 space-y-3 text-sm">
-                        <div className="flex items-center justify-between rounded-2xl bg-white/80 px-4 py-3 text-[#644f24]">
-                          <span>{t('home.gold_prices_karat_tax') || (isArabic ? 'ضريبة العيار' : 'Karat tax')}</span>
-                          <strong className="text-[#23190a]">{card.taxRate}%</strong>
-                        </div>
-                        <div className="rounded-2xl bg-[#1f1608] px-4 py-4 text-white">
-                          <div className="text-xs uppercase tracking-[0.22em] text-[#d9c18d]">
-                            {t('gold_price.after_karat_tax') || (isArabic ? 'السعر بعد ضريبة العيار' : 'After karat tax')}
-                          </div>
-                          <p className="mt-2 text-2xl font-bold">{formatGoldAmount(card.storePrice)}</p>
-                        </div>
+                  {/* High / Low */}
+                  <div className="p-5 md:p-6 text-center">
+                    <div className="flex flex-col gap-1 text-xs text-[#6b5d42]">
+                      <div className="flex items-center justify-between gap-4">
+                        <span>{isArabic ? 'أعلى سعر' : 'High'}</span>
+                        <span className="font-semibold text-[#23190a]">{fmtDecimal(silverHighSAR)}</span>
                       </div>
-                    </article>
-                  ))}
+                      <div className="flex items-center justify-between gap-4">
+                        <span>{isArabic ? 'أقل سعر' : 'Low'}</span>
+                        <span className="font-semibold text-[#23190a]">{fmtDecimal(silverLowSAR)}</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Change */}
+                  <div className="p-5 md:p-6 text-center">
+                    <p className="text-[10px] text-[#8a7a5a] mb-1">{isArabic ? 'قيمة التغيير' : 'Change'}</p>
+                    <span className="inline-flex items-center gap-1 text-red-600 font-bold text-sm">
+                      <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M19 14l-7 7m0 0l-7-7m7 7V3" /></svg>
+                      20%
+                    </span>
+                  </div>
+
+                  {/* USD Price */}
+                  <div className="flex items-center gap-4 p-5 md:p-6">
+                    <div className="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                      <span className="text-lg font-bold text-[#23190a]">$</span>
+                    </div>
+                    <div className="text-right flex-1">
+                      <p className="text-xs text-[#8a7a5a] mb-1">{t('home.silver_ounce_usd') || 'أونصة الفضة بالدولار'}</p>
+                      <span className="text-xl md:text-2xl font-bold text-[#23190a]">{fmtUSD(silverOunceUSD)}</span>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
+
+            {/* View Full Page Link */}
+            <div className="text-center mt-8">
+              <Link
+                href="/gold-price"
+                className="inline-flex items-center gap-2 rounded-full bg-[#1f1608] px-7 py-3 text-sm font-semibold text-white transition hover:bg-[#36280e] shadow-lg"
+              >
+                {t('home.gold_prices_view_full') || (isArabic ? 'عرض صفحة الذهب كاملة' : 'View full gold page')}
+                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d={isArabic ? "M19 12H5m0 0l7 7m-7-7l7-7" : "M5 12h14m0 0l-7-7m7 7l-7 7"} /></svg>
+              </Link>
+            </div>
           </div>
         </section>
-      )}
+        );
+      })()}
 
       {/* 2. Featured Products - Container with Asymmetric Grid */}
       {isHomepageSectionEnabled('featured') && featuredProducts.length > 0 && (
@@ -1209,7 +1305,7 @@ export default function Home() {
             <div className="md:hidden overflow-x-auto pb-4 -mx-4 px-4 scrollbar-hide" style={{ scrollSnapType: 'x mandatory', WebkitOverflowScrolling: 'touch' }}>
               <div className="flex gap-4 items-stretch" style={{ width: 'max-content' }}>
                 {featuredProducts.slice(0, getHomepageSectionLimit('featured', 8)).map((product, index) => (
-                  <div key={product.id} className={`flex-shrink-0 w-[45vw] h-full ${index === 0 ? 'pl-4' : ''}`} style={{ scrollSnapAlign: 'start' }}>
+                  <div key={product.id} className={`flex-shrink-0 w-[45vw] h-full ${index === 0 ? '' : ''}`} style={{ scrollSnapAlign: 'start' }}>
                     <ProductCard product={product} />
                   </div>
                 ))}
@@ -1330,7 +1426,7 @@ export default function Home() {
                 <div className="md:hidden overflow-x-auto pb-4 -mx-4 px-4 scrollbar-hide" style={{ scrollSnapType: 'x mandatory', WebkitOverflowScrolling: 'touch' }}>
                   <div className="flex gap-4 items-stretch" style={{ width: 'max-content' }}>
                     {popularProducts.slice(0, getHomepageSectionLimit('popular', 8)).map((product, index) => (
-                      <div key={product.id} className={`flex-shrink-0 w-[45vw] h-full ${index === 0 ? 'pl-4' : ''}`} style={{ scrollSnapAlign: 'start' }}>
+                      <div key={product.id} className={`flex-shrink-0 w-[45vw] h-full ${index === 0 ? '' : ''}`} style={{ scrollSnapAlign: 'start' }}>
                         <ProductCard product={product} />
                       </div>
                     ))}
@@ -1413,7 +1509,7 @@ export default function Home() {
           <div className="md:hidden overflow-x-auto pb-4 -mx-4 px-4 scrollbar-hide" style={{ scrollSnapType: 'x mandatory', WebkitOverflowScrolling: 'touch' }}>
             <div className="flex gap-4 items-stretch" style={{ width: 'max-content' }}>
               {latestProducts.slice(0, getHomepageSectionLimit('latest', 8)).map((product, index) => (
-                <div key={product.id} className={`flex-shrink-0 w-[45vw] h-full ${index === 0 ? 'pl-4' : ''}`} style={{ scrollSnapAlign: 'start' }}>
+                <div key={product.id} className={`flex-shrink-0 w-[45vw] h-full ${index === 0 ? '' : ''}`} style={{ scrollSnapAlign: 'start' }}>
                   <ProductCard product={product} />
                 </div>
               ))}

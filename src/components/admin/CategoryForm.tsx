@@ -254,10 +254,17 @@ const CategoryForm: React.FC<CategoryFormProps> = ({ categoryId, onSuccess, onCa
         }
       }
 
-      const categoryData: Omit<Category, 'id' | 'createdAt' | 'updatedAt'> & { imageUrl?: string; translations?: CategoryTranslation[] } = { ...category, imageUrl };
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const categoryData: any = { ...category, imageUrl };
       if (finalTranslations.length > 0) {
         categoryData.translations = finalTranslations;
       }
+      // Remove undefined fields — Firestore does not accept undefined values
+      Object.keys(categoryData).forEach(key => {
+        if (categoryData[key] === undefined) {
+          delete categoryData[key];
+        }
+      });
 
       let savedCategoryId = categoryId;
       if (isEditMode && categoryId) {
@@ -286,9 +293,11 @@ const CategoryForm: React.FC<CategoryFormProps> = ({ categoryId, onSuccess, onCa
       setTimeout(() => {
         onSuccess();
       }, 1500);
-    } catch {
-      setError('Failed to save category.');
-      setInfoDialogMessage('Failed to save category.');
+    } catch (err) {
+      console.error('Failed to save category:', err);
+      const errorMsg = t('admin.categories_save_failed') || 'Failed to save category.';
+      setError(errorMsg);
+      setInfoDialogMessage(errorMsg);
       setInfoDialogType('error');
       setShowInfoDialog(true);
     } finally {
@@ -474,11 +483,11 @@ const CategoryForm: React.FC<CategoryFormProps> = ({ categoryId, onSuccess, onCa
 
         {/* SEO Configuration */}
         <div className="bg-gray-50 p-4 sm:p-6 rounded-xl border border-gray-200">
-          <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-4">SEO Configuration</h3>
+          <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-4">{t('admin.products_seo_configuration') || 'SEO Configuration'}</h3>
           
           <div className="space-y-4">
             <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-2">Meta Title</label>
+              <label className="block text-sm font-semibold text-gray-700 mb-2">{t('admin.products_seo_meta_title') || 'Meta Title'}</label>
               <input
                 type="text"
                 value={seoData.title}
@@ -489,7 +498,7 @@ const CategoryForm: React.FC<CategoryFormProps> = ({ categoryId, onSuccess, onCa
             </div>
 
             <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-2">Meta Description</label>
+              <label className="block text-sm font-semibold text-gray-700 mb-2">{t('admin.products_seo_meta_description') || 'Meta Description'}</label>
               <textarea
                 value={seoData.description}
                 onChange={(e) => setSeoData(prev => ({ ...prev, description: e.target.value }))}
@@ -499,7 +508,7 @@ const CategoryForm: React.FC<CategoryFormProps> = ({ categoryId, onSuccess, onCa
             </div>
 
             <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-2">Keywords (comma-separated)</label>
+              <label className="block text-sm font-semibold text-gray-700 mb-2">{t('admin.products_seo_keywords_label') || 'Keywords (comma-separated)'}</label>
               <input
                 type="text"
                 value={seoData.keywords}
@@ -510,7 +519,7 @@ const CategoryForm: React.FC<CategoryFormProps> = ({ categoryId, onSuccess, onCa
             </div>
 
             <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-2">Meta Image URL</label>
+              <label className="block text-sm font-semibold text-gray-700 mb-2">{t('admin.products_seo_meta_image_url') || 'Meta Image URL'}</label>
               <input
                 type="text"
                 value={seoData.metaImage}
@@ -521,7 +530,7 @@ const CategoryForm: React.FC<CategoryFormProps> = ({ categoryId, onSuccess, onCa
             </div>
 
             <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-2">Canonical URL</label>
+              <label className="block text-sm font-semibold text-gray-700 mb-2">{t('admin.products_seo_canonical_url') || 'Canonical URL'}</label>
               <input
                 type="text"
                 value={seoData.canonicalUrl}
@@ -539,7 +548,7 @@ const CategoryForm: React.FC<CategoryFormProps> = ({ categoryId, onSuccess, onCa
                   onChange={(e) => setSeoData(prev => ({ ...prev, noIndex: e.target.checked }))}
                   className="h-4 w-4 sm:h-5 sm:w-5 border-gray-300 rounded focus:ring-gray-900 text-gray-900"
                 />
-                <span className="ml-2 text-sm text-gray-700">No Index</span>
+                <span className="ml-2 text-sm text-gray-700">{t('admin.seo_no_index') || 'No Index'}</span>
               </label>
               <label className="inline-flex items-center cursor-pointer">
                 <input
@@ -548,7 +557,7 @@ const CategoryForm: React.FC<CategoryFormProps> = ({ categoryId, onSuccess, onCa
                   onChange={(e) => setSeoData(prev => ({ ...prev, noFollow: e.target.checked }))}
                   className="h-4 w-4 sm:h-5 sm:w-5 border-gray-300 rounded focus:ring-gray-900 text-gray-900"
                 />
-                <span className="ml-2 text-sm text-gray-700">No Follow</span>
+                <span className="ml-2 text-sm text-gray-700">{t('admin.seo_no_follow') || 'No Follow'}</span>
               </label>
              </div>
           </div>
@@ -561,7 +570,7 @@ const CategoryForm: React.FC<CategoryFormProps> = ({ categoryId, onSuccess, onCa
             className="px-4 sm:px-6 py-2 border border-gray-300 rounded-lg text-gray-700 text-sm font-medium hover:bg-gray-50 transition-colors"
             disabled={loading}
           >
-            Cancel
+            {t('common.cancel') || 'Cancel'}
           </button>
           <button
             type="submit"
@@ -574,10 +583,10 @@ const CategoryForm: React.FC<CategoryFormProps> = ({ categoryId, onSuccess, onCa
                   <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                   <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                 </svg>
-                Saving...
+                {t('common.saving') || 'Saving...'}
               </>
             ) : (
-              isEditMode ? 'Update Category' : 'Create Category'
+              isEditMode ? (t('admin.categories_update_button') || 'Update Category') : (t('admin.categories_create_button') || 'Create Category')
             )}
           </button>
         </div>

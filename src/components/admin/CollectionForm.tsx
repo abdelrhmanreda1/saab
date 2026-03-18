@@ -394,7 +394,7 @@ const CollectionForm: React.FC<CollectionFormProps> = ({ collectionId, onSuccess
               </option>
             ))}
           </select>
-          <p className="text-xs text-gray-500 mt-1">Select a parent collection to create a sub-collection</p>
+          <p className="text-xs text-gray-500 mt-1">{t('admin.collections_parent_help') || 'Select a parent collection to create a sub-collection'}</p>
         </div>
 
         <div>

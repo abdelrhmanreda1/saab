@@ -229,7 +229,7 @@ const Header = () => {
             </div>
           </div>
 
-          <div className="hidden md:grid md:grid-cols-[minmax(320px,1fr)_200px_minmax(460px,1fr)] md:items-center md:gap-5 md:py-4 lg:grid-cols-[minmax(360px,1fr)_220px_minmax(560px,1fr)]">
+          <div className="hidden md:grid md:grid-cols-[minmax(280px,1fr)_180px_minmax(500px,1.2fr)] md:items-center md:gap-4 md:py-4 lg:grid-cols-[minmax(320px,1fr)_200px_minmax(580px,1.2fr)]">
             <nav className={`flex min-w-0 items-center gap-4 ${isRTL ? 'justify-end' : 'justify-start'} lg:gap-5`}>
               {leftNavLinks.map((link) => (
                 <Link

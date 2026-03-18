@@ -4,6 +4,7 @@ import React, { createContext, useState, useContext, useEffect, ReactNode, useCa
 import { Product, ProductVariant } from '@/lib/firestore/products';
 import { getAllFlashSales } from '@/lib/firestore/campaigns_db';
 import { FlashSale } from '@/lib/firestore/campaigns';
+import { useLanguage } from './LanguageContext';
 
 export interface CartItem {
   productId: string;
@@ -39,6 +40,47 @@ interface CartContextType {
 }
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
+
+// Separate component so useLanguage works (LanguageProvider wraps CartProvider in layout)
+const CartDialog = ({ cartDialogMessage, onClose }: { cartDialogMessage: string; onClose: () => void }) => {
+  const { t } = useLanguage();
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4" onClick={onClose}>
+      <div className="bg-white rounded-xl shadow-xl w-full max-w-md p-6" onClick={(e) => e.stopPropagation()}>
+        <div className="flex items-start gap-4">
+          <div className="flex-shrink-0 w-12 h-12 bg-green-100 rounded-full flex items-center justify-center">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-6 h-6 text-green-600">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+          </div>
+          <div className="flex-1">
+            <h3 className="text-lg font-semibold text-green-900 mb-1">
+              {t('cart.added_to_cart_title') || 'Added to Cart'}
+            </h3>
+            <p className="text-gray-600 text-sm mb-4">
+              {cartDialogMessage}
+            </p>
+            <div className="flex gap-3">
+              <button
+                onClick={onClose}
+                className="flex-1 px-4 py-2.5 bg-gray-900 text-white rounded-lg text-sm font-semibold hover:bg-gray-800 transition-colors"
+              >
+                {t('cart.continue_shopping') || 'Continue Shopping'}
+              </button>
+              <a
+                href="/cart"
+                onClick={onClose}
+                className="flex-1 px-4 py-2.5 bg-white border-2 border-gray-900 text-gray-900 rounded-lg text-sm font-semibold hover:bg-gray-50 transition-colors text-center"
+              >
+                {t('cart.view_cart') || 'View Cart'}
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
 
 export const CartProvider = ({ children }: { children: ReactNode }) => {
   const [cart, setCart] = useState<CartItem[]>([]);
@@ -216,40 +258,10 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
       {children}
       {/* Cart Dialog */}
       {showCartDialog && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4" onClick={() => setShowCartDialog(false)}>
-          <div className="bg-white rounded-xl shadow-xl w-full max-w-md p-6" onClick={(e) => e.stopPropagation()}>
-            <div className="flex items-start gap-4">
-              <div className="flex-shrink-0 w-12 h-12 bg-green-100 rounded-full flex items-center justify-center">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-6 h-6 text-green-600">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-              </div>
-              <div className="flex-1">
-                <h3 className="text-lg font-semibold text-green-900 mb-1">
-                  Added to Cart
-                </h3>
-                <p className="text-gray-600 text-sm mb-4">
-                  {cartDialogMessage}
-                </p>
-                <div className="flex gap-3">
-                  <button
-                    onClick={() => setShowCartDialog(false)}
-                    className="flex-1 px-4 py-2.5 bg-gray-900 text-white rounded-lg text-sm font-semibold hover:bg-gray-800 transition-colors"
-                  >
-                    Continue Shopping
-                  </button>
-                  <a
-                    href="/cart"
-                    onClick={() => setShowCartDialog(false)}
-                    className="flex-1 px-4 py-2.5 bg-white border-2 border-gray-900 text-gray-900 rounded-lg text-sm font-semibold hover:bg-gray-50 transition-colors text-center"
-                  >
-                    View Cart
-                  </a>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
+        <CartDialog
+          cartDialogMessage={cartDialogMessage}
+          onClose={() => setShowCartDialog(false)}
+        />
       )}
     </CartContext.Provider>
   );
