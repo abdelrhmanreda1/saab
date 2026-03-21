@@ -5,6 +5,7 @@ import { Product, ProductVariant } from '@/lib/firestore/products';
 import { FlashSale } from '@/lib/firestore/campaigns';
 import { useLanguage } from './LanguageContext';
 import { scheduleNonCriticalTask } from '@/lib/utils/schedule';
+import { getProductName } from '@/lib/utils/translations';
 
 export interface CartItem {
   productId: string;
@@ -83,11 +84,13 @@ const CartDialog = ({ cartDialogMessage, onClose }: { cartDialogMessage: string;
 };
 
 export const CartProvider = ({ children }: { children: ReactNode }) => {
+  const { currentLanguage } = useLanguage();
   const [cart, setCart] = useState<CartItem[]>([]);
   const [mounted, setMounted] = useState(false);
   const [activeFlashSales, setActiveFlashSales] = useState<FlashSale[]>([]);
   const [showCartDialog, setShowCartDialog] = useState(false);
   const [cartDialogMessage, setCartDialogMessage] = useState('');
+  const languageCode = currentLanguage?.code || 'ar';
 
   // Initialize cart from localStorage only on client side
   useEffect(() => {
@@ -202,13 +205,13 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
         const shouldShowOriginalPrice = !flashSaleId && !bundleId && product.salePrice && product.salePrice < product.price;
 
         // Add new item to cart
-        const newItem: CartItem = {
-          productId: product.id,
-          productSlug: product.slug,
-          productName: product.name,
-          productImage: product.images[0] || '/placeholder-product.jpg', // Use first image or placeholder
-          price: finalPrice,
-          quantity,
+          const newItem: CartItem = {
+            productId: product.id,
+            productSlug: product.slug,
+            productName: getProductName(product, languageCode),
+            productImage: product.images[0] || '/placeholder-product.jpg', // Use first image or placeholder
+            price: finalPrice,
+            quantity,
           categoryId: product.category, // Store category for tax calculation
           ...(selectedVariant && { variant: { id: selectedVariant.id, name: selectedVariant.name, value: selectedVariant.value } }),
           ...(bundleId && { bundleId, bundleQuantity, originalPrice }),
@@ -218,7 +221,7 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
         return [...prevCart, newItem];
       }
     });
-  }, [activeFlashSales]);
+  }, [activeFlashSales, languageCode]);
 
   const removeFromCart = useCallback((productId: string, variantId?: string) => {
     setCart((prevCart) =>
