@@ -315,7 +315,7 @@ export default function HomeDeferredSectionsClient({
       {isHomepageSectionEnabled(homepageSections, 'trust-badges') && (
         <section className="w-full border-b border-gray-200 bg-gradient-to-br from-gray-50 via-white to-gray-50 py-16 md:py-20">
           <div className="page-container">
-            <div className="grid grid-cols-2 gap-4 md:grid-cols-4 md:gap-8">
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-4 md:gap-8">
               {[
                 {
                   title: t('home.trust_free_shipping') || 'Free Shipping',
