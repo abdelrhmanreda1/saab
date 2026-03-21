@@ -73,6 +73,7 @@ const Header = () => {
       // Clear demo user if exists
       if (settings?.demoMode && demoUser) {
         localStorage.removeItem('pardah_demo_user');
+        window.dispatchEvent(new Event('demo-user-updated'));
       }
       router.push('/');
     } catch {

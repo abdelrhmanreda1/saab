@@ -505,8 +505,8 @@ export default function Home() {
                 alt={getProductName(product, languageCode) || 'Product'} 
                 fill 
                 className="object-cover object-center transition-transform duration-700 group-hover:scale-110"
-                sizes="(max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
-                quality={55}
+                sizes="(max-width: 768px) 50vw, (max-width: 1280px) 25vw, 280px"
+                quality={45}
                 loading="lazy"
               />
             ) : (
@@ -662,11 +662,11 @@ export default function Home() {
                     src={getSafeImageUrl(banner.imageUrl)}
                     alt={getBannerText(banner, 'title') || settings?.company?.name || ''}
                     fill
-                    sizes="(max-width: 768px) 100vw, 92vw"
+                    sizes="(max-width: 768px) 100vw, 1216px"
                     priority={index === 0}
                     loading={index === 0 ? 'eager' : 'lazy'}
                     fetchPriority={index === 0 ? 'high' : undefined}
-                    quality={60}
+                    quality={42}
                     className="absolute inset-0 h-full w-full object-cover"
                   />
                 </div>
@@ -1115,7 +1115,8 @@ export default function Home() {
                           alt={getProductName(product, languageCode)}
                           fill
                           className="object-cover object-center group-hover:scale-105 transition-transform duration-500"
-                          sizes="(max-width: 768px) 50vw, 25vw"
+                          sizes="(max-width: 768px) 50vw, (max-width: 1280px) 25vw, 280px"
+                          quality={45}
                           loading="lazy"
                         />
                       ) : (
@@ -1210,8 +1211,8 @@ export default function Home() {
                           src={getSafeImageUrl(category.imageUrl)}
                           alt={getCategoryName(category, languageCode)}
                           fill
-                          sizes={index === 0 ? "(max-width: 768px) 100vw, 50vw" : "(max-width: 768px) 50vw, 20vw"}
-                          quality={60}
+                          sizes={index === 0 ? "(max-width: 768px) 100vw, 620px" : "(max-width: 768px) 50vw, 320px"}
+                          quality={45}
                           className="absolute inset-0 h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
                         />
                       ) : (
@@ -1292,8 +1293,8 @@ export default function Home() {
                       src={getSafeImageUrl(collection.imageUrl)}
                       alt={collection.name}
                       fill
-                      sizes="(max-width: 768px) 100vw, 33vw"
-                      quality={60}
+                      sizes="(max-width: 768px) 100vw, 400px"
+                      quality={45}
                       className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
                     />
                   ) : (
@@ -1393,8 +1394,8 @@ export default function Home() {
                         src={getSafeImageUrl(bundle.image)}
                         alt={bundle.name}
                         fill
-                        sizes="(max-width: 768px) 100vw, 33vw"
-                        quality={60}
+                        sizes="(max-width: 768px) 100vw, 400px"
+                        quality={45}
                         className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
                         loading="lazy"
                       />
@@ -1597,8 +1598,8 @@ export default function Home() {
                       src={getSafeImageUrl(post.coverImage)}
                       alt={isArabic && post.title_ar ? post.title_ar : post.title}
                       fill
-                      sizes="(max-width: 768px) 100vw, 33vw"
-                      quality={60}
+                      sizes="(max-width: 768px) 100vw, 400px"
+                      quality={45}
                       className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
                       loading="lazy"
                     />

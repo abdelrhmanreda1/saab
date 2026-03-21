@@ -4,7 +4,7 @@ import React, { createContext, useContext, useEffect, useState, ReactNode } from
 import { onAuthStateChanged, User as FirebaseUser } from 'firebase/auth';
 import { doc, getDoc, getFirestore } from 'firebase/firestore';
 import { auth, app } from '@/lib/firebase';
-import { getSettings } from '@/lib/firestore/settings_db';
+import { useSettings } from './SettingsContext';
 
 interface AuthContextType {
   user: FirebaseUser | null;
@@ -16,108 +16,90 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
+  const { settings } = useSettings();
   const [user, setUser] = useState<FirebaseUser | null>(null);
   const [loading, setLoading] = useState(true);
   const [isAdmin, setIsAdmin] = useState(false);
   const [demoUser, setDemoUser] = useState<{ uid: string; phoneNumber?: string; displayName?: string } | null>(null);
-  const [demoMode, setDemoMode] = useState(false);
-  const [demoModeChecked, setDemoModeChecked] = useState(false);
   const db = getFirestore(app);
+  const demoMode = settings?.demoMode || false;
 
-  // Load demo mode and demo user once on mount
+  // Sync demo user from localStorage when demo mode changes
   useEffect(() => {
-    // Check for demo mode
-    const checkDemoMode = async () => {
-      try {
-        const settings = await getSettings();
-        const isDemoMode = settings?.demoMode || false;
-        setDemoMode(isDemoMode);
-        
-        // Check for demo user in localStorage (check regardless of demo mode to handle edge cases)
-        if (typeof window !== 'undefined') {
-          const storedDemoUser = localStorage.getItem('pardah_demo_user');
-          if (storedDemoUser) {
-            try {
-              const demoUserData = JSON.parse(storedDemoUser);
-              // Only set demo user if demo mode is enabled
-              if (isDemoMode) {
-                setDemoUser(demoUserData);
-              } else {
-                // Clear demo user if demo mode is disabled
-                localStorage.removeItem('pardah_demo_user');
-              }
-            } catch {
-              // Failed to parse demo user
-            }
-          }
-        }
-      } catch {
-        setDemoMode(false);
-      } finally {
-        setDemoModeChecked(true);
+    if (typeof window === 'undefined') {
+      return;
+    }
+
+    const storedDemoUser = localStorage.getItem('pardah_demo_user');
+    if (!storedDemoUser) {
+      if (!demoMode) {
+        setDemoUser(null);
       }
-    };
-    checkDemoMode();
-  }, []); // Run only once on mount
+      return;
+    }
+
+    try {
+      const demoUserData = JSON.parse(storedDemoUser);
+      if (demoMode) {
+        setDemoUser(demoUserData);
+      } else {
+        localStorage.removeItem('pardah_demo_user');
+        setDemoUser(null);
+      }
+    } catch {
+      setDemoUser(null);
+    }
+  }, [demoMode]);
 
   // Also listen for localStorage changes (in case demo user is saved after mount)
   useEffect(() => {
     if (!demoMode || typeof window === 'undefined') {
       return;
     }
-    const handleStorageChange = (e: StorageEvent) => {
-      if (e.key === 'pardah_demo_user') {
-        if (e.newValue) {
-          try {
-            const demoUserData = JSON.parse(e.newValue);
-            setDemoUser(demoUserData);
-          } catch {
-            // ignore parse error
-          }
-        } else {
-          setDemoUser(null);
-        }
-      }
-    };
-
-    // Listen for storage events (from other tabs/windows)
-    window.addEventListener('storage', handleStorageChange);
-    
-    // Also check periodically (for same-tab updates since storage event doesn't fire for same tab)
-    const interval = setInterval(() => {
+    const syncDemoUserFromStorage = () => {
       const storedDemoUser = localStorage.getItem('pardah_demo_user');
       if (storedDemoUser) {
         try {
           const demoUserData = JSON.parse(storedDemoUser);
-          const hasChanged =
-            !demoUser ||
-            demoUser.uid !== demoUserData.uid ||
-            demoUser.phoneNumber !== demoUserData.phoneNumber ||
-            demoUser.displayName !== demoUserData.displayName;
+          setDemoUser((prevDemoUser) => {
+            const hasChanged =
+              !prevDemoUser ||
+              prevDemoUser.uid !== demoUserData.uid ||
+              prevDemoUser.phoneNumber !== demoUserData.phoneNumber ||
+              prevDemoUser.displayName !== demoUserData.displayName;
 
-          if (hasChanged) {
-            setDemoUser(demoUserData);
-          }
+            return hasChanged ? demoUserData : prevDemoUser;
+          });
         } catch {
           // ignore parse error
         }
-      } else if (demoUser) {
-        setDemoUser(null);
+      } else {
+        setDemoUser((prevDemoUser) => (prevDemoUser ? null : prevDemoUser));
       }
-    }, 500); // Check every 500ms
+    };
+
+    const handleStorageChange = (e: StorageEvent) => {
+      if (e.key === 'pardah_demo_user') {
+        syncDemoUserFromStorage();
+      }
+    };
+
+    const handleDemoUserUpdate = () => {
+      syncDemoUserFromStorage();
+    };
+
+    // Listen for storage events (from other tabs/windows)
+    window.addEventListener('storage', handleStorageChange);
+    window.addEventListener('demo-user-updated', handleDemoUserUpdate);
 
     return () => {
       window.removeEventListener('storage', handleStorageChange);
-      clearInterval(interval);
+      window.removeEventListener('demo-user-updated', handleDemoUserUpdate);
     };
-  }, [demoMode, demoUser]);
+  }, [demoMode]);
 
   // Handle Firebase Auth state changes
   useEffect(() => {
-    // Wait for demo mode check to complete before setting up Firebase Auth listener
-    if (!demoModeChecked) {
-      return;
-    }
     const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
       if (firebaseUser) {
         setUser(firebaseUser);
@@ -179,7 +161,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     });
 
     return () => unsubscribe();
-  }, [db, demoModeChecked, demoMode]); // Removed demoUser from dependencies to prevent infinite loop
+  }, [db, demoMode]);
 
   return (
     <AuthContext.Provider value={{ user, loading, isAdmin, demoUser }}>

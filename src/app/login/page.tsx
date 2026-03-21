@@ -691,6 +691,7 @@ const LoginForm = () => {
             };
             if (typeof window !== 'undefined') {
               localStorage.setItem('pardah_demo_user', JSON.stringify(demoUserData));
+              window.dispatchEvent(new Event('demo-user-updated'));
             }
             
             // Small delay to ensure localStorage is saved and AuthContext can pick it up
@@ -844,6 +845,7 @@ const LoginForm = () => {
               };
               if (typeof window !== 'undefined') {
                 localStorage.setItem('pardah_demo_user', JSON.stringify(demoUserData));
+                window.dispatchEvent(new Event('demo-user-updated'));
               }
               
               // Small delay to ensure localStorage is saved and AuthContext can pick it up
@@ -1583,4 +1585,3 @@ const LoginPage = () => {
 };
 
 export default LoginPage;
-

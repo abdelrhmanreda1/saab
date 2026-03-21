@@ -156,11 +156,11 @@ export default function RootLayout({
       <body
         className={`${inter.variable} ${poppins.variable} ${geistMono.variable} ${roboto.variable} ${openSans.variable} ${montserrat.variable} ${cairo.variable} antialiased`}
       >
-        <AuthProvider>
-          <LanguageProvider defaultLanguageCode="ar">
-            <CurrencyProvider>
-              <CartProvider>
-                <SettingsProvider>
+        <SettingsProvider>
+          <AuthProvider>
+            <LanguageProvider defaultLanguageCode="ar">
+              <CurrencyProvider>
+                <CartProvider>
                   <ThemeProvider>
                     <ToastProvider>
                       <PWARegistration />
@@ -169,11 +169,11 @@ export default function RootLayout({
                       </LayoutWrapper>
                     </ToastProvider>
                   </ThemeProvider>
-                </SettingsProvider>
-              </CartProvider>
-            </CurrencyProvider>
-          </LanguageProvider>
-        </AuthProvider>
+                </CartProvider>
+              </CurrencyProvider>
+            </LanguageProvider>
+          </AuthProvider>
+        </SettingsProvider>
       </body>
     </html>
   );

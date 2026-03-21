@@ -1,7 +1,6 @@
 'use client';
 
 import React, { createContext, useContext, useState, useCallback } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
 
 export type ToastType = 'success' | 'error' | 'warning' | 'info';
 
@@ -114,34 +113,28 @@ export const ToastProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     <ToastContext.Provider value={{ showToast, showSuccess, showError, showWarning, showInfo }}>
       {children}
       <div className="fixed top-4 right-4 z-50 flex flex-col gap-2 max-w-md w-full pointer-events-none">
-        <AnimatePresence>
-          {toasts.map((toast) => (
-            <motion.div
-              key={toast.id}
-              initial={{ opacity: 0, y: -20, x: 100 }}
-              animate={{ opacity: 1, y: 0, x: 0 }}
-              exit={{ opacity: 0, x: 100 }}
-              transition={{ duration: 0.3 }}
-              className={`pointer-events-auto border rounded-lg shadow-lg p-4 flex items-start gap-3 ${getToastStyles(toast.type)}`}
+        {toasts.map((toast) => (
+          <div
+            key={toast.id}
+            className={`pointer-events-auto border rounded-lg shadow-lg p-4 flex items-start gap-3 animate-fadeIn ${getToastStyles(toast.type)}`}
+          >
+            <div className="flex-shrink-0 mt-0.5">
+              {getToastIcon(toast.type)}
+            </div>
+            <div className="flex-1 min-w-0">
+              <p className="text-sm font-medium break-words">{toast.message}</p>
+            </div>
+            <button
+              onClick={() => removeToast(toast.id)}
+              className="flex-shrink-0 text-current opacity-70 hover:opacity-100 transition-opacity"
+              aria-label="Close"
             >
-              <div className="flex-shrink-0 mt-0.5">
-                {getToastIcon(toast.type)}
-              </div>
-              <div className="flex-1 min-w-0">
-                <p className="text-sm font-medium break-words">{toast.message}</p>
-              </div>
-              <button
-                onClick={() => removeToast(toast.id)}
-                className="flex-shrink-0 text-current opacity-70 hover:opacity-100 transition-opacity"
-                aria-label="Close"
-              >
-                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                </svg>
-              </button>
-            </motion.div>
-          ))}
-        </AnimatePresence>
+              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+          </div>
+        ))}
       </div>
     </ToastContext.Provider>
   );

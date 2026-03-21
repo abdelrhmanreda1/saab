@@ -502,6 +502,7 @@ const ProfilePage = () => {
           displayName: demoUser.displayName,
         };
         localStorage.setItem('pardah_demo_user', JSON.stringify(updatedDemoUser));
+        window.dispatchEvent(new Event('demo-user-updated'));
       }
 
       // Clean up reCAPTCHA
@@ -926,6 +927,7 @@ const ProfilePage = () => {
                     // Clear demo user if exists
                     if (settings?.demoMode && demoUser) {
                       localStorage.removeItem('pardah_demo_user');
+                      window.dispatchEvent(new Event('demo-user-updated'));
                     }
                     router.push('/');
                   } catch {
