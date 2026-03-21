@@ -27,7 +27,6 @@ import { useCart } from '../context/CartContext';
 import { getColors } from '@/lib/firestore/attributes_db';
 import { Color } from '@/lib/firestore/attributes';
 import { getColorName } from '@/lib/utils/translations';
-import CountdownTimer from '../components/CountdownTimer';
 import { getAllPosts } from '@/lib/firestore/blog_db';
 import { BlogPost } from '@/lib/firestore/blog';
 import { addNewsletterSubscription } from '@/lib/firestore/newsletter_db';
@@ -44,6 +43,7 @@ import { getHomepageSections } from '@/lib/firestore/homepage_sections_db';
 
 const QuickViewModal = dynamic(() => import('../components/QuickViewModal'), { ssr: false });
 const ProductComparison = dynamic(() => import('../components/ProductComparison'), { ssr: false });
+const CountdownTimer = dynamic(() => import('../components/CountdownTimer'), { ssr: false });
 
 const runWhenIdle = (task: () => void) => {
   if (typeof window !== 'undefined' && 'requestIdleCallback' in window) {
@@ -89,6 +89,7 @@ export default function Home() {
   const [goldBasePrice, setGoldBasePrice] = useState(0);
   const [goldPriceFetchedAt, setGoldPriceFetchedAt] = useState('');
   const [homepageSections, setHomepageSections] = useState(defaultHomepageSections);
+  const [showDeferredSections, setShowDeferredSections] = useState(false);
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const formatKaratLabel = (karat: string) => {
     if (!isArabic) return karat;
@@ -119,6 +120,10 @@ export default function Home() {
     checkMobile();
     window.addEventListener('resize', checkMobile);
     return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+
+  useEffect(() => {
+    runWhenIdle(() => setShowDeferredSections(true));
   }, []);
 
   // Auto-rotate banners
@@ -882,6 +887,7 @@ export default function Home() {
                     fill
                     sizes="100vw"
                     priority={index === 0}
+                    quality={60}
                     className="absolute inset-0 h-full w-full object-cover"
                   />
                 </div>
@@ -951,11 +957,15 @@ export default function Home() {
                   <button
                     key={index}
                     onClick={() => setCurrentBannerIndex(index)}
-                    className={`w-2 h-2 rounded-full transition-all ${
-                      index === currentBannerIndex ? 'w-8 bg-[#1a1307]' : 'bg-[#d2bb85] hover:bg-[#b99343]'
-                    }`}
+                    className="inline-flex h-10 w-10 items-center justify-center rounded-full"
                     aria-label={`Go to banner ${index + 1}`}
-                  />
+                  >
+                    <span
+                      className={`block rounded-full transition-all ${
+                        index === currentBannerIndex ? 'h-2.5 w-8 bg-[#1a1307]' : 'h-2.5 w-2.5 bg-[#d2bb85] hover:bg-[#b99343]'
+                      }`}
+                    />
+                  </button>
                 ))}
               </div>
             )}
@@ -1237,7 +1247,7 @@ export default function Home() {
       })()}
 
       {/* 2. Featured Products - Container with Asymmetric Grid */}
-      {isHomepageSectionEnabled('featured') && featuredProducts.length > 0 && (
+      {showDeferredSections && isHomepageSectionEnabled('featured') && featuredProducts.length > 0 && (
         <section 
           data-section-id="featured"
           className={`bg-white py-12 md:py-16 ${getSectionClasses('featured')}`}
@@ -1279,7 +1289,7 @@ export default function Home() {
       )}
 
       {/* 3. Flash Sales - Full Width */}
-      {isHomepageSectionEnabled('flash-sales') && activeFlashSales.length > 0 && flashSaleProducts.length > 0 && (
+      {showDeferredSections && isHomepageSectionEnabled('flash-sales') && activeFlashSales.length > 0 && flashSaleProducts.length > 0 && (
         <section 
           data-section-id="flash-sales"
           className={`w-full bg-gradient-to-br from-red-50 via-white to-red-50 py-12 md:py-16 ${getSectionClasses('flash-sales')}`}
@@ -1363,7 +1373,7 @@ export default function Home() {
       )}
 
       {/* 4. Popular Products - Container */}
-      {isHomepageSectionEnabled('popular') && popularProducts.length > 0 && (
+      {showDeferredSections && isHomepageSectionEnabled('popular') && popularProducts.length > 0 && (
         <section 
           data-section-id="popular"
           className={`bg-white py-12 md:py-16 ${getSectionClasses('popular')}`}
@@ -1395,7 +1405,7 @@ export default function Home() {
       )}
 
       {/* 5. Shop by Category - Full Width with Asymmetric Grid */}
-      {isHomepageSectionEnabled('categories') && categories.length > 0 && (
+      {showDeferredSections && isHomepageSectionEnabled('categories') && categories.length > 0 && (
         <section 
           data-section-id="categories"
           className={`w-full bg-gradient-to-b from-white via-gray-50 to-white py-12 md:py-16 ${getSectionClasses('categories')}`}
@@ -1422,6 +1432,7 @@ export default function Home() {
                           alt={getCategoryName(category, languageCode)}
                           fill
                           sizes={index === 0 ? "(max-width: 768px) 100vw, 50vw" : "(max-width: 768px) 50vw, 20vw"}
+                          quality={60}
                           className="absolute inset-0 h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
                         />
                       ) : (
@@ -1442,7 +1453,7 @@ export default function Home() {
       )}
 
       {/* 6. Latest Products - Container */}
-      {isHomepageSectionEnabled('latest') && latestProducts.length > 0 && (
+      {showDeferredSections && isHomepageSectionEnabled('latest') && latestProducts.length > 0 && (
         <section 
           data-section-id="latest"
           className={`bg-white py-12 md:py-16 ${getSectionClasses('latest')}`}
@@ -1479,7 +1490,7 @@ export default function Home() {
       )}
 
       {/* 7. Collections - Full Width */}
-      {isHomepageSectionEnabled('collections') && collections.length > 0 && (
+      {showDeferredSections && isHomepageSectionEnabled('collections') && collections.length > 0 && (
         <section 
           data-section-id="collections"
           className={`w-full bg-gradient-to-br from-gray-50 via-white to-gray-50 py-12 md:py-16 ${getSectionClasses('collections')}`}
@@ -1503,6 +1514,7 @@ export default function Home() {
                       alt={collection.name}
                       fill
                       sizes="(max-width: 768px) 100vw, 33vw"
+                      quality={60}
                       className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
                     />
                   ) : (
@@ -1526,7 +1538,7 @@ export default function Home() {
       )}
 
       {/* 8. Product Bundles / Special Offers - Container */}
-      {isHomepageSectionEnabled('bundles') && settings?.features?.productBundles && activeBundles.length > 0 && (
+      {showDeferredSections && isHomepageSectionEnabled('bundles') && settings?.features?.productBundles && activeBundles.length > 0 && (
         <section 
           data-section-id="bundles"
           className={`bg-white py-12 md:py-16 ${getSectionClasses('bundles')}`}
@@ -1603,6 +1615,7 @@ export default function Home() {
                         alt={bundle.name}
                         fill
                         sizes="(max-width: 768px) 100vw, 33vw"
+                        quality={60}
                         className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
                         loading="lazy"
                       />
@@ -1649,7 +1662,7 @@ export default function Home() {
       )}
 
       {/* 9. Customer Testimonials/Reviews Carousel - Full Width */}
-      {isHomepageSectionEnabled('testimonials') && testimonials.length > 0 && (
+      {showDeferredSections && isHomepageSectionEnabled('testimonials') && testimonials.length > 0 && (
         <section 
           data-section-id="testimonials"
           className={`w-full bg-gradient-to-b from-white via-gray-50 to-white py-12 md:py-16 ${getSectionClasses('testimonials')}`}
@@ -1727,7 +1740,7 @@ export default function Home() {
       )}
 
       {/* 10. Newsletter Signup Section - Full Width */}
-      {isHomepageSectionEnabled('newsletter') && (
+      {showDeferredSections && isHomepageSectionEnabled('newsletter') && (
       <section 
         data-section-id="newsletter"
         className={`w-full bg-gradient-to-br from-gray-900 via-gray-800 to-black py-12 md:py-16 ${getSectionClasses('newsletter')}`}
@@ -1772,7 +1785,7 @@ export default function Home() {
       )}
 
       {/* 11. Featured Blog Posts Section - Container */}
-      {isHomepageSectionEnabled('blog') && featuredBlogPosts.length > 0 && (
+      {showDeferredSections && isHomepageSectionEnabled('blog') && featuredBlogPosts.length > 0 && (
         <section 
           data-section-id="blog"
           className={`bg-white py-12 md:py-16 ${getSectionClasses('blog')}`}
@@ -1806,6 +1819,7 @@ export default function Home() {
                       alt={isArabic && post.title_ar ? post.title_ar : post.title}
                       fill
                       sizes="(max-width: 768px) 100vw, 33vw"
+                      quality={60}
                       className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
                       loading="lazy"
                     />
@@ -1859,7 +1873,7 @@ export default function Home() {
       )}
 
       {/* 13. Recently Viewed Products Section - Container */}
-      {isHomepageSectionEnabled('recently-viewed') && recentlyViewedProducts.length > 0 && (
+      {showDeferredSections && isHomepageSectionEnabled('recently-viewed') && recentlyViewedProducts.length > 0 && (
         <section 
           data-section-id="recently-viewed"
           className={`bg-white py-12 md:py-16 ${getSectionClasses('recently-viewed')}`}

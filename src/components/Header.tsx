@@ -285,11 +285,11 @@ const Header = () => {
                   </div>
                 )}
 
-                <form onSubmit={handleSearch} className="relative">
+                <form onSubmit={handleSearch} className="relative min-h-11">
                   <input
                     type="text"
                     placeholder={t('common.search')}
-                    className={`w-28 rounded-full border border-[#ecd9ae] bg-[#fffaf0] px-4 py-2 text-sm text-[#2b2110] outline-none transition focus:w-36 focus:border-[#be8c2f] lg:w-32 lg:focus:w-40 ${isRTL ? 'pl-10 pr-4' : 'pr-10 pl-4'}`}
+                    className={`h-11 w-36 rounded-full border border-[#ecd9ae] bg-[#fffaf0] px-4 text-sm text-[#2b2110] outline-none transition focus:w-40 focus:border-[#be8c2f] lg:w-40 lg:focus:w-44 ${isRTL ? 'pl-12 pr-4' : 'pr-12 pl-4'}`}
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                     aria-label={t('common.search') || 'Search'}
@@ -297,7 +297,7 @@ const Header = () => {
                   <button
                     type="submit"
                     style={{ color: headerText }}
-                    className={`absolute ${isRTL ? 'left-3' : 'right-3'} top-1/2 -translate-y-1/2 transition-colors hover:text-[#b8872f]`}
+                    className={`absolute ${isRTL ? 'left-1.5' : 'right-1.5'} top-1/2 inline-flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded-full transition-colors hover:text-[#b8872f]`}
                     aria-label={t('common.search') || 'Search'}
                   >
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="h-5 w-5">

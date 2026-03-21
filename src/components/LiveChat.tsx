@@ -144,7 +144,7 @@ const LiveChat: React.FC = () => {
 
   // Real-time listener for chat session updates
   useEffect(() => {
-    if (!session?.id) return;
+    if (!session?.id || !isOpen) return;
 
     // Set up real-time listener for chat session
     const sessionDocRef = doc(db, 'chat_sessions', session.id);
