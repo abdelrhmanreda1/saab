@@ -563,12 +563,15 @@ const CartPage = () => {
                         </div>
                         
                         <div className="space-y-3">
-                          {bundleItems.map((item) => (
+                          {bundleItems.map((item) => {
+                            const product = products.find(p => p.id === item.productId);
+                            const displayName = product ? getProductName(product, languageCode) : item.productName;
+                            return (
                             <div key={`${item.productId}-${item.variant?.id || 'no-variant'}`} className="flex items-center gap-4 p-3 bg-white rounded-lg border border-purple-100">
                               <Link href={`/products/${item.productSlug || item.productId}`} className="relative w-16 h-16 flex-shrink-0 overflow-hidden rounded-lg bg-gray-100">
                                 <Image
                                   src={item.productImage}
-                                  alt={item.productName}
+                                  alt={displayName}
                                   fill
                                   className="object-cover"
                                   sizes="64px"
@@ -576,7 +579,7 @@ const CartPage = () => {
                               </Link>
                               <div className="flex-1">
                                 <Link href={`/products/${item.productSlug || item.productId}`} className="font-medium text-gray-900 hover:text-gray-600">
-                                  {item.productName}
+                                  {displayName}
                                 </Link>
                                 {item.variant && (
                                   <p className="text-sm text-gray-500">{item.variant.name}: {item.variant.value}</p>
@@ -584,7 +587,8 @@ const CartPage = () => {
                                 <p className="text-sm text-gray-500">{(t('cart.quantity_label') || 'Quantity: {{count}}').replace('{{count}}', item.quantity.toString())}</p>
                               </div>
                             </div>
-                          ))}
+                            );
+                          })}
                         </div>
                         
                         <div className="flex items-center justify-between pt-4 border-t border-purple-200">
@@ -663,12 +667,15 @@ const CartPage = () => {
                         </div>
                         
                         <div className="space-y-3">
-                          {flashSaleItems.map((item) => (
+                          {flashSaleItems.map((item) => {
+                            const product = products.find(p => p.id === item.productId);
+                            const displayName = product ? getProductName(product, languageCode) : item.productName;
+                            return (
                             <div key={`${item.productId}-${item.variant?.id || 'no-variant'}`} className="flex items-center gap-4 p-3 bg-white rounded-lg border border-orange-100">
                               <Link href={`/products/${item.productSlug || item.productId}`} className="relative w-16 h-16 flex-shrink-0 overflow-hidden rounded-lg bg-gray-100">
                                 <Image
                                   src={item.productImage}
-                                  alt={item.productName}
+                                  alt={displayName}
                                   fill
                                   className="object-cover"
                                   sizes="64px"
@@ -676,7 +683,7 @@ const CartPage = () => {
                               </Link>
                               <div className="flex-1">
                                 <Link href={`/products/${item.productSlug || item.productId}`} className="font-medium text-gray-900 hover:text-gray-600">
-                                  {item.productName}
+                                  {displayName}
                                 </Link>
                                 {item.variant && (
                                   <p className="text-sm text-gray-500">{item.variant.name}: {item.variant.value}</p>
@@ -684,7 +691,8 @@ const CartPage = () => {
                                 <p className="text-sm text-gray-500">{(t('cart.quantity_label') || 'Quantity: {{count}}').replace('{{count}}', item.quantity.toString())}</p>
                               </div>
                             </div>
-                          ))}
+                            );
+                          })}
                         </div>
                         
                         <div className="flex items-center justify-between pt-4 border-t border-orange-200">
@@ -708,6 +716,7 @@ const CartPage = () => {
                     return group.items.map((item) => {
                       // Recalculate price for regular items based on current product data
                       const product = products.find(p => p.id === item.productId);
+                      const displayName = product ? getProductName(product, languageCode) : item.productName;
                       let displayPrice = item.price;
                       let displayOriginalPrice: number | undefined = undefined;
                       
@@ -741,7 +750,7 @@ const CartPage = () => {
                   <Link href={`/products/${item.productSlug || item.productId}`} className="relative w-full sm:w-36 h-48 sm:h-36 flex-shrink-0 overflow-hidden rounded-xl bg-gray-100 cursor-pointer">
                     <Image
                       src={item.productImage}
-                      alt={item.productName}
+                      alt={displayName}
                       fill
                       className="object-cover group-hover:scale-105 transition-transform duration-500"
                       sizes="(max-width: 640px) 100vw, 144px"
@@ -751,7 +760,7 @@ const CartPage = () => {
                   {/* Product Details */}
                   <div className="flex-grow flex flex-col justify-between pr-8">
                     <div>
-                      <Link href={`/products/${item.productSlug || item.productId}`} className="text-lg font-bold text-gray-900 mb-1 hover:underline decoration-1 underline-offset-4">{item.productName}</Link>
+                      <Link href={`/products/${item.productSlug || item.productId}`} className="text-lg font-bold text-gray-900 mb-1 hover:underline decoration-1 underline-offset-4">{displayName}</Link>
                       
                       <div className="flex flex-wrap gap-2 mt-2 mb-4">
                         {item.variant && (
