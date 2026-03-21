@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
+import Image from 'next/image';
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import { getPostBySlug, getAllPosts } from '@/lib/firestore/blog_db';
@@ -11,11 +12,6 @@ import { useLanguage } from '@/context/LanguageContext';
 const getBlogTitle = (post: BlogPost, lang: string) => {
   if (lang === 'ar' && post.title_ar) return post.title_ar;
   return post.title;
-};
-
-const getBlogExcerpt = (post: BlogPost, lang: string) => {
-  if (lang === 'ar' && post.excerpt_ar) return post.excerpt_ar;
-  return post.excerpt;
 };
 
 const getBlogContent = (post: BlogPost, lang: string) => {
@@ -117,11 +113,13 @@ const BlogPostPage = ({ params }: BlogPostPageProps) => {
           </h1>
           {post.coverImage && (
             <div className="relative aspect-video w-full overflow-hidden rounded-xl bg-gray-50 mb-6">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img 
-                src={post.coverImage} 
-                alt={getBlogTitle(post, langCode)} 
-                className="object-cover w-full h-full"
+              <Image
+                src={post.coverImage}
+                alt={getBlogTitle(post, langCode)}
+                fill
+                priority
+                sizes="(max-width: 1024px) 100vw, 896px"
+                className="object-cover"
               />
             </div>
           )}
@@ -151,11 +149,12 @@ const BlogPostPage = ({ params }: BlogPostPageProps) => {
                   <article className="bg-white border border-gray-100 rounded-xl overflow-hidden hover:shadow-md transition-all">
                     {relatedPost.coverImage && (
                       <div className="aspect-[16/9] relative overflow-hidden bg-gray-50">
-                        {/* eslint-disable-next-line @next/next/no-img-element */}
-                        <img 
-                          src={relatedPost.coverImage} 
-                          alt={getBlogTitle(relatedPost, langCode)} 
-                          className="object-cover w-full h-full group-hover:scale-110 transition-transform duration-300"
+                        <Image
+                          src={relatedPost.coverImage}
+                          alt={getBlogTitle(relatedPost, langCode)}
+                          fill
+                          sizes="(max-width: 768px) 100vw, 33vw"
+                          className="object-cover group-hover:scale-110 transition-transform duration-300"
                         />
                       </div>
                     )}

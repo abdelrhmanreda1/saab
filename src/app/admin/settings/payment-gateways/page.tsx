@@ -14,6 +14,8 @@ import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import Dialog from '@/components/ui/Dialog';
 import { getSettings } from '@/lib/firestore/settings_db';
 import { Settings, defaultSettings } from '@/lib/firestore/settings';
+import { optimizeImageForUpload } from '@/lib/utils/client-image';
+import SafeImage from '@/components/SafeImage';
 
 const PaymentGatewaysPage = () => {
   const { t } = useLanguage();
@@ -101,10 +103,17 @@ const PaymentGatewaysPage = () => {
     try {
       setUploading(true);
       const timestamp = Date.now();
-      const fileName = `payment-gateway-${timestamp}-${file.name}`;
+      const optimizedFile = await optimizeImageForUpload(file, {
+        maxWidth: 512,
+        maxHeight: 512,
+        quality: 0.82,
+      });
+      const fileName = `payment-gateway-${timestamp}-${optimizedFile.name}`;
       const storageRef = ref(storage, `payment-gateways/${fileName}`);
       
-      await uploadBytes(storageRef, file);
+      await uploadBytes(storageRef, optimizedFile, {
+        contentType: optimizedFile.type,
+      });
       const url = await getDownloadURL(storageRef);
       
       return url;
@@ -404,7 +413,7 @@ const PaymentGatewaysPage = () => {
                   {formData.icon && (formData.icon.startsWith('http') || formData.icon.startsWith('/')) && (
                     <div className="mt-2">
                       <div className="w-16 h-16 border border-gray-300 rounded-lg overflow-hidden flex items-center justify-center">
-                        <img
+                        <SafeImage
                           src={formData.icon}
                           alt="Gateway icon"
                           className="max-w-full max-h-full object-contain"
@@ -800,7 +809,7 @@ const PaymentGatewaysPage = () => {
                       <td className="px-4 sm:px-6 py-4 whitespace-nowrap">
                         {gateway.icon && (gateway.icon.startsWith('http') || gateway.icon.startsWith('/')) ? (
                           <div className="w-10 h-10 flex items-center justify-center">
-                            <img
+                            <SafeImage
                               src={gateway.icon}
                               alt={gateway.name}
                               className="max-w-full max-h-full object-contain"
@@ -869,7 +878,7 @@ const PaymentGatewaysPage = () => {
                     <div className="flex items-center gap-3 flex-1 min-w-0">
                       {gateway.icon && (gateway.icon.startsWith('http') || gateway.icon.startsWith('/')) ? (
                         <div className="w-8 h-8 flex-shrink-0 flex items-center justify-center">
-                          <img
+                          <SafeImage
                             src={gateway.icon}
                             alt={gateway.name}
                             className="max-w-full max-h-full object-contain"

@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Category } from '@/lib/firestore/categories';
 import { addCategory, updateCategory, getCategory, getAllCategories } from '@/lib/firestore/categories_db';
 import { storage } from '@/lib/firebase';
@@ -13,6 +13,7 @@ import { Timestamp } from 'firebase/firestore';
 import { useLanguage } from '@/context/LanguageContext';
 import { getSettings } from '@/lib/firestore/settings_db';
 import { Settings, defaultSettings } from '@/lib/firestore/settings';
+import { optimizeImageForUpload } from '@/lib/utils/client-image';
 import Dialog from '@/components/ui/Dialog';
 
 interface CategoryTranslation {
@@ -50,6 +51,7 @@ const CategoryForm: React.FC<CategoryFormProps> = ({ categoryId, onSuccess, onCa
   const [translations, setTranslations] = useState<CategoryTranslation[]>([]);
   const { currentLanguage, t } = useLanguage();
   const [settings, setSettings] = useState<Settings>(defaultSettings);
+  const baseEnglishRef = useRef<{ name: string; description: string }>({ name: '', description: '' });
   const [showInfoDialog, setShowInfoDialog] = useState(false);
   const [infoDialogMessage, setInfoDialogMessage] = useState('');
   const [infoDialogType, setInfoDialogType] = useState<'success' | 'error'>('error');
@@ -62,6 +64,36 @@ const CategoryForm: React.FC<CategoryFormProps> = ({ categoryId, onSuccess, onCa
     noIndex: false,
     noFollow: false,
   });
+
+  const upsertTranslation = (
+    existingTranslations: CategoryTranslation[],
+    languageCode: string,
+    values: Pick<CategoryTranslation, 'name' | 'description'>
+  ): CategoryTranslation[] => {
+    const normalizedCode = String(languageCode || '').trim().toLowerCase();
+    if (!normalizedCode) {
+      return existingTranslations;
+    }
+
+    const nextTranslation: CategoryTranslation = {
+      languageCode,
+      name: values.name || '',
+      description: values.description || '',
+      updatedAt: Timestamp.now(),
+    };
+
+    const existingIndex = existingTranslations.findIndex(
+      (translation) => String(translation.languageCode || '').trim().toLowerCase() === normalizedCode
+    );
+
+    if (existingIndex >= 0) {
+      const updatedTranslations = [...existingTranslations];
+      updatedTranslations[existingIndex] = nextTranslation;
+      return updatedTranslations;
+    }
+
+    return [...existingTranslations, nextTranslation];
+  };
 
   useEffect(() => {
     // Load languages
@@ -100,6 +132,10 @@ const CategoryForm: React.FC<CategoryFormProps> = ({ categoryId, onSuccess, onCa
             // eslint-disable-next-line @typescript-eslint/no-unused-vars
             const { id, createdAt, updatedAt, ...rest } = fetchedCategory;
             setCategory(rest);
+            baseEnglishRef.current = {
+              name: rest.name || '',
+              description: rest.description || '',
+            };
             
             // Set translations
             const categoryTranslations = (fetchedCategory as Category & { translations?: CategoryTranslation[] }).translations;
@@ -147,45 +183,24 @@ const CategoryForm: React.FC<CategoryFormProps> = ({ categoryId, onSuccess, onCa
     
     // Update translation for the currently selected language (ALL languages, including English)
     if (name === 'name' || name === 'description') {
-      setTranslations((prev: CategoryTranslation[]) => {
-        const existing = prev.find((t: CategoryTranslation) => t.languageCode === selectedLanguageCode);
-        if (existing) {
-          return prev.map((t: CategoryTranslation) => 
-            t.languageCode === selectedLanguageCode 
-              ? { ...t, [name]: value === '' ? undefined : value, updatedAt: Timestamp.now() }
-              : t
-          );
-        } else {
-          return [...prev, {
-            languageCode: selectedLanguageCode,
-            name: name === 'name' ? value : category.name,
-            description: name === 'description' ? (value === '' ? undefined : value) : category.description,
-            updatedAt: Timestamp.now()
-          }];
-        }
-      });
+      setTranslations((prev: CategoryTranslation[]) =>
+        upsertTranslation(prev, selectedLanguageCode, {
+          name: name === 'name' ? value : (category.name || ''),
+          description: name === 'description' ? value : (category.description || ''),
+        })
+      );
     }
   };
 
   // Handle language change — save current language values first, then load new language
   const handleLanguageChange = (languageCode: string) => {
     // Save current language values before switching
-    setTranslations((prev: CategoryTranslation[]) => {
-      const existingIndex = prev.findIndex((t: CategoryTranslation) => t.languageCode === selectedLanguageCode);
-      const currentTranslation: CategoryTranslation = {
-        languageCode: selectedLanguageCode,
-        name: category.name,
-        description: category.description,
-        updatedAt: Timestamp.now()
-      };
-      if (existingIndex >= 0) {
-        const updated = [...prev];
-        updated[existingIndex] = currentTranslation;
-        return updated;
-      } else {
-        return [...prev, currentTranslation];
-      }
-    });
+    setTranslations((prev: CategoryTranslation[]) =>
+      upsertTranslation(prev, selectedLanguageCode, {
+        name: category.name || '',
+        description: category.description || '',
+      })
+    );
 
     // Switch to new language
     setSelectedLanguageCode(languageCode);
@@ -258,30 +273,49 @@ const CategoryForm: React.FC<CategoryFormProps> = ({ categoryId, onSuccess, onCa
       let imageUrl = category.imageUrl;
 
       if (imageFile) {
-        const storageRef = ref(storage, `categories/${Date.now()}_${imageFile.name}`);
-        const uploadResult = await uploadBytes(storageRef, imageFile);
+        const optimizedImage = await optimizeImageForUpload(imageFile, { maxWidth: 1400, maxHeight: 1400, quality: 0.8 });
+        const storageRef = ref(storage, `categories/${Date.now()}_${optimizedImage.name}`);
+        const uploadResult = await uploadBytes(storageRef, optimizedImage, {
+          contentType: optimizedImage.type,
+        });
         imageUrl = await getDownloadURL(uploadResult.ref);
       }
 
       // Save current translation for the currently selected language (all languages)
-      const finalTranslations = [...translations];
-      const existingIndex = finalTranslations.findIndex((t: CategoryTranslation) => t.languageCode === selectedLanguageCode);
-      const currentTranslation: CategoryTranslation = {
-        languageCode: selectedLanguageCode,
-        name: category.name,
-        description: category.description,
-        updatedAt: Timestamp.now()
-      };
-      if (existingIndex >= 0) {
-        finalTranslations[existingIndex] = currentTranslation;
-      } else {
-        finalTranslations.push(currentTranslation);
-      }
+      const finalTranslations = upsertTranslation(
+        [...translations],
+        selectedLanguageCode,
+        {
+          name: category.name || '',
+          description: category.description || '',
+        }
+      );
 
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const categoryData: any = { ...category, imageUrl };
-      if (finalTranslations.length > 0) {
-        categoryData.translations = finalTranslations;
+      const englishTranslation =
+        String(selectedLanguageCode || '').trim().toLowerCase() === 'en'
+          ? { name: category.name || '', description: category.description || '' }
+          : finalTranslations.find(
+              (translation) => String(translation.languageCode || '').trim().toLowerCase() === 'en'
+            );
+
+      const categoryData: Omit<Category, 'id' | 'createdAt' | 'updatedAt'> & {
+        imageUrl?: string;
+        translations?: CategoryTranslation[];
+      } = {
+        ...category,
+        name: englishTranslation?.name || baseEnglishRef.current.name || '',
+        description: englishTranslation?.description || baseEnglishRef.current.description || '',
+        imageUrl,
+      };
+
+      const localizedTranslations = finalTranslations.filter(
+        (translation) =>
+          String(translation.languageCode || '').trim().toLowerCase() !== 'en' &&
+          Boolean(translation.name || translation.description)
+      );
+
+      if (localizedTranslations.length > 0) {
+        categoryData.translations = localizedTranslations;
       }
       // Remove undefined fields — Firestore does not accept undefined values
       Object.keys(categoryData).forEach(key => {

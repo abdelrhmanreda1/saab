@@ -303,9 +303,9 @@ const BundleClient: React.FC<BundleClientProps> = ({ bundle }) => {
                         src={bundle.image}
                         alt={bundle.name}
                         fill
+                        sizes="(max-width: 768px) 100vw, 448px"
                         className="object-contain p-4 transition-transform duration-500 ease-out md:group-hover:scale-150"
                         priority
-                        unoptimized
                       />
                     </div>
                     <div className="absolute inset-0 bg-black/0 group-hover:bg-black/5 transition-colors flex items-center justify-center">
@@ -398,8 +398,8 @@ const BundleClient: React.FC<BundleClientProps> = ({ bundle }) => {
                                 src={product.images[0]}
                                 alt={getProductName(product, languageCode)}
                                 fill
+                                sizes="64px"
                                 className="object-cover"
-                                unoptimized
                               />
                             ) : (
                               <div className="flex h-full items-center justify-center text-gray-300 text-xs">No Image</div>

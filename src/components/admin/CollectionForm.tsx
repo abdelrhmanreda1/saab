@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Collection, CollectionTranslation } from '@/lib/firestore/collections';
 import { addCollection, updateCollection, getCollection, getAllCollections } from '@/lib/firestore/collections_db';
 import { storage } from '@/lib/firebase';
@@ -13,6 +13,7 @@ import { Timestamp } from 'firebase/firestore';
 import { useLanguage } from '@/context/LanguageContext';
 import { getSettings } from '@/lib/firestore/settings_db';
 import { Settings, defaultSettings } from '@/lib/firestore/settings';
+import { optimizeImageForUpload } from '@/lib/utils/client-image';
 import Dialog from '@/components/ui/Dialog';
 
 interface CollectionFormProps {
@@ -42,6 +43,7 @@ const CollectionForm: React.FC<CollectionFormProps> = ({ collectionId, onSuccess
   const [selectedLanguageCode, setSelectedLanguageCode] = useState<string>('en');
   const [translations, setTranslations] = useState<CollectionTranslation[]>([]);
   const [settings, setSettings] = useState<Settings>(defaultSettings);
+  const baseEnglishRef = useRef<{ name: string; description: string }>({ name: '', description: '' });
   const [showInfoDialog, setShowInfoDialog] = useState(false);
   const [infoDialogMessage, setInfoDialogMessage] = useState('');
   const [infoDialogType, setInfoDialogType] = useState<'success' | 'error'>('error');
@@ -55,6 +57,36 @@ const CollectionForm: React.FC<CollectionFormProps> = ({ collectionId, onSuccess
     noIndex: false,
     noFollow: false,
   });
+
+  const upsertTranslation = (
+    existingTranslations: CollectionTranslation[],
+    languageCode: string,
+    values: Pick<CollectionTranslation, 'name' | 'description'>
+  ): CollectionTranslation[] => {
+    const normalizedCode = String(languageCode || '').trim().toLowerCase();
+    if (!normalizedCode) {
+      return existingTranslations;
+    }
+
+    const nextTranslation: CollectionTranslation = {
+      languageCode,
+      name: values.name || '',
+      description: values.description || '',
+      updatedAt: Timestamp.now(),
+    };
+
+    const existingIndex = existingTranslations.findIndex(
+      (translation) => String(translation.languageCode || '').trim().toLowerCase() === normalizedCode
+    );
+
+    if (existingIndex >= 0) {
+      const updatedTranslations = [...existingTranslations];
+      updatedTranslations[existingIndex] = nextTranslation;
+      return updatedTranslations;
+    }
+
+    return [...existingTranslations, nextTranslation];
+  };
 
   const fetchSettings = async () => {
     try {
@@ -92,6 +124,10 @@ const CollectionForm: React.FC<CollectionFormProps> = ({ collectionId, onSuccess
             // eslint-disable-next-line @typescript-eslint/no-unused-vars
             const { id, createdAt, updatedAt, ...rest } = fetchedCollection;
             setCollection(rest);
+            baseEnglishRef.current = {
+              name: rest.name || '',
+              description: rest.description || '',
+            };
             
             // Set translations
             const collectionTranslations = (fetchedCollection as Collection & { translations?: CollectionTranslation[] }).translations;
@@ -137,37 +173,38 @@ const CollectionForm: React.FC<CollectionFormProps> = ({ collectionId, onSuccess
     const { name, value } = e.target;
     setCollection(prev => ({ ...prev, [name]: value === '' ? undefined : value }));
     
-    // Update translation if editing a specific language
-    if (selectedLanguageCode !== 'en' && (name === 'name' || name === 'description')) {
-      setTranslations((prev: CollectionTranslation[]) => {
-        const existing = prev.find((t: CollectionTranslation) => t.languageCode === selectedLanguageCode);
-        if (existing) {
-          return prev.map((t: CollectionTranslation) => 
-            t.languageCode === selectedLanguageCode 
-              ? { ...t, [name]: value === '' ? undefined : value, updatedAt: Timestamp.now() }
-              : t
-          );
-        } else {
-          return [...prev, {
-            languageCode: selectedLanguageCode,
-            name: name === 'name' ? value : collection.name,
-            description: name === 'description' ? (value === '' ? undefined : value) : collection.description,
-            updatedAt: Timestamp.now()
-          }];
-        }
-      });
+    if (name === 'name' || name === 'description') {
+      setTranslations((prev: CollectionTranslation[]) =>
+        upsertTranslation(prev, selectedLanguageCode, {
+          name: name === 'name' ? value : (collection.name || ''),
+          description: name === 'description' ? value : (collection.description || ''),
+        })
+      );
     }
   };
 
-  // Handle language change
+  // Handle language change by persisting the current language values before switching.
   const handleLanguageChange = (languageCode: string) => {
+    setTranslations((prev: CollectionTranslation[]) =>
+      upsertTranslation(prev, selectedLanguageCode, {
+        name: collection.name || '',
+        description: collection.description || '',
+      })
+    );
+
     setSelectedLanguageCode(languageCode);
     const translation = translations.find((t: CollectionTranslation) => t.languageCode === languageCode);
     if (translation) {
       setCollection(prev => ({
         ...prev,
-        name: translation.name || prev.name,
-        description: translation.description || prev.description
+        name: translation.name || '',
+        description: translation.description || ''
+      }));
+    } else {
+      setCollection(prev => ({
+        ...prev,
+        name: '',
+        description: ''
       }));
     }
   };
@@ -218,31 +255,48 @@ const CollectionForm: React.FC<CollectionFormProps> = ({ collectionId, onSuccess
       let imageUrl = collection.imageUrl;
 
       if (imageFile) {
-        const storageRef = ref(storage, `collections/${Date.now()}_${imageFile.name}`);
-        const uploadResult = await uploadBytes(storageRef, imageFile);
+        const optimizedImage = await optimizeImageForUpload(imageFile, { maxWidth: 1400, maxHeight: 1400, quality: 0.8 });
+        const storageRef = ref(storage, `collections/${Date.now()}_${optimizedImage.name}`);
+        const uploadResult = await uploadBytes(storageRef, optimizedImage, {
+          contentType: optimizedImage.type,
+        });
         imageUrl = await getDownloadURL(uploadResult.ref);
       }
 
-      // Save current translation if editing a specific language
-      const finalTranslations = [...translations];
-      if (selectedLanguageCode !== 'en') {
-        const existingIndex = finalTranslations.findIndex((t: CollectionTranslation) => t.languageCode === selectedLanguageCode);
-        const currentTranslation: CollectionTranslation = {
-          languageCode: selectedLanguageCode,
-          name: collection.name,
-          description: collection.description,
-          updatedAt: Timestamp.now()
-        };
-        if (existingIndex >= 0) {
-          finalTranslations[existingIndex] = currentTranslation;
-        } else {
-          finalTranslations.push(currentTranslation);
+      const finalTranslations = upsertTranslation(
+        [...translations],
+        selectedLanguageCode,
+        {
+          name: collection.name || '',
+          description: collection.description || '',
         }
-      }
+      );
 
-      const collectionData: Omit<Collection, 'id' | 'createdAt' | 'updatedAt'> & { imageUrl?: string; translations?: CollectionTranslation[] } = { ...collection, imageUrl };
-      if (finalTranslations.length > 0) {
-        collectionData.translations = finalTranslations;
+      const englishTranslation =
+        String(selectedLanguageCode || '').trim().toLowerCase() === 'en'
+          ? { name: collection.name || '', description: collection.description || '' }
+          : finalTranslations.find(
+              (translation) => String(translation.languageCode || '').trim().toLowerCase() === 'en'
+            );
+
+      const collectionData: Omit<Collection, 'id' | 'createdAt' | 'updatedAt'> & {
+        imageUrl?: string;
+        translations?: CollectionTranslation[];
+      } = {
+        ...collection,
+        name: englishTranslation?.name || baseEnglishRef.current.name || '',
+        description: englishTranslation?.description || baseEnglishRef.current.description || '',
+        imageUrl,
+      };
+
+      const localizedTranslations = finalTranslations.filter(
+        (translation) =>
+          String(translation.languageCode || '').trim().toLowerCase() !== 'en' &&
+          Boolean(translation.name || translation.description)
+      );
+
+      if (localizedTranslations.length > 0) {
+        collectionData.translations = localizedTranslations;
       }
 
       let savedCollectionId = collectionId;

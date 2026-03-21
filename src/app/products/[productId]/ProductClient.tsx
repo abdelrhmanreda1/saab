@@ -720,9 +720,9 @@ const ProductClient: React.FC<ProductClientProps> = ({
                         src={product.images[activeImageIndex]}
                         alt={getProductName(product as Product, languageCode)}
                         fill
+                        sizes="(max-width: 768px) 100vw, 448px"
                         className="object-contain p-4 transition-transform duration-500 ease-out md:group-hover:scale-150"
                         priority
-                        unoptimized
                       />
                     </div>
                     <div className="absolute inset-0 bg-black/0 group-hover:bg-black/5 transition-colors flex items-center justify-center">
@@ -770,8 +770,8 @@ const ProductClient: React.FC<ProductClientProps> = ({
                         src={img}
                         alt={`${getProductName(product as Product, languageCode)} ${index}`}
                         fill
+                        sizes="48px"
                         className="object-cover"
-                        unoptimized
                       />
                     </div>
                   ))}

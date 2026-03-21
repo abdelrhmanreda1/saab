@@ -26,7 +26,7 @@ export async function GET(request: NextRequest) {
         'User-Agent':
           'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122 Safari/537.36',
       },
-      cache: 'force-cache',
+      cache: 'no-store',
     });
 
     if (!response.ok) {
@@ -41,7 +41,9 @@ export async function GET(request: NextRequest) {
       status: 200,
       headers: {
         'Content-Type': contentType,
-        'Cache-Control': 'public, max-age=86400, s-maxage=86400, stale-while-revalidate=604800',
+        'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0',
+        Pragma: 'no-cache',
+        Expires: '0',
         ...(contentLength ? { 'Content-Length': contentLength } : {}),
       },
     });

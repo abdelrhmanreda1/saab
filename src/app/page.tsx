@@ -13,7 +13,7 @@ import { Category } from '@/lib/firestore/categories';
 import { Collection } from '@/lib/firestore/collections';
 import { generateSlug } from '@/lib/utils/slug';
 import { useLanguage } from '../context/LanguageContext';
-import { getProductName, getCategoryName, getCollectionName } from '@/lib/utils/translations';
+import { getProductName, getCategoryName, getCollectionDescription, getCollectionName } from '@/lib/utils/translations';
 import { useCurrency } from '../context/CurrencyContext';
 import { useSettings } from '../context/SettingsContext';
 import { getAllFlashSales } from '@/lib/firestore/campaigns_db';
@@ -550,7 +550,8 @@ export default function Home() {
   }
 
   const ProductCard = ({ product }: { product: Product }) => {
-    const categoryName = categories.find(c => c.id === product.category)?.name;
+    const matchedCategory = categories.find(c => c.id === product.category);
+    const categoryName = matchedCategory ? getCategoryName(matchedCategory, languageCode) : undefined;
     const [isInWishlist, setIsInWishlist] = useState(false);
     const [hoveredColor, setHoveredColor] = useState<string | null>(null);
     const [mounted, setMounted] = useState(false);
@@ -684,7 +685,6 @@ export default function Home() {
                 fill 
                 className="object-cover object-center transition-transform duration-700 group-hover:scale-110"
                 sizes="(max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
-                unoptimized
                 loading="lazy"
               />
             ) : (
@@ -1344,7 +1344,8 @@ export default function Home() {
 
             <div className="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-8">
               {flashSaleProducts.slice(0, getHomepageSectionLimit('flash-sales', 8)).map((product) => {
-                const categoryName = categories.find((c) => c.id === product.category)?.name;
+                const matchedCategory = categories.find((c) => c.id === product.category);
+                const categoryName = matchedCategory ? getCategoryName(matchedCategory, languageCode) : undefined;
 
                 // Find applicable flash sale for this product
                 const productSale = activeFlashSales.find((sale) =>
@@ -1369,7 +1370,6 @@ export default function Home() {
                           className="object-cover object-center group-hover:scale-105 transition-transform duration-500"
                           sizes="(max-width: 768px) 50vw, 25vw"
                           loading="lazy"
-                          unoptimized
                         />
                       ) : (
                         <div className="flex h-full items-center justify-center text-gray-300">
@@ -1461,7 +1461,7 @@ export default function Home() {
                       {category.imageUrl ? (
                         <SafeImage
                           src={getSafeImageUrl(category.imageUrl)}
-                          alt={category.name}
+                          alt={getCategoryName(category, languageCode)}
                           className="absolute inset-0 h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
                           loading="lazy"
                         />
@@ -1551,8 +1551,8 @@ export default function Home() {
                   <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent z-10" />
                   <div className="absolute bottom-0 left-0 right-0 p-6 z-20">
                     <h3 className="text-white text-xl md:text-2xl font-heading font-bold mb-2">{getCollectionName(collection, languageCode)}</h3>
-                    {collection.description && (
-                      <p className="text-white/90 text-sm line-clamp-2">{collection.description}</p>
+                    {getCollectionDescription(collection, languageCode) && (
+                      <p className="text-white/90 text-sm line-clamp-2">{getCollectionDescription(collection, languageCode)}</p>
                     )}
                     <span className="inline-block mt-3 text-white text-sm font-medium border-b border-white/50 pb-1 group-hover:border-white transition-colors">
                       {t('home.explore_collection') || 'Explore Collection'} {isArabic ? '←' : '→'}

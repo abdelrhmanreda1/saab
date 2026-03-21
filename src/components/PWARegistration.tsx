@@ -8,21 +8,21 @@ export default function PWARegistration() {
       return;
     }
 
-    const registerServiceWorker = async () => {
+    const disableServiceWorker = async () => {
       try {
-        const registration = await navigator.serviceWorker.register("/sw.js", {
-          scope: "/",
-        });
+        const registrations = await navigator.serviceWorker.getRegistrations();
+        await Promise.all(registrations.map((registration) => registration.unregister()));
 
-        registration.update().catch(() => {
-          // Ignore best-effort update failures during registration.
-        });
+        if ("caches" in window) {
+          const cacheKeys = await caches.keys();
+          await Promise.all(cacheKeys.map((key) => caches.delete(key)));
+        }
       } catch {
-        // Ignore registration failures in local/dev environments.
+        // Ignore cleanup failures while cache is temporarily disabled.
       }
     };
 
-    registerServiceWorker();
+    disableServiceWorker();
   }, []);
 
   return null;

@@ -11,6 +11,7 @@ import { Settings, defaultSettings } from '@/lib/firestore/settings';
 import Dialog from '../ui/Dialog';
 import { useLanguage } from '@/context/LanguageContext';
 import { Timestamp } from 'firebase/firestore';
+import { optimizeImageForUpload } from '@/lib/utils/client-image';
 
 interface BannerFormProps {
   bannerId?: string;
@@ -133,8 +134,11 @@ const BannerForm: React.FC<BannerFormProps> = ({ bannerId, onSuccess, onCancel }
       let imageUrl = banner.imageUrl;
 
       if (imageFile) {
-        const storageRef = ref(storage, `banners/${Date.now()}_${imageFile.name}`);
-        const uploadResult = await uploadBytes(storageRef, imageFile);
+        const optimizedImage = await optimizeImageForUpload(imageFile, { maxWidth: 1600, maxHeight: 900, quality: 0.8 });
+        const storageRef = ref(storage, `banners/${Date.now()}_${optimizedImage.name}`);
+        const uploadResult = await uploadBytes(storageRef, optimizedImage, {
+          contentType: optimizedImage.type,
+        });
         imageUrl = await getDownloadURL(uploadResult.ref);
       }
 

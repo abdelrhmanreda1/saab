@@ -36,4 +36,4 @@ export const getProxyImageUrl = (url?: string | null): string => {
   return normalizedUrl;
 };
 
-export const getSafeImageUrl = (url?: string | null): string => getProxyImageUrl(url);
+export const getSafeImageUrl = (url?: string | null): string => getDirectImageUrl(url);

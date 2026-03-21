@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Brand } from '@/lib/firestore/brands';
 import { addBrand, updateBrand, getBrand } from '@/lib/firestore/brands_db';
 import { storage } from '@/lib/firebase';
@@ -13,6 +13,7 @@ import { Timestamp } from 'firebase/firestore';
 import { useLanguage } from '@/context/LanguageContext';
 import { getSettings } from '@/lib/firestore/settings_db';
 import { Settings, defaultSettings } from '@/lib/firestore/settings';
+import { optimizeImageForUpload } from '@/lib/utils/client-image';
 import Dialog from '@/components/ui/Dialog';
 
 interface BrandTranslation {
@@ -47,6 +48,7 @@ const BrandForm: React.FC<BrandFormProps> = ({ brandId, onSuccess, onCancel }) =
   const [selectedLanguageCode, setSelectedLanguageCode] = useState<string>('en');
   const [translations, setTranslations] = useState<BrandTranslation[]>([]);
   const [settings, setSettings] = useState<Settings>(defaultSettings);
+  const baseEnglishRef = useRef<{ name: string; description: string }>({ name: '', description: '' });
   const [showInfoDialog, setShowInfoDialog] = useState(false);
   const [infoDialogMessage, setInfoDialogMessage] = useState('');
   const [infoDialogType, setInfoDialogType] = useState<'success' | 'error'>('error');
@@ -60,6 +62,36 @@ const BrandForm: React.FC<BrandFormProps> = ({ brandId, onSuccess, onCancel }) =
     noIndex: false,
     noFollow: false,
   });
+
+  const upsertTranslation = (
+    existingTranslations: BrandTranslation[],
+    languageCode: string,
+    values: Pick<BrandTranslation, 'name' | 'description'>
+  ): BrandTranslation[] => {
+    const normalizedCode = String(languageCode || '').trim().toLowerCase();
+    if (!normalizedCode) {
+      return existingTranslations;
+    }
+
+    const nextTranslation: BrandTranslation = {
+      languageCode,
+      name: values.name || '',
+      description: values.description || '',
+      updatedAt: Timestamp.now(),
+    };
+
+    const existingIndex = existingTranslations.findIndex(
+      (translation) => String(translation.languageCode || '').trim().toLowerCase() === normalizedCode
+    );
+
+    if (existingIndex >= 0) {
+      const updatedTranslations = [...existingTranslations];
+      updatedTranslations[existingIndex] = nextTranslation;
+      return updatedTranslations;
+    }
+
+    return [...existingTranslations, nextTranslation];
+  };
 
   const fetchSettings = async () => {
     try {
@@ -92,6 +124,10 @@ const BrandForm: React.FC<BrandFormProps> = ({ brandId, onSuccess, onCancel }) =
             // eslint-disable-next-line @typescript-eslint/no-unused-vars
             const { id, createdAt, updatedAt, ...rest } = fetchedBrand;
             setBrand(rest);
+            baseEnglishRef.current = {
+              name: rest.name || '',
+              description: rest.description || '',
+            };
             
             // Set translations
             const brandTranslations = (fetchedBrand as Brand & { translations?: BrandTranslation[] }).translations;
@@ -136,37 +172,38 @@ const BrandForm: React.FC<BrandFormProps> = ({ brandId, onSuccess, onCancel }) =
     const { name, value } = e.target;
     setBrand(prev => ({ ...prev, [name]: value }));
     
-    // Update translation if editing a specific language
-    if (selectedLanguageCode !== 'en' && (name === 'name' || name === 'description')) {
-      setTranslations((prev: BrandTranslation[]) => {
-        const existing = prev.find((t: BrandTranslation) => t.languageCode === selectedLanguageCode);
-        if (existing) {
-          return prev.map((t: BrandTranslation) => 
-            t.languageCode === selectedLanguageCode 
-              ? { ...t, [name]: value, updatedAt: Timestamp.now() }
-              : t
-          );
-        } else {
-          return [...prev, {
-            languageCode: selectedLanguageCode,
-            name: name === 'name' ? value : brand.name,
-            description: name === 'description' ? value : brand.description,
-            updatedAt: Timestamp.now()
-          }];
-        }
-      });
+    if (name === 'name' || name === 'description') {
+      setTranslations((prev: BrandTranslation[]) =>
+        upsertTranslation(prev, selectedLanguageCode, {
+          name: name === 'name' ? value : brand.name,
+          description: name === 'description' ? value : brand.description,
+        })
+      );
     }
   };
 
-  // Handle language change
+  // Handle language change by persisting the current language values before switching.
   const handleLanguageChange = (languageCode: string) => {
+    setTranslations((prev: BrandTranslation[]) =>
+      upsertTranslation(prev, selectedLanguageCode, {
+        name: brand.name,
+        description: brand.description,
+      })
+    );
+
     setSelectedLanguageCode(languageCode);
     const translation = translations.find((t: BrandTranslation) => t.languageCode === languageCode);
     if (translation) {
       setBrand(prev => ({
         ...prev,
-        name: translation.name || prev.name,
-        description: translation.description || prev.description
+        name: translation.name || '',
+        description: translation.description || ''
+      }));
+    } else {
+      setBrand(prev => ({
+        ...prev,
+        name: '',
+        description: ''
       }));
     }
   };
@@ -201,31 +238,48 @@ const BrandForm: React.FC<BrandFormProps> = ({ brandId, onSuccess, onCancel }) =
       let logoUrl = brand.logoUrl;
 
       if (imageFile) {
-        const storageRef = ref(storage, `brands/${Date.now()}_${imageFile.name}`);
-        const uploadResult = await uploadBytes(storageRef, imageFile);
+        const optimizedImage = await optimizeImageForUpload(imageFile, { maxWidth: 1200, maxHeight: 1200, quality: 0.8 });
+        const storageRef = ref(storage, `brands/${Date.now()}_${optimizedImage.name}`);
+        const uploadResult = await uploadBytes(storageRef, optimizedImage, {
+          contentType: optimizedImage.type,
+        });
         logoUrl = await getDownloadURL(uploadResult.ref);
       }
 
-      // Save current translation if editing a specific language
-      const finalTranslations = [...translations];
-      if (selectedLanguageCode !== 'en') {
-        const existingIndex = finalTranslations.findIndex((t: BrandTranslation) => t.languageCode === selectedLanguageCode);
-        const currentTranslation: BrandTranslation = {
-          languageCode: selectedLanguageCode,
+      const finalTranslations = upsertTranslation(
+        [...translations],
+        selectedLanguageCode,
+        {
           name: brand.name,
           description: brand.description,
-          updatedAt: Timestamp.now()
-        };
-        if (existingIndex >= 0) {
-          finalTranslations[existingIndex] = currentTranslation;
-        } else {
-          finalTranslations.push(currentTranslation);
         }
-      }
+      );
 
-      const brandData: Omit<Brand, 'id' | 'createdAt' | 'updatedAt'> & { logoUrl?: string; translations?: BrandTranslation[] } = { ...brand, logoUrl };
-      if (finalTranslations.length > 0) {
-        brandData.translations = finalTranslations;
+      const englishTranslation =
+        String(selectedLanguageCode || '').trim().toLowerCase() === 'en'
+          ? { name: brand.name || '', description: brand.description || '' }
+          : finalTranslations.find(
+              (translation) => String(translation.languageCode || '').trim().toLowerCase() === 'en'
+            );
+
+      const brandData: Omit<Brand, 'id' | 'createdAt' | 'updatedAt'> & {
+        logoUrl?: string;
+        translations?: BrandTranslation[];
+      } = {
+        ...brand,
+        name: englishTranslation?.name || baseEnglishRef.current.name || '',
+        description: englishTranslation?.description || baseEnglishRef.current.description || '',
+        logoUrl,
+      };
+
+      const localizedTranslations = finalTranslations.filter(
+        (translation) =>
+          String(translation.languageCode || '').trim().toLowerCase() !== 'en' &&
+          Boolean(translation.name || translation.description)
+      );
+
+      if (localizedTranslations.length > 0) {
+        brandData.translations = localizedTranslations;
       }
 
       let savedBrandId = brandId;

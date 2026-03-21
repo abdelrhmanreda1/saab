@@ -169,8 +169,8 @@ const QuickViewModal: React.FC<QuickViewModalProps> = ({ product, isOpen, onClos
                       src={product.images[activeImageIndex] || product.images[0]}
                       alt={getProductName(product, languageCode)}
                       fill
+                      sizes="(max-width: 768px) 100vw, 50vw"
                       className="object-cover"
-                      unoptimized
                     />
                   ) : (
                     <div className="flex h-full items-center justify-center text-gray-300">
@@ -190,7 +190,7 @@ const QuickViewModal: React.FC<QuickViewModalProps> = ({ product, isOpen, onClos
                           activeImageIndex === idx ? 'border-gray-900' : 'border-gray-200'
                         }`}
                       >
-                        <Image src={img} alt={`${idx + 1}`} width={64} height={64} className="object-cover" unoptimized />
+                        <Image src={img} alt={`${idx + 1}`} width={64} height={64} className="object-cover" sizes="64px" />
                       </button>
                     ))}
                   </div>

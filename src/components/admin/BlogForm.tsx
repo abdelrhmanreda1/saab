@@ -13,6 +13,7 @@ import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { useLanguage } from '@/context/LanguageContext';
 import { getSettings } from '@/lib/firestore/settings_db';
 import { Settings, defaultSettings } from '@/lib/firestore/settings';
+import { optimizeImageForUpload } from '@/lib/utils/client-image';
 import Dialog from '../ui/Dialog';
 import 'react-quill/dist/quill.snow.css';
 
@@ -316,8 +317,11 @@ const BlogForm: React.FC<BlogFormProps> = ({ postId, onSuccess, onCancel }) => {
         const postIdOrNew = postIdRef.current || 'new';
         const filePath = `blog/${postIdOrNew}/${Date.now()}_${sanitizedFileName}`;
         
-        const storageRef = ref(storage, filePath);
-        const uploadResult = await uploadBytes(storageRef, file);
+        const optimizedImage = await optimizeImageForUpload(file, { maxWidth: 1600, maxHeight: 1600, quality: 0.78 });
+        const storageRef = ref(storage, filePath.replace(sanitizedFileName, optimizedImage.name));
+        const uploadResult = await uploadBytes(storageRef, optimizedImage, {
+          contentType: optimizedImage.type,
+        });
         const url = await getDownloadURL(uploadResult.ref);
 
         // Get Quill instance with multiple retries
@@ -468,8 +472,11 @@ const BlogForm: React.FC<BlogFormProps> = ({ postId, onSuccess, onCancel }) => {
       // Upload cover image if file is selected
       let coverImageUrl = post.coverImage;
       if (coverImageFile) {
-        const storageRef = ref(storage, `blog/cover-images/${Date.now()}_${coverImageFile.name}`);
-        const uploadResult = await uploadBytes(storageRef, coverImageFile);
+        const optimizedImage = await optimizeImageForUpload(coverImageFile, { maxWidth: 1600, maxHeight: 900, quality: 0.8 });
+        const storageRef = ref(storage, `blog/cover-images/${Date.now()}_${optimizedImage.name}`);
+        const uploadResult = await uploadBytes(storageRef, optimizedImage, {
+          contentType: optimizedImage.type,
+        });
         coverImageUrl = await getDownloadURL(uploadResult.ref);
       }
 

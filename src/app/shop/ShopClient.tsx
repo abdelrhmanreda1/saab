@@ -17,7 +17,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { useLanguage } from '@/context/LanguageContext';
 import { useSettings } from '@/context/SettingsContext';
-import { getProductName, getCategoryName, getColorName, getSizeName } from '@/lib/utils/translations';
+import { getProductName, getCategoryName, getCategoryDescription, getCollectionDescription, getCollectionName, getColorName, getSizeName } from '@/lib/utils/translations';
 import { getSizes } from '@/lib/firestore/attributes_db';
 import { getReviewsByProductId } from '@/lib/firestore/reviews_enhanced_db';
 import type { Review } from '@/lib/firestore/reviews_enhanced';
@@ -675,7 +675,8 @@ const ShopClient: React.FC<ShopClientProps> = ({
     product: Product;
     prioritizeImage?: boolean;
   }) => {
-    const categoryName = categories.find(c => c.id === product.category)?.name;
+    const matchedCategory = categories.find(c => c.id === product.category);
+    const categoryName = matchedCategory ? getCategoryName(matchedCategory, languageCode) : undefined;
     const [isInWishlist, setIsInWishlist] = useState(false);
     const [hoveredColor, setHoveredColor] = useState<string | null>(null);
     const [mounted, setMounted] = useState(false);
@@ -810,7 +811,6 @@ const ShopClient: React.FC<ShopClientProps> = ({
               className="h-full w-full object-cover object-center transition-transform duration-700 group-hover:scale-110"
               sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
               priority={prioritizeImage}
-              unoptimized
             />
           ) : (
             <div className="flex h-full items-center justify-center text-gray-300">
@@ -971,8 +971,8 @@ const ShopClient: React.FC<ShopClientProps> = ({
                       src={currentCategory.imageUrl}
                       alt={getCategoryName(currentCategory, languageCode)}
                       fill
+                      sizes="(max-width: 768px) 100vw, 192px"
                       className="object-cover"
-                      unoptimized
                     />
                   </div>
                 )}
@@ -980,9 +980,9 @@ const ShopClient: React.FC<ShopClientProps> = ({
                   <h1 className="text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-heading font-bold text-gray-900 mb-4 md:mb-6 leading-tight">
                     {getCategoryName(currentCategory, languageCode)}
                   </h1>
-                  {currentCategory.description && (
+                  {getCategoryDescription(currentCategory, languageCode) && (
                     <p className="text-base md:text-lg lg:text-xl text-gray-700 max-w-2xl leading-relaxed">
-                      {currentCategory.description}
+                      {getCategoryDescription(currentCategory, languageCode)}
                     </p>
                   )}
                 </div>
@@ -994,20 +994,20 @@ const ShopClient: React.FC<ShopClientProps> = ({
                   <div className="relative w-full md:w-48 h-48 md:h-48 rounded-2xl overflow-hidden flex-shrink-0">
                     <Image
                       src={currentCollection.imageUrl}
-                      alt={currentCollection.name}
+                      alt={getCollectionName(currentCollection, languageCode)}
                       fill
+                      sizes="(max-width: 768px) 100vw, 192px"
                       className="object-cover"
-                      unoptimized
                     />
                   </div>
                 )}
                 <div className="flex-1">
                   <h1 className="text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-heading font-bold text-gray-900 mb-4 md:mb-6 leading-tight">
-                    {currentCollection.name}
+                    {getCollectionName(currentCollection, languageCode)}
                   </h1>
-                  {currentCollection.description && (
+                  {getCollectionDescription(currentCollection, languageCode) && (
                     <p className="text-base md:text-lg lg:text-xl text-gray-700 max-w-2xl leading-relaxed">
-                      {currentCollection.description}
+                      {getCollectionDescription(currentCollection, languageCode)}
                     </p>
                   )}
                 </div>
@@ -1622,7 +1622,7 @@ const ShopClient: React.FC<ShopClientProps> = ({
                   {currentCategory
                     ? getCategoryName(currentCategory, languageCode)
                     : currentCollection
-                      ? currentCollection.name
+                      ? getCollectionName(currentCollection, languageCode)
                       : (t('shop.title') && t('shop.title') !== 'shop.title' ? t('shop.title') : 'Shop')}
                 </h1>
                 <span className="text-sm md:text-base text-gray-600 hidden md:inline font-medium">
@@ -1768,7 +1768,6 @@ const ShopClient: React.FC<ShopClientProps> = ({
                         className="h-full w-full object-cover"
                         sizes="128px"
                         priority={index === 0}
-                        unoptimized
                       />
                     ) : (
                       <div className="flex h-full items-center justify-center text-gray-300">
@@ -1791,7 +1790,7 @@ const ShopClient: React.FC<ShopClientProps> = ({
                         )}
                       </h3>
                       <p className="text-sm md:text-base text-gray-700 mb-3 line-clamp-2 leading-relaxed">
-                        {product.description || categories.find(c => c.id === product.category)?.name || 'Collection'}
+                        {product.description || (categories.find(c => c.id === product.category) ? getCategoryName(categories.find(c => c.id === product.category)!, languageCode) : undefined) || 'Collection'}
                       </p>
                       {(() => {
                         const pricing = getPricing(product);

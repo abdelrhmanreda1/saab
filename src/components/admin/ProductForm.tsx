@@ -23,6 +23,7 @@ import { getAllLanguages } from '@/lib/firestore/internationalization_db';
 import { Language } from '@/lib/firestore/internationalization';
 import { Timestamp } from 'firebase/firestore';
 import { useLanguage } from '@/context/LanguageContext';
+import { optimizeImageForUpload } from '@/lib/utils/client-image';
 import Dialog from '../ui/Dialog';
 import 'react-quill/dist/quill.snow.css';
 
@@ -135,6 +136,7 @@ const ProductForm: React.FC<ProductFormProps> = ({ productId, onSuccess, onCance
   const [languages, setLanguages] = useState<Language[]>([]);
   const [selectedLanguageCode, setSelectedLanguageCode] = useState<string>('en');
   const [translations, setTranslations] = useState<ProductTranslation[]>([]);
+  const baseEnglishRef = useRef<{ name: string; description: string }>({ name: '', description: '' });
   const [settings, setSettings] = useState<Settings>(defaultSettings);
   const { t, currentLanguage } = useLanguage();
   // Use ref for t to prevent imageHandler/quillModules from recreating when translations load
@@ -148,6 +150,36 @@ const ProductForm: React.FC<ProductFormProps> = ({ productId, onSuccess, onCance
   useEffect(() => {
     productIdRef.current = productId;
   }, [productId]);
+
+  const upsertTranslation = useCallback((
+    existingTranslations: ProductTranslation[],
+    languageCode: string,
+    values: Pick<ProductTranslation, 'name' | 'description'>
+  ): ProductTranslation[] => {
+    const normalizedCode = String(languageCode || '').trim().toLowerCase();
+    if (!normalizedCode) {
+      return existingTranslations;
+    }
+
+    const nextTranslation: ProductTranslation = {
+      languageCode,
+      name: values.name || '',
+      description: values.description || '',
+      updatedAt: Timestamp.now(),
+    };
+
+    const existingIndex = existingTranslations.findIndex(
+      (translation) => String(translation.languageCode || '').trim().toLowerCase() === normalizedCode
+    );
+
+    if (existingIndex >= 0) {
+      const updatedTranslations = [...existingTranslations];
+      updatedTranslations[existingIndex] = nextTranslation;
+      return updatedTranslations;
+    }
+
+    return [...existingTranslations, nextTranslation];
+  }, []);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -196,6 +228,10 @@ const ProductForm: React.FC<ProductFormProps> = ({ productId, onSuccess, onCance
             const { id, createdAt, updatedAt, ...rest } = fetchedProduct;
             const productTranslations = (fetchedProduct as Product & { translations?: ProductTranslation[] }).translations;
             setProduct(rest);
+            baseEnglishRef.current = {
+              name: rest.name || '',
+              description: rest.description || '',
+            };
             
             // Set translations
             if (productTranslations && productTranslations.length > 0) {
@@ -323,8 +359,11 @@ const ProductForm: React.FC<ProductFormProps> = ({ productId, onSuccess, onCance
         const productIdOrNew = productIdRef.current || 'new';
         const filePath = `products/${productIdOrNew}/description/${Date.now()}_${sanitizedFileName}`;
         
-        const storageRef = ref(storage, filePath);
-        const uploadResult = await uploadBytes(storageRef, file);
+        const optimizedImage = await optimizeImageForUpload(file, { maxWidth: 1600, maxHeight: 1600, quality: 0.78 });
+        const storageRef = ref(storage, filePath.replace(sanitizedFileName, optimizedImage.name));
+        const uploadResult = await uploadBytes(storageRef, optimizedImage, {
+          contentType: optimizedImage.type,
+        });
         const url = await getDownloadURL(uploadResult.ref);
 
         // Get Quill instance with multiple retries
@@ -481,44 +520,63 @@ const ProductForm: React.FC<ProductFormProps> = ({ productId, onSuccess, onCance
       return updated;
     });
     
+    if (selectedLanguageCode === 'en' && (name === 'name' || name === 'description')) {
+      baseEnglishRef.current = {
+        name: name === 'name' ? String(value) : (product.name || ''),
+        description: name === 'description' ? String(value) : (product.description || ''),
+      };
+    }
+
     // Update translation if editing a specific language
     if (selectedLanguageCode !== 'en' && (name === 'name' || name === 'description')) {
-      setTranslations(prev => {
-        const existing = prev.find(t => t.languageCode === selectedLanguageCode);
-        if (existing) {
-          return prev.map(t => 
-            t.languageCode === selectedLanguageCode 
-              ? { ...t, [name]: value, updatedAt: Timestamp.now() }
-              : t
-          );
-        } else {
-          return [...prev, {
-            languageCode: selectedLanguageCode,
-            name: name === 'name' ? value as string : product.name,
-            description: name === 'description' ? value as string : product.description,
-            updatedAt: Timestamp.now()
-          }];
-        }
-      });
+      setTranslations(prev =>
+        upsertTranslation(prev, selectedLanguageCode, {
+          name: name === 'name' ? String(value) : product.name,
+          description: name === 'description' ? String(value) : product.description,
+        })
+      );
     }
   };
 
   // Handle language change
   const handleLanguageChange = (languageCode: string) => {
+    if (selectedLanguageCode === 'en') {
+      baseEnglishRef.current = {
+        name: product.name || '',
+        description: product.description || '',
+      };
+    } else {
+      setTranslations(prev =>
+        upsertTranslation(prev, selectedLanguageCode, {
+          name: product.name || '',
+          description: product.description || '',
+        })
+      );
+    }
+
     setSelectedLanguageCode(languageCode);
     
-    // Find translation for selected language
-    const translation = translations.find(t => t.languageCode === languageCode);
-    if (translation) {
-      // Update product name and description from translation
+    if (String(languageCode || '').trim().toLowerCase() === 'en') {
       setProduct(prev => ({
         ...prev,
-        name: translation.name || prev.name,
-        description: translation.description || prev.description
+        name: baseEnglishRef.current.name || '',
+        description: baseEnglishRef.current.description || ''
       }));
     } else {
-      // If no translation exists, keep default values
-      // (name and description remain as default/fallback)
+      const translation = translations.find(t => t.languageCode === languageCode);
+      if (translation) {
+        setProduct(prev => ({
+          ...prev,
+          name: translation.name || '',
+          description: translation.description || ''
+        }));
+      } else {
+        setProduct(prev => ({
+          ...prev,
+          name: '',
+          description: ''
+        }));
+      }
     }
   };
 
@@ -651,22 +709,58 @@ const ProductForm: React.FC<ProductFormProps> = ({ productId, onSuccess, onCance
       // Upload new images
       if (imageFiles.length > 0) {
         const uploadPromises = imageFiles.map(async (file) => {
-            const storageRef = ref(storage, `products/${Date.now()}_${file.name}`);
-            const uploadResult = await uploadBytes(storageRef, file);
+            const optimizedImage = await optimizeImageForUpload(file, { maxWidth: 1600, maxHeight: 1600, quality: 0.8 });
+            const storageRef = ref(storage, `products/${Date.now()}_${optimizedImage.name}`);
+            const uploadResult = await uploadBytes(storageRef, optimizedImage, {
+              contentType: optimizedImage.type,
+            });
             return getDownloadURL(uploadResult.ref);
         });
         const uploadedUrls = await Promise.all(uploadPromises);
         finalImages = [...finalImages, ...uploadedUrls];
       }
 
+      const finalTranslations = upsertTranslation(
+        [...translations],
+        selectedLanguageCode,
+        {
+          name: product.name || '',
+          description: product.description || '',
+        }
+      );
+
+      const englishTranslation =
+        String(selectedLanguageCode || '').trim().toLowerCase() === 'en'
+          ? { name: product.name || '', description: product.description || '' }
+          : finalTranslations.find(
+              (translation) => String(translation.languageCode || '').trim().toLowerCase() === 'en'
+            );
+
       // Ensure slug exists before saving
       const finalProductData: Omit<Product, 'id' | 'createdAt' | 'updatedAt' | 'analytics'> & { 
         images: string[];
         translations?: ProductTranslation[];
-      } = { ...product, images: finalImages };
+      } = {
+        ...product,
+        name: englishTranslation?.name || baseEnglishRef.current.name || '',
+        description: englishTranslation?.description || baseEnglishRef.current.description || '',
+        images: finalImages
+      };
       if (!finalProductData.slug || finalProductData.slug.trim() === '') {
         // Generate slug from name if missing
         finalProductData.slug = generateSlug(finalProductData.name || `product-${Date.now()}`);
+      }
+
+      const localizedTranslations = finalTranslations.filter(
+        (translation) =>
+          String(translation.languageCode || '').trim().toLowerCase() !== 'en' &&
+          Boolean(translation.name || translation.description)
+      );
+
+      if (localizedTranslations.length > 0) {
+        finalProductData.translations = localizedTranslations;
+      } else {
+        delete finalProductData.translations;
       }
 
       // Firestore does not allow undefined field values – clean them before save
@@ -700,28 +794,6 @@ const ProductForm: React.FC<ProductFormProps> = ({ productId, onSuccess, onCance
         }
       });
 
-      // Save current translation if editing a specific language
-      const finalTranslations = [...translations];
-      if (selectedLanguageCode !== 'en') {
-        const existingIndex = finalTranslations.findIndex((t: ProductTranslation) => t.languageCode === selectedLanguageCode);
-        const currentTranslation: ProductTranslation = {
-          languageCode: selectedLanguageCode,
-          name: product.name,
-          description: product.description,
-          updatedAt: Timestamp.now()
-        };
-        if (existingIndex >= 0) {
-          finalTranslations[existingIndex] = currentTranslation;
-        } else {
-          finalTranslations.push(currentTranslation);
-        }
-      }
-      
-      // Add translations to product data
-      if (finalTranslations.length > 0) {
-        finalProductData.translations = finalTranslations;
-      }
-
       let savedProductId = productId;
       if (productId) {
         await updateProduct(productId, cleanedProductData);
@@ -732,8 +804,11 @@ const ProductForm: React.FC<ProductFormProps> = ({ productId, onSuccess, onCance
       // Upload meta image if file is selected
       let metaImageUrl = seoData.metaImage;
       if (metaImageFile) {
-        const storageRef = ref(storage, `products/${savedProductId}/meta-image/${Date.now()}_${metaImageFile.name}`);
-        const uploadResult = await uploadBytes(storageRef, metaImageFile);
+        const optimizedImage = await optimizeImageForUpload(metaImageFile, { maxWidth: 1600, maxHeight: 900, quality: 0.8 });
+        const storageRef = ref(storage, `products/${savedProductId}/meta-image/${Date.now()}_${optimizedImage.name}`);
+        const uploadResult = await uploadBytes(storageRef, optimizedImage, {
+          contentType: optimizedImage.type,
+        });
         metaImageUrl = await getDownloadURL(uploadResult.ref);
       }
 
@@ -1098,24 +1173,18 @@ const ProductForm: React.FC<ProductFormProps> = ({ productId, onSuccess, onCance
                   onChange={(value: string) => {
                     setProduct(prev => ({ ...prev, description: value }));
                     // Update translation if editing a specific language
-                    if (selectedLanguageCode !== 'en') {
-                      setTranslations(prev => {
-                        const existing = prev.find(t => t.languageCode === selectedLanguageCode);
-                        if (existing) {
-                          return prev.map(t => 
-                            t.languageCode === selectedLanguageCode 
-                              ? { ...t, description: value, updatedAt: Timestamp.now() }
-                              : t
-                          );
-                        } else {
-                          return [...prev, {
-                            languageCode: selectedLanguageCode,
-                            name: product.name,
-                            description: value,
-                            updatedAt: Timestamp.now()
-                          }];
-                        }
-                      });
+                    if (selectedLanguageCode === 'en') {
+                      baseEnglishRef.current = {
+                        name: product.name || '',
+                        description: value || '',
+                      };
+                    } else {
+                      setTranslations(prev =>
+                        upsertTranslation(prev, selectedLanguageCode, {
+                          name: product.name || '',
+                          description: value || '',
+                        })
+                      );
                     }
                   }}
                   placeholder={t('admin.products_description_placeholder') || 'Start writing product description here...'}

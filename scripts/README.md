@@ -106,6 +106,46 @@ node scripts/replace-fashion-taxonomy.js
 
 ---
 
+### 5. optimize-existing-images.js
+
+Optimizes existing Firebase Storage images, converts them to `webp`, uploads optimized copies, and rewrites Firestore URLs.
+
+**Usage:**
+```bash
+npm run images:optimize
+node scripts/optimize-existing-images.js
+node scripts/optimize-existing-images.js --write
+node scripts/optimize-existing-images.js --write --delete-originals
+node scripts/optimize-existing-images.js --write --collections=products,banners,settings
+```
+
+**What it does:**
+- Scans image references in key collections like `products`, `categories`, `collections`, `brands`, `banners`, `blog_posts`, SEO collections, `settings`, and `languages`
+- Downloads original files from Firebase Storage
+- Resizes and converts eligible raster images to `webp`
+- Uploads optimized copies under an `optimized/` path
+- Updates Firestore documents to point to the new optimized URLs
+- Can optionally delete the old originals after a successful rewrite
+
+**Recommended flow:**
+```bash
+# 1) Preview only
+npm run images:optimize
+
+# 2) Apply changes
+node scripts/optimize-existing-images.js --write
+
+# 3) Optional cleanup
+node scripts/optimize-existing-images.js --write --delete-originals
+```
+
+**Notes:**
+- Default mode is `dry-run`, so nothing is written unless `--write` is passed
+- `svg`, `gif`, and already-`webp` files are skipped
+- The script only rewrites documents it actually improves
+
+---
+
 ## Setup
 
 ### Install script dependency

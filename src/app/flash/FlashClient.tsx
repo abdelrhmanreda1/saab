@@ -7,7 +7,7 @@ import { useCurrency } from '../../context/CurrencyContext';
 import { useLanguage } from '@/context/LanguageContext';
 import Link from 'next/link';
 import Image from 'next/image';
-import { getProductName } from '@/lib/utils/translations';
+import { getCategoryName, getProductName } from '@/lib/utils/translations';
 import { getAllCategories } from '@/lib/firestore/categories_db';
 import { Category } from '@/lib/firestore/categories';
 import { useEffect } from 'react';
@@ -175,7 +175,8 @@ const FlashClient: React.FC<FlashClientProps> = ({ products, flashSales }) => {
       <div className="page-container pb-20">
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 md:gap-8">
           {sortedProducts.map((product) => {
-            const categoryName = categories.find((c) => c.id === product.category)?.name;
+            const matchedCategory = categories.find((c) => c.id === product.category);
+            const categoryName = matchedCategory ? getCategoryName(matchedCategory, languageCode) : undefined;
             const productSale = flashSales.find((sale) => sale.productIds.includes(product.id));
 
             // For flash sale page: use base price only (ignore salePrice)
@@ -200,8 +201,8 @@ const FlashClient: React.FC<FlashClientProps> = ({ products, flashSales }) => {
                       src={product.images[0]}
                       alt={getProductName(product, languageCode)}
                       fill
+                      sizes="(max-width: 768px) 50vw, 25vw"
                       className="object-cover object-center group-hover:scale-105 transition-transform duration-500"
-                      unoptimized
                     />
                   ) : (
                     <div className="flex h-full items-center justify-center text-gray-300">

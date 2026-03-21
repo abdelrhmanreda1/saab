@@ -9,6 +9,7 @@ import { storage } from '@/lib/firebase';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { useLanguage } from '@/context/LanguageContext';
 import { useCurrency } from '@/context/CurrencyContext';
+import { optimizeImageForUpload } from '@/lib/utils/client-image';
 
 const ThemePage = () => {
   const { t } = useLanguage();
@@ -127,11 +128,18 @@ const ThemePage = () => {
     const fieldKey = field === 'logoUrl' || field === 'faviconUrl' || field === 'loginImageUrl' ? field : 'custom';
     setUploading((prev) => ({ ...prev, [fieldKey]: true }));
     try {
+      const optimizedImage = await optimizeImageForUpload(file, {
+        maxWidth: field === 'faviconUrl' ? 256 : 1600,
+        maxHeight: field === 'faviconUrl' ? 256 : 1600,
+        quality: field === 'faviconUrl' ? 0.9 : 0.8,
+      });
       const storagePath = field === 'logoUrl' || field === 'faviconUrl' || field === 'loginImageUrl' 
-        ? `theme/${field}_${Date.now()}_${file.name}`
-        : `${field}/${Date.now()}_${file.name}`;
+        ? `theme/${field}_${Date.now()}_${optimizedImage.name}`
+        : `${field}/${Date.now()}_${optimizedImage.name}`;
       const storageRef = ref(storage, storagePath);
-      await uploadBytes(storageRef, file);
+      await uploadBytes(storageRef, optimizedImage, {
+        contentType: optimizedImage.type,
+      });
       const url = await getDownloadURL(storageRef);
       
       if (field === 'logoUrl' || field === 'faviconUrl' || field === 'loginImageUrl') {
@@ -241,7 +249,7 @@ const ThemePage = () => {
                     <div className="flex items-center gap-4">
                       <div className="h-16 w-40 bg-white border border-gray-200 border-dashed rounded-lg flex items-center justify-center text-gray-400 text-xs font-medium overflow-hidden relative">
                         {settings.theme.logoUrl ? (
-                          <Image src={settings.theme.logoUrl} alt="Logo" fill className="object-contain" unoptimized />
+                          <Image src={settings.theme.logoUrl} alt="Logo" fill sizes="160px" className="object-contain" />
                         ) : (
                           t('admin.theme_logo_preview') || 'Preview'
                         )}
@@ -279,7 +287,7 @@ const ThemePage = () => {
                     <div className="flex items-center gap-4">
                       <div className="h-12 w-12 bg-white border border-gray-200 border-dashed rounded-lg flex items-center justify-center text-gray-400 text-xs font-medium overflow-hidden relative">
                         {settings.theme.faviconUrl ? (
-                          <Image src={settings.theme.faviconUrl} alt="Favicon" fill className="object-contain" unoptimized />
+                          <Image src={settings.theme.faviconUrl} alt="Favicon" fill sizes="48px" className="object-contain" />
                         ) : (
                           t('admin.theme_logo_favicon_placeholder') || '32x32'
                         )}
@@ -332,7 +340,7 @@ const ThemePage = () => {
                   <div className="flex items-center gap-4">
                     <div className="h-32 w-48 bg-white border border-gray-200 border-dashed rounded-lg flex items-center justify-center text-gray-400 text-xs font-medium overflow-hidden relative">
                       {settings.theme.loginImageUrl ? (
-                        <Image src={settings.theme.loginImageUrl} alt="Login Image" fill className="object-cover" unoptimized />
+                        <Image src={settings.theme.loginImageUrl} alt="Login Image" fill sizes="192px" className="object-cover" />
                       ) : (
                         t('admin.theme_logo_preview') || 'Preview'
                       )}

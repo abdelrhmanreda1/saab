@@ -571,7 +571,7 @@ const CartPage = () => {
                                   alt={item.productName}
                                   fill
                                   className="object-cover"
-                                  unoptimized
+                                  sizes="64px"
                                 />
                               </Link>
                               <div className="flex-1">
@@ -671,7 +671,7 @@ const CartPage = () => {
                                   alt={item.productName}
                                   fill
                                   className="object-cover"
-                                  unoptimized
+                                  sizes="64px"
                                 />
                               </Link>
                               <div className="flex-1">
@@ -744,7 +744,7 @@ const CartPage = () => {
                       alt={item.productName}
                       fill
                       className="object-cover group-hover:scale-105 transition-transform duration-500"
-                      unoptimized
+                      sizes="(max-width: 640px) 100vw, 144px"
                     />
                   </Link>
 
@@ -826,7 +826,7 @@ const CartPage = () => {
                                     alt={getProductName(product, languageCode)}
                                     fill
                                     className="object-cover group-hover:scale-110 transition-transform duration-500"
-                                    unoptimized
+                                    sizes="(max-width: 768px) 50vw, 25vw"
                                 />
                                 <button className="absolute bottom-2 right-2 bg-white/90 p-2 rounded-full shadow-sm hover:bg-black hover:text-white transition-colors">
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-4 h-4">

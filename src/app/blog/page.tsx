@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useEffect, useState, Suspense } from 'react';
+import Image from 'next/image';
 import Link from 'next/link';
 import { getAllPosts } from '@/lib/firestore/blog_db';
 import { BlogPost } from '@/lib/firestore/blog';
@@ -120,11 +121,12 @@ function BlogPostsContent() {
                 <article className="bg-white border border-gray-100 rounded-xl overflow-hidden hover:shadow-md transition-all h-full flex flex-col">
                   <div className="aspect-[16/9] relative overflow-hidden bg-gray-50">
                     {post.coverImage ? (
-                      // eslint-disable-next-line @next/next/no-img-element
-                      <img 
-                        src={post.coverImage} 
-                        alt={getBlogTitle(post, langCode)} 
-                        className="object-cover w-full h-full group-hover:scale-110 transition-transform duration-300"
+                      <Image
+                        src={post.coverImage}
+                        alt={getBlogTitle(post, langCode)}
+                        fill
+                        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                        className="object-cover group-hover:scale-110 transition-transform duration-300"
                       />
                     ) : (
                       <div className="w-full h-full flex items-center justify-center text-xs text-gray-400">

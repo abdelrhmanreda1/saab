@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { BlogPost } from '@/lib/firestore/blog';
@@ -314,8 +315,15 @@ const BlogList = () => {
                       <td className="px-4 sm:px-6 py-4">
                         <div className="flex items-center gap-4">
                           {post.coverImage && (
-                            // eslint-disable-next-line @next/next/no-img-element
-                            <img src={post.coverImage} alt={post.title} className="w-20 h-14 object-cover rounded-lg flex-shrink-0" />
+                            <div className="relative w-20 h-14 flex-shrink-0 overflow-hidden rounded-lg">
+                              <Image
+                                src={post.coverImage}
+                                alt={post.title}
+                                fill
+                                sizes="80px"
+                                className="object-cover"
+                              />
+                            </div>
                           )}
                           <div className="flex-1 min-w-0">
                             <h3 className="text-sm font-semibold text-gray-900 truncate">{post.title}</h3>
@@ -381,8 +389,15 @@ const BlogList = () => {
                     />
                     <div className="flex items-start gap-3 flex-1">
                       {post.coverImage && (
-                        // eslint-disable-next-line @next/next/no-img-element
-                        <img src={post.coverImage} alt={post.title} className="w-20 h-14 object-cover rounded-lg flex-shrink-0" />
+                        <div className="relative w-20 h-14 flex-shrink-0 overflow-hidden rounded-lg">
+                          <Image
+                            src={post.coverImage}
+                            alt={post.title}
+                            fill
+                            sizes="80px"
+                            className="object-cover"
+                          />
+                        </div>
                       )}
                       <div className="flex-1 min-w-0">
                       <h3 className="text-sm font-semibold text-gray-900 mb-1 line-clamp-2">{post.title}</h3>

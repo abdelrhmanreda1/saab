@@ -229,7 +229,6 @@ const BrandsClient: React.FC<BrandsClientProps> = ({ brands }) => {
                             className="object-contain group-hover:scale-110 transition-transform duration-700"
                             sizes="(max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
                             loading="lazy"
-                            unoptimized
                           />
                         </div>
                       ) : (
@@ -277,7 +276,6 @@ const BrandsClient: React.FC<BrandsClientProps> = ({ brands }) => {
                           className="object-contain group-hover:scale-110 transition-transform duration-700"
                           sizes="(max-width: 768px) 128px, 160px"
                           loading="lazy"
-                          unoptimized
                         />
                       ) : (
                         <div className="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center text-gray-400">

@@ -105,9 +105,9 @@ const ImageLightbox: React.FC<ImageLightboxProps> = ({
             src={images[currentIndex]}
             alt={`${productName} - Image ${currentIndex + 1}`}
             fill
+            sizes="100vw"
             className="object-contain"
             priority
-            unoptimized
           />
         </div>
 
@@ -163,8 +163,8 @@ const ImageLightbox: React.FC<ImageLightboxProps> = ({
                   src={img}
                   alt={`Thumbnail ${index + 1}`}
                   fill
+                  sizes="64px"
                   className="object-cover"
-                  unoptimized
                 />
               </button>
             ))}
