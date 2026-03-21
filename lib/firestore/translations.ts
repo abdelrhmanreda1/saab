@@ -1,4 +1,4 @@
-import { Timestamp } from 'firebase/firestore';
+import type { Timestamp } from 'firebase/firestore';
 
 export interface Translation {
   id?: string;
@@ -4455,4 +4455,3 @@ export const DEFAULT_TRANSLATION_KEYS = {
   'home.silver_ounce_sar': 'Silver Ounce in SAR',
   'home.silver_ounce_usd': 'Silver Ounce in USD',
 };
-

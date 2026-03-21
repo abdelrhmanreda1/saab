@@ -1,25 +1,24 @@
-'use client';
-
-import { SettingsProvider } from '@/context/SettingsContext';
-import { LanguageProvider } from '@/context/LanguageContext';
-import { CurrencyProvider } from '@/context/CurrencyContext';
-import { ThemeProvider } from '@/components/ThemeProvider';
+import { HomeProviders as LightweightHomeProviders } from './home-context';
 import type { Settings } from '@/lib/firestore/settings';
 
 export default function HomeProviders({
   children,
   initialSettings,
+  initialCurrency,
 }: {
   children: React.ReactNode;
   initialSettings: Settings | null;
+  initialCurrency?: {
+    code?: string;
+    name?: string;
+    symbol?: string;
+    symbolPosition?: 'left' | 'right';
+    decimalPlaces?: number;
+  } | null;
 }) {
   return (
-    <SettingsProvider initialSettings={initialSettings}>
-      <LanguageProvider defaultLanguageCode="ar">
-        <CurrencyProvider>
-          <ThemeProvider>{children}</ThemeProvider>
-        </CurrencyProvider>
-      </LanguageProvider>
-    </SettingsProvider>
+    <LightweightHomeProviders initialSettings={initialSettings} initialCurrency={initialCurrency}>
+      {children}
+    </LightweightHomeProviders>
   );
 }

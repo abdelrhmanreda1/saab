@@ -69,6 +69,16 @@ const nextConfig: NextConfig = {
   },
   experimental: {
     optimizeCss: true,
+    optimizePackageImports: [
+      "firebase",
+      "firebase-admin",
+      "framer-motion",
+      "react-phone-number-input",
+      "react-quill",
+      "recharts",
+      "@stripe/react-stripe-js",
+      "@stripe/stripe-js",
+    ],
   },
 };
 

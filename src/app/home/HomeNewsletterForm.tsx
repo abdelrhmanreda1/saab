@@ -1,11 +1,10 @@
 'use client';
 
-import { useState } from 'react';
-import { addNewsletterSubscription } from '@/lib/firestore/newsletter_db';
-import { useLanguage } from '@/context/LanguageContext';
+import { memo, useState } from 'react';
+import { useHomeLanguage } from '@/app/(home)/home-context';
 
-export default function HomeNewsletterForm() {
-  const { t } = useLanguage();
+function HomeNewsletterForm() {
+  const { t } = useHomeLanguage();
   const [newsletterEmail, setNewsletterEmail] = useState('');
   const [newsletterLoading, setNewsletterLoading] = useState(false);
   const [newsletterSuccess, setNewsletterSuccess] = useState(false);
@@ -16,10 +15,17 @@ export default function HomeNewsletterForm() {
 
     setNewsletterLoading(true);
     try {
-      await addNewsletterSubscription({
-        email: newsletterEmail,
-        source: 'homepage',
+      const response = await fetch('/api/newsletter/subscribe', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          email: newsletterEmail,
+          source: 'homepage',
+        }),
       });
+      if (!response.ok) {
+        throw new Error('failed');
+      }
       setNewsletterSuccess(true);
       setNewsletterEmail('');
       setTimeout(() => setNewsletterSuccess(false), 3000);
@@ -59,3 +65,5 @@ export default function HomeNewsletterForm() {
     </>
   );
 }
+
+export default memo(HomeNewsletterForm);

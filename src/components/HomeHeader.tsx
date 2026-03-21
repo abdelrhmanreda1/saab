@@ -4,15 +4,14 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { useEffect, useMemo, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { useSettings } from '@/context/SettingsContext';
-import { useLanguage } from '@/context/LanguageContext';
-import LanguageSwitcher from './LanguageSwitcher';
-import TopBar from './TopBar';
+import { useHomeLanguage, useHomeSettings } from '@/app/(home)/home-context';
+import HomeLanguageSwitcher from './HomeLanguageSwitcher';
+import HomeTopBar from './HomeTopBar';
 import { getSafeImageUrl } from '@/lib/utils/image';
 
 export default function HomeHeader() {
-  const { settings } = useSettings();
-  const { currentLanguage, t } = useLanguage();
+  const { settings } = useHomeSettings();
+  const { currentLanguage, t } = useHomeLanguage();
   const isRTL = currentLanguage?.isRTL || false;
   const [searchQuery, setSearchQuery] = useState('');
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -58,7 +57,7 @@ export default function HomeHeader() {
 
   return (
     <div className="sticky top-0 z-50">
-      <TopBar />
+      <HomeTopBar />
       <header
         style={{
           backgroundColor: isScrolled ? `${headerBg}F2` : headerBg,
@@ -114,7 +113,7 @@ export default function HomeHeader() {
             <div className="flex items-center justify-end gap-2">
               {settings?.site?.enableLanguageSwitcher && (
                 <div className="rounded-full border border-[#ead6a7] bg-[#fffaf0] px-1 py-0.5">
-                  <LanguageSwitcher variant="minimal" />
+                  <HomeLanguageSwitcher variant="minimal" />
                 </div>
               )}
               <Link href="/login" style={{ color: headerText }} className="hover:text-[#b8872f] transition-colors" aria-label={t('common.account') || 'Account'}>
@@ -183,7 +182,7 @@ export default function HomeHeader() {
               <div className={`flex shrink-0 items-center gap-2 ${isRTL ? 'order-1' : 'order-2'}`}>
                 {settings?.site?.enableLanguageSwitcher && (
                   <div className="rounded-full border border-[#ead6a7] bg-[#fffaf0] px-1 py-0.5">
-                    <LanguageSwitcher variant="minimal" />
+                    <HomeLanguageSwitcher variant="minimal" />
                   </div>
                 )}
 

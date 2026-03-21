@@ -1,7 +1,7 @@
 'use client';
 
-import { useEffect, useState } from 'react';
-import { useLanguage } from '@/context/LanguageContext';
+import { memo, useEffect, useState } from 'react';
+import { useHomeLanguage } from '@/app/(home)/home-context';
 
 type Testimonial = {
   id: string;
@@ -11,12 +11,12 @@ type Testimonial = {
   verifiedPurchase: boolean;
 };
 
-export default function HomeTestimonialsCarousel({
+function HomeTestimonialsCarousel({
   testimonials,
 }: {
   testimonials: Testimonial[];
 }) {
-  const { t } = useLanguage();
+  const { t } = useHomeLanguage();
   const [currentIndex, setCurrentIndex] = useState(0);
 
   useEffect(() => {
@@ -78,3 +78,5 @@ export default function HomeTestimonialsCarousel({
     </div>
   );
 }
+
+export default memo(HomeTestimonialsCarousel);

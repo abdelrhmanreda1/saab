@@ -1,5 +1,5 @@
 import HomeHeader from './HomeHeader';
-import Footer from './Footer';
+import HomeFooter from './HomeFooter';
 
 export default function HomeLayoutWrapper({ children }: { children: React.ReactNode }) {
   return (
@@ -8,7 +8,7 @@ export default function HomeLayoutWrapper({ children }: { children: React.ReactN
       <main className="min-h-screen">
         {children}
       </main>
-      <Footer />
+      <HomeFooter />
     </>
   );
 }

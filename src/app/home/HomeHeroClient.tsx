@@ -2,15 +2,10 @@
 
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import dynamic from 'next/dynamic';
+import { useHomeLanguage } from '@/app/(home)/home-context';
 import Image from 'next/image';
 import Link from 'next/link';
-import { useLanguage } from '../../context/LanguageContext';
-import { useSettings } from '../../context/SettingsContext';
 import { getSafeImageUrl } from '@/lib/utils/image';
-import {
-  defaultHomepageSections,
-  HomepageSectionId,
-} from '@/lib/firestore/homepage_sections';
 
 const CountdownTimer = dynamic(() => import('../../components/CountdownTimer'), { ssr: false });
 
@@ -37,26 +32,25 @@ type HeroFlashSale = {
   endTimeIso: string;
 };
 
-type HeroHomepageSection = {
-  id: HomepageSectionId;
+type HeroConfig = {
   enabled: boolean;
   order: number;
   title?: string;
   subtitle?: string;
-  itemLimit?: number | null;
 };
 
 export default function HomeHeroClient({
   banners,
   flashSales,
-  homepageSections,
+  companyName,
+  heroConfig,
 }: {
   banners: HeroBanner[];
   flashSales: HeroFlashSale[];
-  homepageSections: HeroHomepageSection[];
+  companyName: string;
+  heroConfig: HeroConfig;
 }) {
-  const { t, currentLanguage } = useLanguage();
-  const { settings } = useSettings();
+  const { t, currentLanguage } = useHomeLanguage();
   const [isMobile, setIsMobile] = useState(false);
   const [currentBannerIndex, setCurrentBannerIndex] = useState(0);
 
@@ -119,26 +113,10 @@ export default function HomeHeroClient({
     [languageCode]
   );
 
-  const getHomepageSection = (id: HomepageSectionId) =>
-    homepageSections.find((section) => section.id === id) ||
-    defaultHomepageSections.find((section) => section.id === id);
-
-  const isHomepageSectionEnabled = (id: HomepageSectionId) =>
-    getHomepageSection(id)?.enabled ?? true;
-
-  const getHomepageSectionOrder = (id: HomepageSectionId) =>
-    getHomepageSection(id)?.order ?? 999;
-
-  const getHomepageSectionTitle = (id: HomepageSectionId, fallbackTitle: string) =>
-    getHomepageSection(id)?.title?.trim() || fallbackTitle;
-
-  const getHomepageSectionSubtitle = (id: HomepageSectionId, fallbackSubtitle: string) =>
-    getHomepageSection(id)?.subtitle?.trim() || fallbackSubtitle;
-
   const currentBanner = visibleBanners[currentBannerIndex];
   const currentFlashSale = flashSales[0];
 
-  if (!isHomepageSectionEnabled('hero')) {
+  if (!heroConfig.enabled) {
     return null;
   }
 
@@ -146,7 +124,7 @@ export default function HomeHeroClient({
     <section
       data-section-id="hero"
       className="relative w-full overflow-hidden bg-[linear-gradient(180deg,#fffdf8_0%,#f7f1e4_100%)] min-h-[520px] md:min-h-[760px]"
-      style={{ order: getHomepageSectionOrder('hero') }}
+      style={{ order: heroConfig.order ?? 0 }}
     >
       {visibleBanners.length > 0 && currentBanner ? (
         <div className="page-container py-4 md:py-6">
@@ -162,7 +140,7 @@ export default function HomeHeroClient({
                   >
                     <Image
                       src={getSafeImageUrl(banner.imageUrl)}
-                      alt={getBannerText(banner, 'title') || settings?.company?.name || ''}
+                      alt={getBannerText(banner, 'title') || companyName || ''}
                       fill
                       sizes="(max-width: 768px) 100vw, 1216px"
                       priority={index === 0}
@@ -189,21 +167,17 @@ export default function HomeHeroClient({
                       style={{ color: currentBanner.titleColor || '#fff' }}
                     >
                       {getBannerText(currentBanner, 'title') ||
-                        getHomepageSectionTitle(
-                          'hero',
-                          t('home.banner_title') || 'Discover Your Elegance'
-                        )}
+                        heroConfig.title?.trim() ||
+                        t('home.banner_title') || 'Discover Your Elegance'}
                     </h1>
                     <p
                       className="text-lg md:text-xl lg:text-2xl mb-8 md:mb-10 leading-relaxed max-w-xl"
                       style={{ color: currentBanner.subtitleColor || '#fff' }}
                     >
                       {getBannerText(currentBanner, 'subtitle') ||
-                        getHomepageSectionSubtitle(
-                          'hero',
-                          t('home.banner_subtitle') ||
-                            'Explore our latest collection of premium modest fashion designed for the modern woman.'
-                        )}
+                        heroConfig.subtitle?.trim() ||
+                        t('home.banner_subtitle') ||
+                        'Explore our latest collection of premium modest fashion designed for the modern woman.'}
                     </p>
 
                     {currentFlashSale?.endTimeIso && (
@@ -263,11 +237,9 @@ export default function HomeHeroClient({
           <div className="flex min-h-[560px] items-center justify-center rounded-[2.25rem] border border-[#ead8ab] bg-[linear-gradient(135deg,#f7f1e4_0%,#fffdf8_100%)] text-center shadow-[0_30px_80px_rgba(115,84,28,0.12)]">
             <div className="text-center px-6">
               <h1 className="mb-4 text-5xl font-heading font-bold text-[#24180a] md:text-6xl">
-                {getHomepageSectionTitle(
-                  'hero',
-                  t('home.welcome')?.replace('{company}', settings?.company?.name || '') ||
-                    `Welcome to ${settings?.company?.name || ''}`
-                )}
+                {heroConfig.title?.trim() ||
+                  t('home.welcome')?.replace('{company}', companyName || '') ||
+                  `Welcome to ${companyName || ''}`}
               </h1>
               <p className="text-xl text-gray-300 mb-8" />
               <Link

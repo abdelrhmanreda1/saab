@@ -2,12 +2,10 @@
 
 import Image from 'next/image';
 import Link from 'next/link';
+import dynamic from 'next/dynamic';
 import { useMemo } from 'react';
-import { useCurrency } from '@/context/CurrencyContext';
-import { useLanguage } from '@/context/LanguageContext';
-import { useSettings } from '@/context/SettingsContext';
-import HomeNewsletterForm from './HomeNewsletterForm';
-import HomeTestimonialsCarousel from './HomeTestimonialsCarousel';
+import { useHomeCurrency, useHomeLanguage, useHomeSettings } from '@/app/(home)/home-context';
+import HomeSectionViewportGate from './HomeSectionViewportGate';
 import {
   defaultHomepageSections,
   HomepageSection,
@@ -21,6 +19,11 @@ import {
   getCollectionName,
   getProductName,
 } from '@/lib/utils/translations';
+
+const HomeNewsletterForm = dynamic(() => import('./HomeNewsletterForm'), { ssr: false });
+const HomeTestimonialsCarousel = dynamic(() => import('./HomeTestimonialsCarousel'), {
+  ssr: false,
+});
 
 type ReviewStats = Record<string, { averageRating: number; reviewCount: number }>;
 
@@ -136,9 +139,9 @@ function ProductCard({
   reviewStats?: { averageRating: number; reviewCount: number };
   categoryName?: string;
 }) {
-  const { t, currentLanguage } = useLanguage();
-  const { formatPrice } = useCurrency();
-  const { settings } = useSettings();
+  const { t, currentLanguage } = useHomeLanguage();
+  const { formatPrice } = useHomeCurrency();
+  const { settings } = useHomeSettings();
   const languageCode = String(currentLanguage?.code || 'en').trim().toLowerCase();
 
   const totalStock = Array.isArray(product.variants)
@@ -284,9 +287,9 @@ export default function HomeDeferredSectionsClient({
   reviewStats: ReviewStats;
   homepageSections: HomepageSection[];
 }) {
-  const { t, currentLanguage } = useLanguage();
-  const { formatPrice } = useCurrency();
-  const { settings } = useSettings();
+  const { t, currentLanguage } = useHomeLanguage();
+  const { formatPrice } = useHomeCurrency();
+  const { settings } = useHomeSettings();
   const languageCode = String(currentLanguage?.code || 'en').trim().toLowerCase();
   const isArabic = languageCode === 'ar';
   const categoryMap = useMemo(
@@ -569,7 +572,9 @@ export default function HomeDeferredSectionsClient({
                 {getHomepageSectionSubtitle(homepageSections, 'testimonials', t('home.testimonials_subtitle') || 'Real reviews from real customers')}
               </p>
             </div>
-            <HomeTestimonialsCarousel testimonials={testimonials} />
+            <HomeSectionViewportGate minHeightClass="min-h-[280px]">
+              <HomeTestimonialsCarousel testimonials={testimonials} />
+            </HomeSectionViewportGate>
           </div>
         </section>
       )}
@@ -652,7 +657,9 @@ export default function HomeDeferredSectionsClient({
               <p className="mb-8 text-base font-semibold text-yellow-400 md:text-lg">
                 {t('home.newsletter_discount') || 'Get 10% off your first order!'}
               </p>
-              <HomeNewsletterForm />
+              <HomeSectionViewportGate minHeightClass="min-h-[72px]">
+                <HomeNewsletterForm />
+              </HomeSectionViewportGate>
             </div>
           </div>
         </section>

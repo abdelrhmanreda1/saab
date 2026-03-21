@@ -2,13 +2,15 @@ import { getAllBanners } from '@/lib/firestore/banners_db';
 import { getAllFlashSales } from '@/lib/firestore/campaigns_db';
 import { defaultHomepageSections } from '@/lib/firestore/homepage_sections';
 import { getHomepageSections } from '@/lib/firestore/homepage_sections_db';
+import { getCachedSettings } from '@/lib/server/site-config';
 import HomeHeroClient from './HomeHeroClient';
 
 export default async function HomeHero() {
-  const [banners, flashSales, homepageSections] = await Promise.all([
+  const [banners, flashSales, homepageSections, settings] = await Promise.all([
     getAllBanners().catch(() => []),
     getAllFlashSales(true).catch(() => []),
     getHomepageSections().catch(() => defaultHomepageSections),
+    getCachedSettings().catch(() => null),
   ]);
 
   const activeBanners = banners
@@ -55,11 +57,21 @@ export default async function HomeHero() {
     itemLimit: section.itemLimit,
   }));
 
+  const heroSection =
+    serializedHomepageSections.find((section) => section.id === 'hero') ||
+    defaultHomepageSections.find((section) => section.id === 'hero');
+
   return (
     <HomeHeroClient
       banners={activeBanners}
       flashSales={activeFlashSales}
-      homepageSections={serializedHomepageSections}
+      companyName={settings?.company?.name || ''}
+      heroConfig={{
+        enabled: heroSection?.enabled ?? true,
+        order: heroSection?.order ?? 0,
+        title: heroSection?.title || '',
+        subtitle: heroSection?.subtitle || '',
+      }}
     />
   );
 }
