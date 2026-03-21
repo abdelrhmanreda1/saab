@@ -17,7 +17,11 @@ import { requestNotificationPermission, showChatNotification } from '@/lib/utils
 import Image from 'next/image';
 import Dialog from './ui/Dialog';
 
-const LiveChat: React.FC = () => {
+type LiveChatProps = {
+  initiallyOpen?: boolean;
+};
+
+const LiveChat: React.FC<LiveChatProps> = ({ initiallyOpen = false }) => {
   const { t } = useLanguage();
   const { demoUser } = useAuth();
   const { settings } = useSettings();
@@ -43,6 +47,12 @@ const LiveChat: React.FC = () => {
   const lastMessageTimestampRef = useRef<number>(0);
   // const router = useRouter(); // Currently unused but may be needed for future navigation
   const auth = getAuth(app);
+
+  useEffect(() => {
+    if (initiallyOpen) {
+      setIsOpen(true);
+    }
+  }, [initiallyOpen]);
 
   // Request notification permission on mount
   useEffect(() => {
