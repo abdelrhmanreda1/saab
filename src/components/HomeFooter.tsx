@@ -3,7 +3,6 @@
 import { useHomeLanguage, useHomeSettings } from '@/app/(home)/home-context';
 import Image from 'next/image';
 import Link from 'next/link';
-import React, { useState } from 'react';
 
 const HomeFooter = () => {
   const { settings } = useHomeSettings();
@@ -11,10 +10,6 @@ const HomeFooter = () => {
   const isRTL = currentLanguage?.isRTL || false;
   const goldPricesLabel = t('nav.gold_prices') || 'Gold Prices';
   const socialLinks = settings?.social || { facebook: '', instagram: '', twitter: '', youtube: '' };
-  const [email, setEmail] = useState('');
-  const [submitting, setSubmitting] = useState(false);
-  const [submitted, setSubmitted] = useState(false);
-  const [error, setError] = useState<string | null>(null);
 
   const isValidUrl = (url: string | undefined): boolean => {
     if (!url) return false;
@@ -24,37 +19,6 @@ const HomeFooter = () => {
 
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
-  };
-
-  const handleNewsletterSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!email.trim()) {
-      setError(t('footer.email_invalid') || 'Please enter a valid email address.');
-      return;
-    }
-
-    setSubmitting(true);
-    setError(null);
-
-    try {
-      const response = await fetch('/api/newsletter/subscribe', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email: email.trim(), source: 'footer' }),
-      });
-
-      if (!response.ok) {
-        throw new Error('failed');
-      }
-
-      setSubmitted(true);
-      setEmail('');
-      setTimeout(() => setSubmitted(false), 3000);
-    } catch {
-      setError(t('footer.subscribe_failed') || 'Failed to subscribe. Please try again.');
-    } finally {
-      setSubmitting(false);
-    }
   };
 
   const footerBg = settings?.theme?.colors?.footerBackground || '#111827';
@@ -73,34 +37,6 @@ const HomeFooter = () => {
       </button>
 
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="border-b border-gray-800 py-12">
-          <div className="mx-auto max-w-2xl text-center">
-            <h3 className="mb-3 text-2xl font-semibold text-white sm:text-3xl">{t('footer.newsletter_title') || 'Join Our Newsletter'}</h3>
-            <p className="mx-auto mb-6 max-w-lg text-sm text-gray-400 sm:text-base">{t('footer.newsletter_description') || 'Sign up for exclusive offers, new arrivals, and fashion tips directly to your inbox.'}</p>
-            <form onSubmit={handleNewsletterSubmit} className="mx-auto flex max-w-md flex-col gap-3 sm:flex-row">
-              <input
-                type="email"
-                value={email}
-                onChange={(e) => {
-                  setEmail(e.target.value);
-                  setError(null);
-                }}
-                placeholder={t('footer.email_placeholder') || 'Enter your email address'}
-                className="flex-1 rounded-lg border border-gray-700 bg-white/10 px-4 py-3 text-sm text-white placeholder-gray-400 outline-none transition-all focus:border-transparent focus:ring-2 focus:ring-white"
-                required
-                disabled={submitting || submitted}
-              />
-              <button type="submit" disabled={submitting || submitted} className="whitespace-nowrap rounded-lg bg-white px-6 py-3 text-sm font-semibold text-gray-900 transition-all duration-200 hover:bg-gray-100 disabled:cursor-not-allowed disabled:opacity-70">
-                {submitting ? t('footer.subscribing') || 'Subscribing...' : submitted ? t('footer.subscribed') || 'Subscribed!' : t('footer.subscribe') || 'Subscribe'}
-              </button>
-            </form>
-            <div className="mt-3 min-h-5">
-              {error && <p className="text-sm text-red-400">{error}</p>}
-              {submitted && !error && <p className="text-sm text-green-400">{t('footer.subscribe_thanks') || 'Thank you for subscribing!'}</p>}
-            </div>
-          </div>
-        </div>
-
         <div className="py-12">
           <div className="grid grid-cols-2 gap-8 md:grid-cols-4 lg:grid-cols-5 lg:gap-12">
             <div>

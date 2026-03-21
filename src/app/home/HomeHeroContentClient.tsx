@@ -13,8 +13,6 @@ type HeroBanner = {
   title?: string;
   subtitle?: string;
   translations?: HeroBannerTranslation[];
-  titleColor?: string;
-  subtitleColor?: string;
   linkTo?: string;
 };
 
@@ -38,7 +36,7 @@ function getBannerText(
     (item) => normalize(item.languageCode) === normalize(languageCode)
   );
 
-  const translatedValue = String((translation && translation[field]) || '').trim();
+  const translatedValue = String(translation?.[field] || '').trim();
   if (translatedValue) return translatedValue;
 
   const baseValue = String(banner[field] || '').trim();
@@ -76,6 +74,7 @@ export default function HomeHeroContentClient({
     isArabic ? defaultArabicTitle : defaultEnglishTitle,
     'title'
   );
+
   const subtitle = getBannerText(
     primaryBanner,
     languageCode,
@@ -84,22 +83,18 @@ export default function HomeHeroContentClient({
   );
 
   return (
-    <div className="absolute inset-0 flex items-center">
+    <div className="absolute inset-0 z-10 flex items-center">
       <div className="w-full px-6 md:px-12">
         <div className="max-w-2xl">
-          <span className="inline-flex items-center rounded-full border border-[#caa14d] bg-white/85 px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.28em] text-[#9f7424]">
+          <span className="inline-flex items-center rounded-full border border-[#caa14d] bg-white/95 px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.28em] text-[#8a6721] shadow-sm">
             {isArabic ? 'مجموعة ذهبية مختارة' : 'Curated Gold Collection'}
           </span>
-          <h1
-            className="mt-5 text-4xl font-heading font-bold leading-[1.05] tracking-tight text-[#1a1307] md:text-6xl lg:text-7xl"
-            style={{ color: primaryBanner?.titleColor || '#1a1307' }}
-          >
+
+          <h1 className="mt-5 text-4xl font-heading font-bold leading-[1.05] tracking-tight text-white drop-shadow-[0_4px_14px_rgba(0,0,0,0.55)] md:text-6xl lg:text-7xl">
             {title || companyName}
           </h1>
-          <p
-            className="mt-5 max-w-xl text-lg leading-relaxed text-[#4b3a1a] md:text-xl lg:text-2xl"
-            style={{ color: primaryBanner?.subtitleColor || '#4b3a1a' }}
-          >
+
+          <p className="mt-5 max-w-xl text-lg leading-relaxed text-white/95 drop-shadow-[0_2px_8px_rgba(0,0,0,0.45)] md:text-xl lg:text-2xl">
             {subtitle}
           </p>
 
@@ -112,7 +107,7 @@ export default function HomeHeroContentClient({
             </Link>
             <Link
               href="/shop"
-              className="inline-flex min-h-[52px] items-center justify-center rounded-full border border-[#caa14d] bg-white/88 px-8 py-4 text-sm font-bold uppercase tracking-[0.22em] text-[#8a6721] transition-colors hover:bg-white md:px-10 md:py-5 md:text-base"
+              className="inline-flex min-h-[52px] items-center justify-center rounded-full border border-[#caa14d] bg-white/92 px-8 py-4 text-sm font-bold uppercase tracking-[0.22em] text-[#8a6721] transition-colors hover:bg-white md:px-10 md:py-5 md:text-base"
             >
               {isArabic ? 'تسوق الآن' : 'Shop Now'}
             </Link>
