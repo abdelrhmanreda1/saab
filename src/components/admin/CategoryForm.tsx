@@ -318,7 +318,7 @@ const CategoryForm: React.FC<CategoryFormProps> = ({ categoryId, onSuccess, onCa
         categoryData.translations = localizedTranslations;
       }
       // Remove undefined fields — Firestore does not accept undefined values
-      Object.keys(categoryData).forEach(key => {
+      (Object.keys(categoryData) as Array<keyof typeof categoryData>).forEach((key) => {
         if (categoryData[key] === undefined) {
           delete categoryData[key];
         }
