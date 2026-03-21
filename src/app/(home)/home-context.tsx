@@ -331,13 +331,13 @@ export function HomeProviders({
     () => ({
       code: 'SAR',
       name: 'Saudi Riyal',
-      symbol: 'ر.س',
+      symbol: currentLanguage?.code === 'ar' ? 'ر.س' : 'SAR',
       symbolPosition: 'right',
       decimalPlaces: Number(initialCurrency?.decimalPlaces ?? settings?.site?.digitsAfterDecimal ?? 0),
       isActive: true,
       isDefault: true,
     }),
-    [initialCurrency?.decimalPlaces, settings]
+    [currentLanguage?.code, initialCurrency?.decimalPlaces, settings]
   );
 
   const formatPrice = useCallback(

@@ -51,17 +51,14 @@ export default function HomeHeroClient({
   heroConfig: HeroConfig;
 }) {
   const { t, currentLanguage } = useHomeLanguage();
-  const [isMobile, setIsMobile] = useState(false);
+  const [isMobile, setIsMobile] = useState<boolean | null>(null);
   const [currentBannerIndex, setCurrentBannerIndex] = useState(0);
 
   const languageCode = String(currentLanguage?.code || 'en').trim().toLowerCase();
   const isArabic = languageCode === 'ar';
 
   useEffect(() => {
-    const checkMobile = () => setIsMobile(window.innerWidth < 768);
-    checkMobile();
-    window.addEventListener('resize', checkMobile);
-    return () => window.removeEventListener('resize', checkMobile);
+    setIsMobile(window.innerWidth < 768);
   }, []);
 
   const visibleBanners = useMemo(
@@ -142,11 +139,11 @@ export default function HomeHeroClient({
                       src={getSafeImageUrl(banner.imageUrl)}
                       alt={getBannerText(banner, 'title') || companyName || ''}
                       fill
-                      sizes="(max-width: 768px) 100vw, 1216px"
+                      sizes="(max-width: 768px) 100vw, (max-width: 1280px) 92vw, 1216px"
                       priority={index === 0}
                       loading={index === 0 ? 'eager' : 'lazy'}
                       fetchPriority={index === 0 ? 'high' : undefined}
-                      quality={42}
+                      quality={index === 0 ? 38 : 34}
                       className="absolute inset-0 h-full w-full object-cover"
                     />
                   </div>

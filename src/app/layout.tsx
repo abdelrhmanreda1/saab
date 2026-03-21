@@ -8,6 +8,7 @@ const inter = Inter({
   variable: "--font-inter",
   subsets: ["latin"],
   display: "swap",
+  preload: true,
 });
 
 const cairo = Cairo({
@@ -15,6 +16,7 @@ const cairo = Cairo({
   subsets: ["arabic", "latin"],
   weight: ["300", "400", "500", "600", "700", "800"],
   display: "swap",
+  preload: true,
 });
 
 export async function generateMetadata(): Promise<Metadata> {

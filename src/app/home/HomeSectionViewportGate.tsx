@@ -6,10 +6,12 @@ export default function HomeSectionViewportGate({
   children,
   minHeightClass = 'min-h-[240px]',
   rootMargin = '240px',
+  enableIdleFallback = true,
 }: {
   children: React.ReactNode;
   minHeightClass?: string;
   rootMargin?: string;
+  enableIdleFallback?: boolean;
 }) {
   const [isReady, setIsReady] = useState(false);
   const placeholderRef = useRef<HTMLDivElement | null>(null);
@@ -36,6 +38,7 @@ export default function HomeSectionViewportGate({
   }, [isReady, rootMargin]);
 
   useEffect(() => {
+    if (!enableIdleFallback) return;
     if (isReady) return;
     const idleWindow = window as Window & {
       requestIdleCallback?: (callback: IdleRequestCallback, options?: IdleRequestOptions) => number;
@@ -49,7 +52,7 @@ export default function HomeSectionViewportGate({
 
     const timeoutId = window.setTimeout(() => setIsReady(true), 1800);
     return () => window.clearTimeout(timeoutId);
-  }, [isReady]);
+  }, [enableIdleFallback, isReady]);
 
   if (isReady) {
     return <>{children}</>;

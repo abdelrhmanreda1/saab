@@ -2,8 +2,7 @@
 
 import Link from 'next/link';
 import Image from 'next/image';
-import { useEffect, useMemo, useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useMemo, useState } from 'react';
 import { useHomeLanguage, useHomeSettings } from '@/app/(home)/home-context';
 import HomeLanguageSwitcher from './HomeLanguageSwitcher';
 import HomeTopBar from './HomeTopBar';
@@ -13,10 +12,7 @@ export default function HomeHeader() {
   const { settings } = useHomeSettings();
   const { currentLanguage, t } = useHomeLanguage();
   const isRTL = currentLanguage?.isRTL || false;
-  const [searchQuery, setSearchQuery] = useState('');
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [isScrolled, setIsScrolled] = useState(false);
-  const router = useRouter();
 
   const headerBg = settings?.theme?.colors?.headerBackground || '#fffdf9';
   const headerText = settings?.theme?.colors?.headerText || '#17120b';
@@ -40,32 +36,15 @@ export default function HomeHeader() {
   const leftNavLinks = navLinks.slice(0, 3);
   const rightNavLinks = navLinks.slice(3);
 
-  useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 0);
-    };
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
-
-  const handleSearch = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (searchQuery.trim()) {
-      router.push(`/shop?search=${encodeURIComponent(searchQuery)}`);
-    }
-  };
-
   return (
     <div className="sticky top-0 z-50">
       <HomeTopBar />
       <header
         style={{
-          backgroundColor: isScrolled ? `${headerBg}F2` : headerBg,
+          backgroundColor: headerBg,
           color: headerText,
         }}
-        className={`transition-all duration-300 border-b border-[#ecd6a4] ${
-          isScrolled ? 'backdrop-blur-md shadow-[0_12px_40px_rgba(86,58,11,0.08)]' : ''
-        }`}
+        className="border-b border-[#ecd6a4]"
       >
         <div className="page-container">
           <div className="grid h-16 grid-cols-[auto_1fr_auto] items-center gap-3 md:hidden">
@@ -186,13 +165,12 @@ export default function HomeHeader() {
                   </div>
                 )}
 
-                <form onSubmit={handleSearch} className="relative min-h-11">
+                <form action="/shop" className="relative min-h-11">
                   <input
+                    name="search"
                     type="text"
                     placeholder={t('common.search')}
                     className={`h-11 w-36 rounded-full border border-[#ecd9ae] bg-[#fffaf0] px-4 text-sm text-[#2b2110] outline-none transition focus:w-40 focus:border-[#be8c2f] lg:w-40 lg:focus:w-44 ${isRTL ? 'pl-12 pr-4' : 'pr-12 pl-4'}`}
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
                     aria-label={t('common.search') || 'Search'}
                   />
                   <button
@@ -247,13 +225,12 @@ export default function HomeHeader() {
               </div>
               <div className="h-full overflow-y-auto px-4 pb-28 pt-4">
                 <div className="space-y-4">
-                  <form onSubmit={handleSearch} className="relative">
+                  <form action="/shop" className="relative">
                     <input
+                      name="search"
                       type="text"
                       placeholder={t('common.search')}
                       className="w-full rounded-2xl border border-[#ecd6a4] bg-white px-4 py-3 text-black focus:border-[#be8c2f] focus:outline-none"
-                      value={searchQuery}
-                      onChange={(e) => setSearchQuery(e.target.value)}
                     />
                   </form>
                   <nav className="flex flex-col space-y-2">
