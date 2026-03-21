@@ -2,7 +2,6 @@ import type { Metadata, Viewport } from "next";
 import { Inter, Cairo } from "next/font/google";
 import "./globals.css";
 import { generateSEOMetadata } from '@/lib/utils/seo';
-import Providers from './providers';
 import { getCachedPageSEO, getCachedSEOSettings, getCachedSettings } from '@/lib/server/site-config';
 
 const inter = Inter({
@@ -93,8 +92,6 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const initialSettings = await getCachedSettings().catch(() => null);
-
   return (
     <html lang="ar" suppressHydrationWarning dir="rtl">
       <head>
@@ -104,7 +101,7 @@ export default async function RootLayout({
         <link rel="preconnect" href="https://firebasestorage.app" crossOrigin="anonymous" />
       </head>
       <body className={`${inter.variable} ${cairo.variable} antialiased`}>
-        <Providers initialSettings={initialSettings}>{children}</Providers>
+        {children}
       </body>
     </html>
   );

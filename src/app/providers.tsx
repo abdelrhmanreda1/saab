@@ -8,7 +8,6 @@ import { LanguageProvider } from '../context/LanguageContext';
 import { CurrencyProvider } from '../context/CurrencyContext';
 import { ThemeProvider } from '../components/ThemeProvider';
 import { ToastProvider } from '../components/Toast';
-import LayoutWrapper from '../components/LayoutWrapper';
 import type { Settings } from '@/lib/firestore/settings';
 
 const PWARegistration = dynamic(() => import('../components/PWARegistration'), { ssr: false });
@@ -29,7 +28,7 @@ export default function Providers({
               <ThemeProvider>
                 <ToastProvider>
                   <PWARegistration />
-                  <LayoutWrapper>{children}</LayoutWrapper>
+                  {children}
                 </ToastProvider>
               </ThemeProvider>
             </CartProvider>

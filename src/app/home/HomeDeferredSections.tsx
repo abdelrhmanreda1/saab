@@ -27,8 +27,6 @@ import { getAllPosts } from '@/lib/firestore/blog_db';
 import { BlogPost } from '@/lib/firestore/blog';
 import { addNewsletterSubscription } from '@/lib/firestore/newsletter_db';
 import SkeletonLoader from '../../components/SkeletonLoader';
-import { getRecentlyViewed } from '@/lib/firestore/product_features_db';
-import { useAuth } from '../../context/AuthContext';
 import { getFlashSaleAdjustedPrice, getProductPricingSummary } from '@/lib/utils/product-pricing';
 import { getSafeImageUrl } from '@/lib/utils/image';
 import {
@@ -76,7 +74,6 @@ export default function HomeDeferredSections({ showHero = false }: { showHero?: 
   const [newsletterLoading, setNewsletterLoading] = useState(false);
   const [newsletterSuccess, setNewsletterSuccess] = useState(false);
   const [currentTestimonialIndex, setCurrentTestimonialIndex] = useState(0);
-  const [recentlyViewedProducts, setRecentlyViewedProducts] = useState<Product[]>([]);
   const [goldBasePrice, setGoldBasePrice] = useState(0);
   const [goldPriceFetchedAt, setGoldPriceFetchedAt] = useState('');
   const [homepageSections, setHomepageSections] = useState(defaultHomepageSections);
@@ -100,8 +97,6 @@ export default function HomeDeferredSections({ showHero = false }: { showHero?: 
     },
     [languageCode]
   );
-  const { user, demoUser } = useAuth();
-
   useEffect(() => {
     // Detect mobile device
     const checkMobile = () => {
@@ -359,23 +354,6 @@ export default function HomeDeferredSections({ showHero = false }: { showHero?: 
     
     runWhenIdle(loadBlogPosts);
   }, [settings?.features?.blog]);
-
-  // Load recently viewed products
-  useEffect(() => {
-    const userId = user?.uid || (settings?.demoMode && demoUser ? 'demo-user' : null);
-    if (!userId) return;
-    
-    const loadRecentlyViewed = async () => {
-      try {
-        const products = await getRecentlyViewed(userId, 8);
-        setRecentlyViewedProducts(products);
-      } catch {
-        // Failed to load recently viewed
-      }
-    };
-    
-    runWhenIdle(loadRecentlyViewed);
-  }, [user, demoUser, settings?.demoMode]);
 
   const handleNewsletterSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -1653,43 +1631,6 @@ export default function HomeDeferredSections({ showHero = false }: { showHero?: 
         </section>
       )}
 
-      {/* 13. Recently Viewed Products Section - Container */}
-      {showDeferredSections && isHomepageSectionEnabled('recently-viewed') && recentlyViewedProducts.length > 0 && (
-        <section 
-          data-section-id="recently-viewed"
-          className={`bg-white py-12 md:py-16 ${getSectionClasses('recently-viewed')}`}
-          style={{ order: getHomepageSectionOrder('recently-viewed') }}
-        >
-          <div className="page-container">
-            <div className="flex justify-between items-end mb-10 md:mb-12">
-              <div>
-                <h2 className="text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-heading font-bold mb-4 md:mb-5 text-gray-900 leading-tight">
-                  {getHomepageSectionTitle('recently-viewed', t('home.recently_viewed') || 'Recently Viewed')}
-                </h2>
-                <p className="text-base md:text-lg lg:text-xl text-gray-600 font-medium">
-                  {getHomepageSectionSubtitle('recently-viewed', t('home.recently_viewed_desc') || 'Continue browsing where you left off')}
-                </p>
-              </div>
-            </div>
-            {/* Desktop Grid */}
-            <div className="hidden md:grid md:grid-cols-4 gap-6 md:gap-8">
-              {recentlyViewedProducts.slice(0, getHomepageSectionLimit('recently-viewed', 8)).map(product => (
-                <ProductCard key={product.id} product={product} />
-              ))}
-            </div>
-            {/* Mobile Horizontal Scroll - Swipeable */}
-            <div className="md:hidden overflow-x-auto pb-4 -mx-4 px-4 scrollbar-hide" style={{ scrollSnapType: 'x mandatory', WebkitOverflowScrolling: 'touch' }}>
-              <div className="flex gap-4" style={{ width: 'max-content' }}>
-                {recentlyViewedProducts.slice(0, getHomepageSectionLimit('recently-viewed', 8)).map(product => (
-                  <div key={product.id} className="flex-shrink-0 w-[45vw]" style={{ scrollSnapAlign: 'start' }}>
-                    <ProductCard product={product} />
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-        </section>
-      )}
     </div>
   );
 }

@@ -2,7 +2,6 @@
 
 import { useEffect } from 'react';
 import Link from 'next/link';
-import { useLanguage } from '@/context/LanguageContext';
 
 interface ErrorProps {
   error: Error & { digest?: string };
@@ -10,8 +9,6 @@ interface ErrorProps {
 }
 
 export default function Error({ error, reset }: ErrorProps) {
-  const { t } = useLanguage();
-
   useEffect(() => {
     // Log error to console for debugging
     console.error('Error:', error);
@@ -39,10 +36,10 @@ export default function Error({ error, reset }: ErrorProps) {
           </div>
           
           <h2 className="text-4xl md:text-5xl font-heading font-bold text-gray-900 mb-4">
-            {t('error.title') || 'Something went wrong!'}
+            Something went wrong!
           </h2>
           <p className="text-gray-500 text-lg mb-2">
-            {t('error.message') || "We're sorry, but something unexpected happened."}
+            We&apos;re sorry, but something unexpected happened.
           </p>
           {error.digest && (
             <p className="text-xs text-gray-400 font-mono mt-2">
@@ -56,28 +53,28 @@ export default function Error({ error, reset }: ErrorProps) {
             onClick={reset}
             className="px-6 py-3 text-sm text-white font-medium bg-black rounded-lg hover:bg-gray-900 transition-colors"
           >
-            {t('error.try_again') || 'Try Again'}
+            Try Again
           </button>
           <Link
             href="/"
             className="px-6 py-3 text-sm text-gray-900 font-medium border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
           >
-            {t('error.go_home') || 'Go to Homepage'}
+            Go to Homepage
           </Link>
         </div>
 
         <div className="mt-12 grid grid-cols-2 md:grid-cols-4 gap-4 max-w-md mx-auto">
           <Link href="/shop" className="text-sm text-gray-600 hover:text-gray-900 transition-colors">
-            {t('common.shop') || 'Shop'}
+            Shop
           </Link>
           <Link href="/categories" className="text-sm text-gray-600 hover:text-gray-900 transition-colors">
-            {t('common.categories') || 'Categories'}
+            Categories
           </Link>
           <Link href="/blog" className="text-sm text-gray-600 hover:text-gray-900 transition-colors">
-            {t('common.blog') || 'Blog'}
+            Blog
           </Link>
           <Link href="/contact" className="text-sm text-gray-600 hover:text-gray-900 transition-colors">
-            {t('common.contact') || 'Contact'}
+            Contact
           </Link>
         </div>
       </div>
