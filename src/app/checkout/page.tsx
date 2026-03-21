@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, useMemo, useRef } from 'react';
+import dynamic from 'next/dynamic';
 import { useCart } from '../../context/CartContext';
 import { useCurrency } from '../../context/CurrencyContext';
 import { useAuth } from '../../context/AuthContext';
@@ -20,7 +21,6 @@ import { getCouponByCode, getUserCouponUsage } from '@/lib/firestore/coupons';
 import { calculateTaxes } from '@/lib/utils/tax';
 import { getAllLocalPaymentMethods } from '@/lib/firestore/internationalization_db';
 import { LocalPaymentMethod } from '@/lib/firestore/internationalization';
-import LocalPaymentMethodComponent from '../../components/PaymentOptions/LocalPaymentMethod';
 import { getAllPaymentGateways } from '@/lib/firestore/payment_gateways_db';
 import { PaymentGateway } from '@/lib/firestore/payment_gateways';
 import { getAllFreeShippingRules, getAllFlashSales } from '@/lib/firestore/campaigns_db';
@@ -49,7 +49,10 @@ import {
   linkWithPhoneNumber,
 } from 'firebase/auth';
 import { app } from '@/lib/firebase';
-import Dialog from '../../components/ui/Dialog';
+
+const Dialog = dynamic(() => import('../../components/ui/Dialog'), {
+  ssr: false,
+});
 const FALLBACK_WHATSAPP_ORDER_NUMBER = '201062915367';
 const SAUDI_ONLY_FALLBACK_COUNTRY: Country = {
   id: 'fallback-sa',
@@ -2705,15 +2708,17 @@ const CheckoutPage = () => {
       `}</style>
 
       {/* Info Dialog */}
-      <Dialog
-        isOpen={showInfoDialog}
-        onClose={() => setShowInfoDialog(false)}
-        title={infoDialogTitle}
-        message={infoDialogMessage}
-        type={infoDialogType}
-        showCancel={false}
-        confirmText={t('common.close') || 'Close'}
-      />
+      {showInfoDialog && (
+        <Dialog
+          isOpen={showInfoDialog}
+          onClose={() => setShowInfoDialog(false)}
+          title={infoDialogTitle}
+          message={infoDialogMessage}
+          type={infoDialogType}
+          showCancel={false}
+          confirmText={t('common.close') || 'Close'}
+        />
+      )}
     </div>
   );
 };

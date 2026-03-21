@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useMemo, useEffect } from 'react';
+import dynamic from 'next/dynamic';
 import { Product } from '@/lib/firestore/products';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { Category } from '@/lib/firestore/categories';
@@ -21,11 +22,14 @@ import { getProductName, getCategoryName, getCategoryDescription, getCollectionD
 import { getSizes } from '@/lib/firestore/attributes_db';
 import { getReviewsByProductId } from '@/lib/firestore/reviews_enhanced_db';
 import type { Review } from '@/lib/firestore/reviews_enhanced';
-import QuickViewModal from '@/components/QuickViewModal';
 import { useCart } from '@/context/CartContext';
 import SkeletonLoader from '@/components/SkeletonLoader';
 import { getProductPricingSummary } from '@/lib/utils/product-pricing';
 import { Settings } from '@/lib/firestore/settings';
+
+const QuickViewModal = dynamic(() => import('@/components/QuickViewModal'), {
+  ssr: false,
+});
 
 interface ShopClientProps {
   initialProducts: Product[];
@@ -1881,11 +1885,13 @@ const ShopClient: React.FC<ShopClientProps> = ({
           )}
           
           {/* Quick View Modal */}
-          <QuickViewModal
-            product={quickViewProduct}
-            isOpen={!!quickViewProduct}
-            onClose={() => setQuickViewProduct(null)}
-          />
+          {quickViewProduct && (
+            <QuickViewModal
+              product={quickViewProduct}
+              isOpen={!!quickViewProduct}
+              onClose={() => setQuickViewProduct(null)}
+            />
+          )}
           </main>
                         </div>
       </div>

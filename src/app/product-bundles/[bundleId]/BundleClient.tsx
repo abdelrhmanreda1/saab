@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import dynamic from 'next/dynamic';
 import { ProductBundle } from '@/lib/firestore/product_bundles';
 import { useCurrency } from '../../../context/CurrencyContext';
 import { useLanguage } from '@/context/LanguageContext';
@@ -14,10 +15,17 @@ import { Product, ProductVariant } from '@/lib/firestore/products';
 import { getProductName, getColorName, getSizeName } from '@/lib/utils/translations';
 import { getColors, getSizes } from '@/lib/firestore/attributes_db';
 import { Color, Size } from '@/lib/firestore/attributes';
-import ImageLightbox from '@/components/ImageLightbox';
-import ReviewForm from '@/components/ReviewForm';
-import ReviewList from '@/components/ReviewList';
 import { getReviewsByProductId } from '@/lib/firestore/reviews';
+
+const ImageLightbox = dynamic(() => import('@/components/ImageLightbox'), {
+  ssr: false,
+});
+const ReviewForm = dynamic(() => import('@/components/ReviewForm'), {
+  ssr: false,
+});
+const ReviewList = dynamic(() => import('@/components/ReviewList'), {
+  ssr: false,
+});
 
 interface BundleClientProps {
   bundle: ProductBundle | null;
@@ -722,7 +730,7 @@ const BundleClient: React.FC<BundleClientProps> = ({ bundle }) => {
       </div>
 
       {/* Image Lightbox */}
-      {bundle.image && (
+      {isLightboxOpen && bundle.image && (
         <ImageLightbox
           images={[bundle.image]}
           currentIndex={0}

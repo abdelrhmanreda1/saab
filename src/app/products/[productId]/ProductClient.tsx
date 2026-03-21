@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import dynamic from 'next/dynamic';
 import { Product, ProductVariant, ProductTranslation } from '@/lib/firestore/products';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -11,8 +12,6 @@ import { useSettings } from '@/context/SettingsContext';
 import { useToast } from '@/components/Toast';
 import { getAllFlashSales } from '@/lib/firestore/campaigns_db';
 import { FlashSale } from '@/lib/firestore/campaigns';
-import ReviewForm from '@/components/ReviewForm';
-import ReviewList from '@/components/ReviewList';
 import { getColors, getSizes } from '@/lib/firestore/attributes_db';
 import { getCategory } from '@/lib/firestore/categories_db';
 import { getBrand } from '@/lib/firestore/brands_db';
@@ -22,9 +21,18 @@ import { Category } from '@/lib/firestore/categories';
 import { Brand } from '@/lib/firestore/brands';
 import { useRouter } from 'next/navigation';
 import { getProductName, getProductDescription, getCategoryName, getBrandName, getColorName, getSizeName } from '@/lib/utils/translations';
-import ImageLightbox from '@/components/ImageLightbox';
 import { getFlashSaleAdjustedPrice, getProductPricingSummary } from '@/lib/utils/product-pricing';
 import { Settings } from '@/lib/firestore/settings';
+
+const ReviewForm = dynamic(() => import('@/components/ReviewForm'), {
+  ssr: false,
+});
+const ReviewList = dynamic(() => import('@/components/ReviewList'), {
+  ssr: false,
+});
+const ImageLightbox = dynamic(() => import('@/components/ImageLightbox'), {
+  ssr: false,
+});
 
 // Serialized Product type (Timestamps converted to plain objects)
 export type SerializedProductTranslation = Omit<ProductTranslation, 'updatedAt'> & {
@@ -1335,7 +1343,7 @@ const ProductClient: React.FC<ProductClientProps> = ({
       </div>
 
       {/* Image Lightbox */}
-      {product && product.images && product.images.length > 0 && (
+      {isLightboxOpen && product && product.images && product.images.length > 0 && (
         <ImageLightbox
           images={product.images}
           currentIndex={activeImageIndex}

@@ -414,37 +414,6 @@ const Header = () => {
                   </div>
                 )}
 
-                {/* Live Chat trigger (Mobile, after language) */}
-                {settings?.features?.liveChat !== false && (
-                  <button
-                    type="button"
-                    className="mt-4 flex w-full items-center justify-between rounded-2xl border border-[#ecd6a4] bg-white px-4 py-3 text-sm font-medium text-[#5d4620] hover:text-[#be8c2f]"
-                    onClick={() => {
-                      if (typeof window !== 'undefined') {
-                        window.dispatchEvent(new CustomEvent('open-live-chat'));
-                      }
-                      setIsMenuOpen(false);
-                    }}
-                  >
-                    <span>{t('common.live_chat') || 'Live Chat'}</span>
-                    <span className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-[#1a1307] text-white">
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        strokeWidth={1.5}
-                        stroke="currentColor"
-                        className="w-4 h-4"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          d="M7.5 8.25h9m-9 3h5.25M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9 5.25h3.75A2.25 2.25 0 0018 15V9a2.25 2.25 0 00-2.25-2.25H8.25A2.25 2.25 0 006 9v6a2.25 2.25 0 002.25 2.25H12z"
-                        />
-                      </svg>
-                    </span>
-                  </button>
-                )}
                 </div>
               </div>
             </div>

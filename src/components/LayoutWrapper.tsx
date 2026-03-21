@@ -7,7 +7,6 @@ import PageTransition from './PageTransition';
 
 const Footer = dynamic(() => import('./Footer'), { ssr: false });
 const MobileBottomNav = dynamic(() => import('./MobileBottomNav'), { ssr: false });
-const LazyLiveChat = dynamic(() => import('./LazyLiveChat'), { ssr: false });
 const MobileStickyCart = dynamic(() => import('./MobileStickyCart'), { ssr: false });
 const BackToTop = dynamic(() => import('./BackToTop'), { ssr: false });
 
@@ -27,7 +26,6 @@ export default function LayoutWrapper({ children }: { children: React.ReactNode 
       {!isAdmin && <MobileBottomNav />}
       {!isAdmin && <MobileStickyCart />}
       {!isAdmin && <BackToTop />}
-      {!isAdmin && <LazyLiveChat />}
     </>
   );
 }
