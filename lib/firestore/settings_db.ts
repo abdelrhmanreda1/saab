@@ -8,9 +8,21 @@ import {
 
 const SETTINGS_COLLECTION = 'settings';
 const SETTINGS_DOC_ID = 'general';
+const SERVER_CACHE_TTL_MS = 5 * 60 * 1000;
+
+let serverSettingsCache:
+  | {
+      value: Settings | null;
+      expiresAt: number;
+    }
+  | null = null;
 
 export const getSettings = async (): Promise<Settings | null> => {
   try {
+    if (typeof window === 'undefined' && serverSettingsCache && serverSettingsCache.expiresAt > Date.now()) {
+      return serverSettingsCache.value;
+    }
+
     const docRef = doc(db, SETTINGS_COLLECTION, SETTINGS_DOC_ID);
     const docSnap = await getDoc(docRef);
 
@@ -25,8 +37,23 @@ export const getSettings = async (): Promise<Settings | null> => {
       // Ensure the returned object is fully serializable (no Timestamp prototypes / toJSON methods).
       // This prevents Next.js "Only plain objects..." errors when server components pass settings
       // down into client components.
-      return JSON.parse(JSON.stringify(merged)) as Settings;
+      const serialized = JSON.parse(JSON.stringify(merged)) as Settings;
+
+      if (typeof window === 'undefined') {
+        serverSettingsCache = {
+          value: serialized,
+          expiresAt: Date.now() + SERVER_CACHE_TTL_MS,
+        };
+      }
+
+      return serialized;
     } else {
+      if (typeof window === 'undefined') {
+        serverSettingsCache = {
+          value: null,
+          expiresAt: Date.now() + SERVER_CACHE_TTL_MS,
+        };
+      }
       return null;
     }
   } catch (error) {
@@ -65,6 +92,7 @@ const flattenObject = (obj: Record<string, unknown>, prefix = ''): Record<string
 
 export const updateSettings = async (settings: Partial<Settings>) => {
   try {
+    serverSettingsCache = null;
     const docRef = doc(db, SETTINGS_COLLECTION, SETTINGS_DOC_ID);
     
     // Check if document exists
@@ -83,4 +111,3 @@ export const updateSettings = async (settings: Partial<Settings>) => {
     throw error;
   }
 };
-

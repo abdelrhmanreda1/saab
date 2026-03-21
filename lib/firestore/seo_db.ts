@@ -2,20 +2,56 @@ import { db } from '../firebase';
 import { collection, addDoc, getDocs, updateDoc, deleteDoc, doc, query, where, orderBy, limit, Timestamp } from 'firebase/firestore';
 import { SEOSettings, PageSEO, ProductSEO, CategorySEO, BrandSEO, CollectionSEO, BlogSEO } from './seo';
 
+const SERVER_CACHE_TTL_MS = 5 * 60 * 1000;
+const serialize = <T>(value: T): T => JSON.parse(JSON.stringify(value)) as T;
+
+let seoSettingsCache:
+  | {
+      value: SEOSettings | null;
+      expiresAt: number;
+    }
+  | null = null;
+
+const pageSEOCache = new Map<
+  string,
+  {
+    value: PageSEO | null;
+    expiresAt: number;
+  }
+>();
+
 // ========== SEO SETTINGS ==========
 const seoSettingsCollection = collection(db, 'seo_settings');
 
 export const getSEOSettings = async (): Promise<SEOSettings | null> => {
+  if (typeof window === 'undefined' && seoSettingsCache && seoSettingsCache.expiresAt > Date.now()) {
+    return seoSettingsCache.value;
+  }
+
   const q = query(seoSettingsCollection, orderBy('createdAt', 'desc'), limit(1));
   const querySnapshot = await getDocs(q);
   if (!querySnapshot.empty) {
     const docSnap = querySnapshot.docs[0];
-    return { id: docSnap.id, ...docSnap.data() } as SEOSettings;
+    const value = serialize({ id: docSnap.id, ...docSnap.data() } as SEOSettings);
+    if (typeof window === 'undefined') {
+      seoSettingsCache = {
+        value,
+        expiresAt: Date.now() + SERVER_CACHE_TTL_MS,
+      };
+    }
+    return value;
+  }
+  if (typeof window === 'undefined') {
+    seoSettingsCache = {
+      value: null,
+      expiresAt: Date.now() + SERVER_CACHE_TTL_MS,
+    };
   }
   return null;
 };
 
 export const updateSEOSettings = async (settings: Partial<Omit<SEOSettings, 'id' | 'createdAt'>>): Promise<void> => {
+  seoSettingsCache = null;
   const existing = await getSEOSettings();
   if (existing) {
     const docRef = doc(db, 'seo_settings', existing.id!);
@@ -43,11 +79,29 @@ export const updateSEOSettings = async (settings: Partial<Omit<SEOSettings, 'id'
 const pageSEOCollection = collection(db, 'page_seo');
 
 export const getPageSEO = async (pagePath: string): Promise<PageSEO | null> => {
+  const cached = pageSEOCache.get(pagePath);
+  if (typeof window === 'undefined' && cached && cached.expiresAt > Date.now()) {
+    return cached.value;
+  }
+
   const q = query(pageSEOCollection, where('pagePath', '==', pagePath), limit(1));
   const querySnapshot = await getDocs(q);
   if (!querySnapshot.empty) {
     const docSnap = querySnapshot.docs[0];
-    return { id: docSnap.id, ...docSnap.data() } as PageSEO;
+    const value = serialize({ id: docSnap.id, ...docSnap.data() } as PageSEO);
+    if (typeof window === 'undefined') {
+      pageSEOCache.set(pagePath, {
+        value,
+        expiresAt: Date.now() + SERVER_CACHE_TTL_MS,
+      });
+    }
+    return value;
+  }
+  if (typeof window === 'undefined') {
+    pageSEOCache.set(pagePath, {
+      value: null,
+      expiresAt: Date.now() + SERVER_CACHE_TTL_MS,
+    });
   }
   return null;
 };
@@ -59,6 +113,7 @@ export const getAllPageSEO = async (): Promise<PageSEO[]> => {
 };
 
 export const createOrUpdatePageSEO = async (pageSEO: Omit<PageSEO, 'id' | 'createdAt' | 'updatedAt'>): Promise<string> => {
+  pageSEOCache.delete(pageSEO.pagePath);
   const existing = await getPageSEO(pageSEO.pagePath);
   if (existing) {
     const docRef = doc(db, 'page_seo', existing.id!);
@@ -79,6 +134,7 @@ export const createOrUpdatePageSEO = async (pageSEO: Omit<PageSEO, 'id' | 'creat
 
 export const deletePageSEO = async (id: string): Promise<void> => {
   const docRef = doc(db, 'page_seo', id);
+  pageSEOCache.clear();
   await deleteDoc(docRef);
 };
 

@@ -1,6 +1,6 @@
 'use client';
 
-import React, { createContext, useContext, ReactNode, useState, useEffect } from 'react';
+import React, { createContext, useContext, ReactNode, useState, useEffect, useMemo } from 'react';
 import { getDefaultCurrency } from '@/lib/firestore/internationalization_db';
 import { Currency } from '@/lib/firestore/internationalization';
 
@@ -90,17 +90,16 @@ export const CurrencyProvider: React.FC<CurrencyProviderProps> = ({
     return amount;
   };
 
-  return (
-    <CurrencyContext.Provider
-      value={{
-        formatPrice,
-        convertPrice,
-        defaultCurrency,
-        isLoading,
-      }}
-    >
-      {children}
-    </CurrencyContext.Provider>
+  const value = useMemo(
+    () => ({
+      formatPrice,
+      convertPrice,
+      defaultCurrency,
+      isLoading,
+    }),
+    [defaultCurrency, isLoading]
   );
+
+  return <CurrencyContext.Provider value={value}>{children}</CurrencyContext.Provider>;
 };
 

@@ -2,8 +2,8 @@
 
 @theme {
   --font-sans: var(--font-inter);
-  --font-heading: var(--font-poppins);
-  --font-mono: var(--font-geist-mono);
+  --font-heading: var(--font-inter);
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
 }
 
 :root {

@@ -12,22 +12,24 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     const root = document.documentElement;
     const theme = settings?.theme;
 
-    // Font map for all available fonts
+    // Keep the runtime font palette intentionally small to reduce font payload.
+    // Legacy theme selections fall back to Inter.
     const fontMap: { [key: string]: string } = {
       'Inter': 'var(--font-inter), Inter, sans-serif',
-      'Poppins': 'var(--font-poppins), Poppins, sans-serif',
-      'Roboto': 'var(--font-roboto), Roboto, sans-serif',
-      'Open Sans': 'var(--font-open-sans), "Open Sans", sans-serif',
-      'Montserrat': 'var(--font-montserrat), Montserrat, sans-serif',
+      'Cairo': 'var(--font-arabic), Cairo, sans-serif',
+      'Poppins': 'var(--font-inter), Inter, sans-serif',
+      'Roboto': 'var(--font-inter), Inter, sans-serif',
+      'Open Sans': 'var(--font-inter), Inter, sans-serif',
+      'Montserrat': 'var(--font-inter), Inter, sans-serif',
     };
 
     // Always set fonts (defaults or from settings)
     if (theme?.fonts) {
-      root.style.setProperty('--theme-heading-font', fontMap[theme.fonts.heading || 'Poppins'] || fontMap['Poppins']);
+      root.style.setProperty('--theme-heading-font', fontMap[theme.fonts.heading || 'Inter'] || fontMap['Inter']);
       root.style.setProperty('--theme-body-font', fontMap[theme.fonts.body || 'Inter'] || fontMap['Inter']);
     } else {
       // Set defaults immediately if settings not loaded yet
-      root.style.setProperty('--theme-heading-font', fontMap['Poppins']);
+      root.style.setProperty('--theme-heading-font', fontMap['Inter']);
       root.style.setProperty('--theme-body-font', fontMap['Inter']);
     }
 

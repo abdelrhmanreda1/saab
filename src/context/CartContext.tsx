@@ -1,6 +1,6 @@
 'use client';
 
-import React, { createContext, useState, useContext, useEffect, ReactNode, useCallback } from 'react';
+import React, { createContext, useState, useContext, useEffect, ReactNode, useCallback, useMemo } from 'react';
 import { Product, ProductVariant } from '@/lib/firestore/products';
 import { getAllFlashSales } from '@/lib/firestore/campaigns_db';
 import { FlashSale } from '@/lib/firestore/campaigns';
@@ -239,22 +239,35 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
     return cart.reduce((count, item) => count + item.quantity, 0);
   }, [cart]);
 
+  const value = useMemo(
+    () => ({
+      cart,
+      addToCart,
+      removeFromCart,
+      updateCartItemQuantity,
+      clearCart,
+      getCartTotal,
+      getCartItemCount,
+      showCartDialog,
+      cartDialogMessage,
+      setShowCartDialog,
+      setCartDialogMessage,
+    }),
+    [
+      addToCart,
+      cart,
+      cartDialogMessage,
+      clearCart,
+      getCartItemCount,
+      getCartTotal,
+      removeFromCart,
+      showCartDialog,
+      updateCartItemQuantity,
+    ]
+  );
+
   return (
-    <CartContext.Provider
-      value={{
-        cart,
-        addToCart,
-        removeFromCart,
-        updateCartItemQuantity,
-        clearCart,
-        getCartTotal,
-        getCartItemCount,
-        showCartDialog,
-        cartDialogMessage,
-        setShowCartDialog,
-        setCartDialogMessage,
-      }}
-    >
+    <CartContext.Provider value={value}>
       {children}
       {/* Cart Dialog */}
       {showCartDialog && (

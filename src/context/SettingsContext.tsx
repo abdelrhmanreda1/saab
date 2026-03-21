@@ -1,6 +1,6 @@
 'use client';
 
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { getSettings } from '@/lib/firestore/settings_db';
 import { Settings, defaultSettings } from '@/lib/firestore/settings';
 
@@ -12,11 +12,20 @@ interface SettingsContextType {
 
 const SettingsContext = createContext<SettingsContextType | undefined>(undefined);
 
-export const SettingsProvider = ({ children }: { children: React.ReactNode }) => {
-  const [settings, setSettings] = useState<Settings>(defaultSettings);
-  const [loading, setLoading] = useState(true);
+export const SettingsProvider = ({
+  children,
+  initialSettings = null,
+}: {
+  children: React.ReactNode;
+  initialSettings?: Settings | null;
+}) => {
+  const mergedInitialSettings = initialSettings
+    ? ({ ...defaultSettings, ...initialSettings } as Settings)
+    : defaultSettings;
+  const [settings, setSettings] = useState<Settings>(mergedInitialSettings);
+  const [loading, setLoading] = useState(!initialSettings);
 
-  const fetchSettings = async () => {
+  const fetchSettings = useCallback(async () => {
     try {
       const data = await getSettings();
       if (data) {
@@ -27,14 +36,20 @@ export const SettingsProvider = ({ children }: { children: React.ReactNode }) =>
     } finally {
       setLoading(false);
     }
-  };
-
-  useEffect(() => {
-    fetchSettings();
   }, []);
 
+  useEffect(() => {
+    if (initialSettings) return;
+    fetchSettings();
+  }, [fetchSettings, initialSettings]);
+
+  const value = useMemo(
+    () => ({ settings, loading, refreshSettings: fetchSettings }),
+    [fetchSettings, loading, settings]
+  );
+
   return (
-    <SettingsContext.Provider value={{ settings, loading, refreshSettings: fetchSettings }}>
+    <SettingsContext.Provider value={value}>
       {children}
     </SettingsContext.Provider>
   );
