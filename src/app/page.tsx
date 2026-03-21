@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import Image from "next/image";
+import dynamic from 'next/dynamic';
 import Link from 'next/link';
 import { getAllBanners } from '@/lib/firestore/banners_db';
 import { Banner } from '@/lib/firestore/banners';
@@ -23,7 +24,6 @@ import { ProductBundle } from '@/lib/firestore/product_bundles';
 import { getReviewsByProductId, getAllReviews } from '@/lib/firestore/reviews_enhanced_db';
 import type { Review } from '@/lib/firestore/reviews_enhanced';
 import { useCart } from '../context/CartContext';
-import QuickViewModal from '../components/QuickViewModal';
 import { getColors } from '@/lib/firestore/attributes_db';
 import { Color } from '@/lib/firestore/attributes';
 import { getColorName } from '@/lib/utils/translations';
@@ -32,13 +32,8 @@ import { getAllPosts } from '@/lib/firestore/blog_db';
 import { BlogPost } from '@/lib/firestore/blog';
 import { addNewsletterSubscription } from '@/lib/firestore/newsletter_db';
 import SkeletonLoader from '../components/SkeletonLoader';
-import MobileStickyCart from '../components/MobileStickyCart';
-import BackToTop from '../components/BackToTop';
-import ProductComparison from '../components/ProductComparison';
-import SafeImage from '../components/SafeImage';
 import { getRecentlyViewed } from '@/lib/firestore/product_features_db';
 import { useAuth } from '../context/AuthContext';
-import { getPageBySlug } from '@/lib/firestore/pages_db';
 import { getFlashSaleAdjustedPrice, getProductPricingSummary } from '@/lib/utils/product-pricing';
 import { getSafeImageUrl } from '@/lib/utils/image';
 import {
@@ -46,6 +41,21 @@ import {
   HomepageSectionId,
 } from '@/lib/firestore/homepage_sections';
 import { getHomepageSections } from '@/lib/firestore/homepage_sections_db';
+
+const QuickViewModal = dynamic(() => import('../components/QuickViewModal'), { ssr: false });
+const ProductComparison = dynamic(() => import('../components/ProductComparison'), { ssr: false });
+
+const runWhenIdle = (task: () => void) => {
+  if (typeof window !== 'undefined' && 'requestIdleCallback' in window) {
+    const idleWindow = window as Window & {
+      requestIdleCallback: (callback: IdleRequestCallback) => number;
+    };
+    idleWindow.requestIdleCallback(() => task());
+    return;
+  }
+
+  setTimeout(task, 0);
+};
 
 export default function Home() {
   const { t, currentLanguage } = useLanguage();
@@ -74,12 +84,12 @@ export default function Home() {
   const [newsletterLoading, setNewsletterLoading] = useState(false);
   const [newsletterSuccess, setNewsletterSuccess] = useState(false);
   const [currentTestimonialIndex, setCurrentTestimonialIndex] = useState(0);
-  const [, setVisibleSections] = useState<Set<string>>(new Set(['hero'])); // Hero is visible by default
   const [recentlyViewedProducts, setRecentlyViewedProducts] = useState<Product[]>([]);
   const [comparisonProducts, setComparisonProducts] = useState<Product[]>([]);
   const [goldBasePrice, setGoldBasePrice] = useState(0);
   const [goldPriceFetchedAt, setGoldPriceFetchedAt] = useState('');
   const [homepageSections, setHomepageSections] = useState(defaultHomepageSections);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const formatKaratLabel = (karat: string) => {
     if (!isArabic) return karat;
     const match = String(karat).match(/^(\d{2})K$/i);
@@ -91,10 +101,10 @@ export default function Home() {
       if (!banner) return '';
       const normalize = (code?: string | null) => String(code || '').trim().toLowerCase();
       const tr = (banner.translations || []).find(tl => normalize(tl.languageCode) === normalize(languageCode));
-      const candidate = String((tr && (tr as any)[field]) || '');
+      const candidate = String((tr && tr[field]) || '');
       if (candidate.trim()) return candidate;
       // Back-compat fallback to root fields (stored as English)
-      return String((banner as any)[field] || '');
+      return String(banner[field] || '');
     },
     [languageCode]
   );
@@ -110,44 +120,6 @@ export default function Home() {
     window.addEventListener('resize', checkMobile);
     return () => window.removeEventListener('resize', checkMobile);
   }, []);
-
-  // Intersection Observer for scroll animations
-  useEffect(() => {
-    // Make all sections visible initially, then add animations
-    const allSections = document.querySelectorAll('[data-section-id]');
-    const allSectionIds = Array.from(allSections).map(section => section.getAttribute('data-section-id')).filter(Boolean) as string[];
-    setVisibleSections(new Set(allSectionIds));
-
-    const observerOptions = {
-      root: null,
-      rootMargin: '-50px 0px',
-      threshold: 0.01,
-    };
-
-    const observerCallback = (entries: IntersectionObserverEntry[]) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          const sectionId = entry.target.getAttribute('data-section-id');
-          if (sectionId) {
-            setVisibleSections((prev) => new Set(prev).add(sectionId));
-          }
-        }
-      });
-    };
-
-    const observer = new IntersectionObserver(observerCallback, observerOptions);
-    
-    // Use setTimeout to ensure DOM is ready
-    setTimeout(() => {
-      const sections = document.querySelectorAll('[data-section-id]');
-      sections.forEach((section) => observer.observe(section));
-    }, 100);
-
-    return () => {
-      const sections = document.querySelectorAll('[data-section-id]');
-      sections.forEach((section) => observer.unobserve(section));
-    };
-  }, [loading]); // Re-run when loading completes
 
   // Auto-rotate banners
   useEffect(() => {
@@ -351,7 +323,7 @@ export default function Home() {
       }
     };
 
-    loadReviewStats();
+    runWhenIdle(loadReviewStats);
   }, [featuredProducts, popularProducts, latestProducts, flashSaleProducts, settings?.features?.productReviews]);
 
   // Load testimonials (reviews with rating >= 4)
@@ -367,7 +339,7 @@ export default function Home() {
       }
     };
     
-    loadTestimonials();
+    runWhenIdle(loadTestimonials);
   }, [settings?.features?.productReviews]);
 
   // Auto-rotate testimonials
@@ -394,7 +366,7 @@ export default function Home() {
       }
     };
     
-    loadBlogPosts();
+    runWhenIdle(loadBlogPosts);
   }, [settings?.features?.blog]);
 
   // Load recently viewed products
@@ -411,7 +383,7 @@ export default function Home() {
       }
     };
     
-    loadRecentlyViewed();
+    runWhenIdle(loadRecentlyViewed);
   }, [user, demoUser, settings?.demoMode]);
 
   // Load comparison products from localStorage
@@ -427,7 +399,7 @@ export default function Home() {
             const comparison = allProducts.filter(p => productIds.includes(p.id));
             setComparisonProducts(comparison);
           };
-          loadProducts();
+          runWhenIdle(loadProducts);
         }
       } catch {
         // Failed to load comparison
@@ -436,23 +408,6 @@ export default function Home() {
     
     loadComparison();
   }, []);
-
-  // Load info pages (About, Shipping, FAQ)
-  useEffect(() => {
-    const loadInfoPages = async () => {
-      try {
-        await Promise.all([
-          settings?.pages?.aboutUs ? getPageBySlug('about').catch(() => null) : Promise.resolve(null),
-          settings?.pages?.shippingReturns ? getPageBySlug('shipping').catch(() => null) : Promise.resolve(null),
-          settings?.pages?.faqs ? getPageBySlug('faq').catch(() => null) : Promise.resolve(null),
-        ]);
-      } catch {
-        // Failed to load pages
-      }
-    };
-    
-    loadInfoPages();
-  }, [settings?.pages]);
 
   const handleAddToComparison = (product: Product) => {
     const maxComparison = 4;
@@ -511,7 +466,7 @@ export default function Home() {
     return (
       <div className="min-h-screen pb-20">
         {/* Hero Skeleton */}
-        <div className="relative w-full h-[85vh] min-h-[600px] bg-gray-200 animate-pulse" />
+        <div className={`relative w-full bg-gray-200 animate-pulse ${isMobile ? 'h-[520px]' : 'h-[760px]'}`} />
         
         {/* Trust Badges Skeleton */}
         <section className="bg-white border-b border-gray-100 py-6 md:py-8">
@@ -836,10 +791,10 @@ export default function Home() {
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const getSectionClasses = (_sectionId?: string) => {
-    // Always visible, animation is optional enhancement
-    return 'transition-all duration-1000 ease-out opacity-100 translate-y-0';
+    return '';
   };
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const goldPriceCards = [
     { karat: '24K', multiplier: 1, purity: '99.9%' },
     { karat: '22K', multiplier: 22 / 24, purity: '91.6%' },
@@ -857,6 +812,7 @@ export default function Home() {
     };
   });
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const formattedGoldUpdate = goldPriceFetchedAt
     ? new Intl.DateTimeFormat(isArabic ? 'ar-SA' : 'en-SA', {
         dateStyle: 'medium',
@@ -866,6 +822,7 @@ export default function Home() {
       ? 'غير متاح'
       : 'Not available';
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const formatGoldAmount = (value: number) =>
     new Intl.NumberFormat(isArabic ? 'ar-SA' : 'en-SA', {
       style: 'currency',
@@ -919,12 +876,13 @@ export default function Home() {
                     index === currentBannerIndex ? 'opacity-100 z-10' : 'opacity-0 z-0'
                   }`}
                 >
-                  <SafeImage
+                  <Image
                     src={getSafeImageUrl(banner.imageUrl)}
                     alt={getBannerText(banner, 'title') || settings?.company?.name || ''}
+                    fill
+                    sizes="100vw"
+                    priority={index === 0}
                     className="absolute inset-0 h-full w-full object-cover"
-                    loading={index === 0 ? 'eager' : 'lazy'}
-                    fetchPriority={index === 0 ? 'high' : 'auto'}
                   />
                 </div>
               ))}
@@ -1459,11 +1417,12 @@ export default function Home() {
                     }`}
                   >
                       {category.imageUrl ? (
-                        <SafeImage
+                        <Image
                           src={getSafeImageUrl(category.imageUrl)}
                           alt={getCategoryName(category, languageCode)}
+                          fill
+                          sizes={index === 0 ? "(max-width: 768px) 100vw, 50vw" : "(max-width: 768px) 50vw, 20vw"}
                           className="absolute inset-0 h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
-                          loading="lazy"
                         />
                       ) : (
                         <div className="absolute inset-0 bg-gradient-to-br from-gray-200 to-gray-300" />
@@ -1539,11 +1498,12 @@ export default function Home() {
                   className="group relative h-64 md:h-80 rounded-2xl overflow-hidden bg-gray-100 border border-gray-200 hover:border-gray-300 transition-all shadow-sm hover:shadow-lg"
                 >
                   {collection.imageUrl ? (
-                    <SafeImage
+                    <Image
                       src={getSafeImageUrl(collection.imageUrl)}
                       alt={collection.name}
+                      fill
+                      sizes="(max-width: 768px) 100vw, 33vw"
                       className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
-                      loading="lazy"
                     />
                   ) : (
                     <div className="absolute inset-0 bg-gradient-to-br from-gray-200 via-gray-300 to-gray-400" />
@@ -1638,9 +1598,11 @@ export default function Home() {
                 >
                   {bundle.image ? (
                     <div className="relative h-48 w-full overflow-hidden">
-                      <SafeImage
+                      <Image
                         src={getSafeImageUrl(bundle.image)}
                         alt={bundle.name}
+                        fill
+                        sizes="(max-width: 768px) 100vw, 33vw"
                         className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
                         loading="lazy"
                       />
@@ -1839,9 +1801,11 @@ export default function Home() {
               >
                 <div className="relative h-48 w-full overflow-hidden bg-gray-100 flex-shrink-0">
                   {post.coverImage ? (
-                    <SafeImage
+                    <Image
                       src={getSafeImageUrl(post.coverImage)}
                       alt={isArabic && post.title_ar ? post.title_ar : post.title}
+                      fill
+                      sizes="(max-width: 768px) 100vw, 33vw"
                       className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
                       loading="lazy"
                     />
@@ -1877,24 +1841,22 @@ export default function Home() {
       )}
 
       {/* Quick View Modal */}
-      <QuickViewModal
-        product={quickViewProduct}
-        isOpen={!!quickViewProduct}
-        onClose={() => setQuickViewProduct(null)}
-      />
-
-      {/* Mobile Sticky Cart */}
-      <MobileStickyCart />
-
-      {/* Back to Top Button */}
-      <BackToTop />
+      {quickViewProduct && (
+        <QuickViewModal
+          product={quickViewProduct}
+          isOpen={!!quickViewProduct}
+          onClose={() => setQuickViewProduct(null)}
+        />
+      )}
 
       {/* Product Comparison Bar */}
-      <ProductComparison
-        products={comparisonProducts}
-        onRemove={handleRemoveFromComparison}
-        onClear={handleClearComparison}
-      />
+      {comparisonProducts.length > 0 && (
+        <ProductComparison
+          products={comparisonProducts}
+          onRemove={handleRemoveFromComparison}
+          onClear={handleClearComparison}
+        />
+      )}
 
       {/* 13. Recently Viewed Products Section - Container */}
       {isHomepageSectionEnabled('recently-viewed') && recentlyViewedProducts.length > 0 && (

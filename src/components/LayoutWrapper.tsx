@@ -1,13 +1,15 @@
 'use client';
 
+import dynamic from 'next/dynamic';
 import { usePathname } from 'next/navigation';
 import Header from './Header';
 import Footer from './Footer';
 import MobileBottomNav from './MobileBottomNav';
-import LiveChat from './LiveChat';
-import MobileStickyCart from './MobileStickyCart';
-import BackToTop from './BackToTop';
 import PageTransition from './PageTransition';
+
+const LiveChat = dynamic(() => import('./LiveChat'), { ssr: false });
+const MobileStickyCart = dynamic(() => import('./MobileStickyCart'), { ssr: false });
+const BackToTop = dynamic(() => import('./BackToTop'), { ssr: false });
 
 export default function LayoutWrapper({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();

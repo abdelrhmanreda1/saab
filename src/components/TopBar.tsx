@@ -20,7 +20,7 @@ const TopBar = () => {
   const topBar = settings?.theme?.topBar;
   const langCode = String(currentLanguage?.code || '').trim().toLowerCase();
   const isArabic = langCode === 'ar';
-  const [basePrice, setBasePrice] = useState(0);
+  const [basePrice, setBasePrice] = useState(() => Number(settings?.goldPricing?.cache?.pricePerGram || 0));
   const [isMobileExpanded, setIsMobileExpanded] = useState(false);
 
   useEffect(() => {
@@ -189,7 +189,7 @@ const TopBar = () => {
       className="border-b border-[#8f6b28]"
     >
       <div className="page-container">
-        <div className="hidden md:flex md:items-stretch md:justify-between">
+        <div className="hidden min-h-[84px] md:flex md:items-stretch md:justify-between">
           {rates.length > 0 && (
             <div className="flex min-w-0 flex-1 items-stretch overflow-hidden">
               {rates.map((item, index) => renderDesktopItem(item, index))}
@@ -205,14 +205,14 @@ const TopBar = () => {
 
         <div className="md:hidden">
           {primaryMobileRate && (
-            <div className="bg-black">
+            <div className="min-h-[56px] bg-black">
               <div className="flex items-center">
                 <div className="min-w-0 flex-1">{renderMobileItem(primaryMobileRate, 0)}</div>
                 {secondaryMobileRates.length > 0 && (
                   <button
                     type="button"
                     onClick={() => setIsMobileExpanded((prev) => !prev)}
-                    className="flex h-full w-12 shrink-0 items-center justify-center self-stretch border-s border-[#2a2a2a] text-white mt-4"
+                    className="flex h-full w-12 shrink-0 items-center justify-center self-stretch border-s border-[#2a2a2a] text-white"
                     aria-label={
                       isMobileExpanded
                         ? (t('topbar.hide_other_prices') || (isArabic ? 'إخفاء باقي الأسعار' : 'Hide other prices'))

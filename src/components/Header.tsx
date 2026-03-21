@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import Image from 'next/image';
 import { useCart } from '../context/CartContext';
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
@@ -8,7 +9,6 @@ import { useAuth } from '../context/AuthContext';
 import { useSettings } from '../context/SettingsContext';
 import { useLanguage } from '../context/LanguageContext';
 import LanguageSwitcher from './LanguageSwitcher';
-import SafeImage from './SafeImage';
 import TopBar from './TopBar';
 import { getSafeImageUrl } from '@/lib/utils/image';
 
@@ -137,14 +137,14 @@ const Header = () => {
             <div className="flex justify-center">
               <Link href="/" className="flex items-center justify-center">
                 {mounted && safeLogoUrl ? (
-                  <SafeImage
+                  <Image
                     src={safeLogoUrl} 
                     alt={settings.company.name || ""} 
                     width={152}
                     height={54}
-                    className="h-12 w-auto object-contain"
-                    loading="eager"
-                    fetchPriority="high"
+                    sizes="152px"
+                    priority
+                    className="h-12 w-[152px] object-contain"
                   />
                 ) : (
                   <span 
@@ -246,14 +246,14 @@ const Header = () => {
             <div className="flex min-h-[72px] flex-col items-center justify-center px-2 lg:px-4">
               <Link href="/" className="flex items-center justify-center">
                 {mounted && safeLogoUrl ? (
-                  <SafeImage
+                  <Image
                     src={safeLogoUrl}
                     alt={settings.company.name || ""}
                     width={190}
                     height={70}
-                    className="h-12 w-auto object-contain lg:h-14"
-                    loading="eager"
-                    fetchPriority="high"
+                    sizes="190px"
+                    priority
+                    className="h-12 w-[190px] object-contain lg:h-14"
                   />
                 ) : (
                   <span style={{ color: headerText }} className="text-center text-2xl font-heading font-bold tracking-[0.18em]">
