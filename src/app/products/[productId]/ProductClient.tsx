@@ -1,5 +1,6 @@
 'use client';
 
+import '../../quill-content.css';
 import React, { useState, useEffect } from 'react';
 import { Product, ProductVariant, ProductTranslation } from '@/lib/firestore/products';
 import Image from 'next/image';
