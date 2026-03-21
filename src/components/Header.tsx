@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import Link from 'next/link';
 import Image from 'next/image';
@@ -289,7 +289,7 @@ const Header = () => {
                   <input
                     type="text"
                     placeholder={t('common.search')}
-                    className={`h-11 w-40 rounded-full border border-[#ecd9ae] bg-[#fffaf0] px-4 text-sm text-[#2b2110] outline-none transition-colors focus:border-[#be8c2f] ${isRTL ? 'pl-12 pr-4' : 'pr-12 pl-4'}`}
+                    className={`h-11 w-36 rounded-full border border-[#ecd9ae] bg-[#fffaf0] px-4 text-sm text-[#2b2110] outline-none transition focus:w-40 focus:border-[#be8c2f] lg:w-40 lg:focus:w-44 ${isRTL ? 'pl-12 pr-4' : 'pr-12 pl-4'}`}
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                     aria-label={t('common.search') || 'Search'}

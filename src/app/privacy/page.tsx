@@ -1,6 +1,5 @@
 'use client';
 
-import '../quill-content.css';
 import React, { useEffect, useState } from 'react';
 import { getPageBySlug } from '@/lib/firestore/pages_db';
 import { Page, PageContentTranslation } from '@/lib/firestore/pages';

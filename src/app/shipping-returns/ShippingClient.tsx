@@ -1,6 +1,5 @@
 'use client';
 
-import '../quill-content.css';
 import React, { useEffect, useState, useContext, useMemo } from 'react';
 import { LanguageContext } from '../../context/LanguageContext';
 
