@@ -1,6 +1,6 @@
 'use client';
 
-import React, { createContext, useContext, useState, useEffect, ReactNode, useRef } from 'react';
+import React, { createContext, useContext, useState, useEffect, ReactNode, useRef, useMemo, useCallback } from 'react';
 import { Language } from '@/lib/firestore/internationalization';
 import { getAllLanguages } from '@/lib/firestore/internationalization_db';
 import { getTranslationsByLanguage } from '@/lib/firestore/translations_db';
@@ -98,7 +98,7 @@ export const LanguageProvider: React.FC<LanguageProviderProps> = ({
     return { ...DEFAULT_TRANSLATION_KEYS };
   };
 
-  const setLanguage = async (language: Language) => {
+  const setLanguage = useCallback(async (language: Language) => {
     const languageCode = normalizeCode(language.code) || language.code;
     try {
       // Instant UI switch (no waiting)
@@ -154,10 +154,10 @@ export const LanguageProvider: React.FC<LanguageProviderProps> = ({
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [currentLanguage?.code, defaultLanguageCode]);
 
   // Translation function
-  const t = (key: string, params?: Record<string, string | number>): string => {
+  const t = useCallback((key: string, params?: Record<string, string | number>): string => {
     let translation = translations[key] || key;
     
     // Replace parameters
@@ -168,7 +168,7 @@ export const LanguageProvider: React.FC<LanguageProviderProps> = ({
     }
     
     return translation;
-  };
+  }, [translations]);
 
   // Load languages on mount
   useEffect(() => {
@@ -210,19 +210,17 @@ export const LanguageProvider: React.FC<LanguageProviderProps> = ({
     loadLanguages();
   }, [defaultLanguageCode]);
 
-  return (
-    <LanguageContext.Provider
-      value={{
-        currentLanguage,
-        languages,
-        translations,
-        setLanguage,
-        t,
-        isLoading,
-      }}
-    >
-      {children}
-    </LanguageContext.Provider>
+  const value = useMemo(
+    () => ({
+      currentLanguage,
+      languages,
+      translations,
+      setLanguage,
+      t,
+      isLoading,
+    }),
+    [currentLanguage, isLoading, languages, setLanguage, t, translations]
   );
-};
 
+  return <LanguageContext.Provider value={value}>{children}</LanguageContext.Provider>;
+};

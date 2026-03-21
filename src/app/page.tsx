@@ -1,11 +1,5 @@
-import HomeHero from './home/HomeHero';
-import HomeDeferredLoader from './home/HomeDeferredLoader';
+import HomeDeferredSections from './home/HomeDeferredSections';
 
 export default function Page() {
-  return (
-    <>
-      <HomeHero />
-      <HomeDeferredLoader />
-    </>
-  );
+  return <HomeDeferredSections showHero />;
 }

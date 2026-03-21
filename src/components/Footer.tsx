@@ -120,12 +120,14 @@ const Footer = () => {
                     : (t('footer.subscribe') || 'Subscribe')}
               </button>
             </form>
-            {error && (
-              <p className="text-red-400 text-sm mt-3">{error}</p>
-            )}
-            {submitted && !error && (
-              <p className="text-green-400 text-sm mt-3">{t('footer.subscribe_thanks') || 'Thank you for subscribing!'}</p>
-            )}
+            <div className="mt-3 min-h-5">
+              {error && (
+                <p className="text-red-400 text-sm">{error}</p>
+              )}
+              {submitted && !error && (
+                <p className="text-green-400 text-sm">{t('footer.subscribe_thanks') || 'Thank you for subscribing!'}</p>
+              )}
+            </div>
           </div>
         </div>
 
