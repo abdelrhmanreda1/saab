@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import { useSettings } from '../context/SettingsContext';
 import { useLanguage } from '../context/LanguageContext';
 
@@ -20,38 +20,8 @@ const TopBar = () => {
   const topBar = settings?.theme?.topBar;
   const langCode = String(currentLanguage?.code || '').trim().toLowerCase();
   const isArabic = langCode === 'ar';
-  const [basePrice, setBasePrice] = useState(() => Number(settings?.goldPricing?.cache?.pricePerGram || 0));
+  const basePrice = Number(settings?.goldPricing?.cache?.pricePerGram || 0);
   const [isMobileExpanded, setIsMobileExpanded] = useState(false);
-
-  useEffect(() => {
-    const loadGoldPrice = async () => {
-      let resolvedPrice = 0;
-
-      try {
-        const response = await fetch('/api/gold-price', { cache: 'no-store' });
-        const result = await response.json();
-
-        if (response.ok && result?.success && Number(result?.pricePerGram) > 0) {
-          resolvedPrice = Number(result.pricePerGram);
-        }
-      } catch {
-        // Ignore network failures and use cache below.
-      }
-
-      if (resolvedPrice <= 0) {
-        const cachedPrice = Number(settings?.goldPricing?.cache?.pricePerGram || 0);
-        if (cachedPrice > 0) {
-          resolvedPrice = cachedPrice;
-        }
-      }
-
-      if (resolvedPrice > 0) {
-        setBasePrice(resolvedPrice);
-      }
-    };
-
-    loadGoldPrice();
-  }, [settings?.goldPricing?.cache?.pricePerGram]);
 
   const rates = useMemo<RateItem[]>(() => {
     if (basePrice <= 0) {
@@ -197,7 +167,7 @@ const TopBar = () => {
           )}
 
           {showTopBarMessage && (
-            <div className="flex min-w-[360px] items-center justify-center px-6 text-center text-xs font-semibold uppercase tracking-[0.08em] text-[#fff3ca]">
+            <div className="flex min-h-[84px] min-w-[360px] items-center justify-center px-6 text-center text-xs font-semibold uppercase tracking-[0.08em] text-[#fff3ca]">
               {resolvedPromoText}
             </div>
           )}

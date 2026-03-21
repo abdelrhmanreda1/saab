@@ -89,7 +89,7 @@ export default function Home() {
   const [goldBasePrice, setGoldBasePrice] = useState(0);
   const [goldPriceFetchedAt, setGoldPriceFetchedAt] = useState('');
   const [homepageSections, setHomepageSections] = useState(defaultHomepageSections);
-  const [showDeferredSections, setShowDeferredSections] = useState(false);
+  const [showDeferredSections] = useState(true);
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const formatKaratLabel = (karat: string) => {
     if (!isArabic) return karat;
@@ -122,19 +122,21 @@ export default function Home() {
     return () => window.removeEventListener('resize', checkMobile);
   }, []);
 
-  useEffect(() => {
-    runWhenIdle(() => setShowDeferredSections(true));
-  }, []);
-
   // Auto-rotate banners
   useEffect(() => {
     if (banners.length <= 1) return;
-    
-    const interval = setInterval(() => {
-      setCurrentBannerIndex((prev) => (prev === banners.length - 1 ? 0 : prev + 1));
-    }, 5000); // Change banner every 5 seconds
 
-    return () => clearInterval(interval);
+    let intervalId: ReturnType<typeof setInterval> | null = null;
+    const timeoutId = setTimeout(() => {
+      intervalId = setInterval(() => {
+        setCurrentBannerIndex((prev) => (prev === banners.length - 1 ? 0 : prev + 1));
+      }, 5000);
+    }, 12000);
+
+    return () => {
+      clearTimeout(timeoutId);
+      if (intervalId) clearInterval(intervalId);
+    };
   }, [banners.length]);
 
   useEffect(() => {
@@ -885,8 +887,10 @@ export default function Home() {
                     src={getSafeImageUrl(banner.imageUrl)}
                     alt={getBannerText(banner, 'title') || settings?.company?.name || ''}
                     fill
-                    sizes="100vw"
+                    sizes="(max-width: 768px) 100vw, 92vw"
                     priority={index === 0}
+                    loading={index === 0 ? 'eager' : 'lazy'}
+                    fetchPriority={index === 0 ? 'high' : undefined}
                     quality={60}
                     className="absolute inset-0 h-full w-full object-cover"
                   />
