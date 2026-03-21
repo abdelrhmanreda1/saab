@@ -136,7 +136,7 @@ const Header = () => {
 
             <div className="flex justify-center">
               <Link href="/" className="flex items-center justify-center">
-                {mounted && safeLogoUrl ? (
+                {safeLogoUrl ? (
                   <Image
                     src={safeLogoUrl} 
                     alt={settings.company.name || ""} 
@@ -149,7 +149,7 @@ const Header = () => {
                 ) : (
                   <span 
                     style={{ color: headerText }}
-                    className="text-2xl font-heading font-bold tracking-[0.18em]"
+                    className="inline-flex h-12 w-[152px] items-center justify-center text-2xl font-heading font-bold tracking-[0.18em]"
                   >
                     {settings.company.name || ""}
                   </span>
@@ -229,7 +229,7 @@ const Header = () => {
             </div>
           </div>
 
-          <div className="hidden md:grid md:grid-cols-[minmax(280px,1fr)_180px_minmax(500px,1.2fr)] md:items-center md:gap-4 md:py-4 lg:grid-cols-[minmax(320px,1fr)_200px_minmax(580px,1.2fr)]">
+          <div className="hidden min-h-[104px] md:grid md:grid-cols-[minmax(280px,1fr)_180px_minmax(500px,1.2fr)] md:items-center md:gap-4 md:py-4 lg:grid-cols-[minmax(320px,1fr)_200px_minmax(580px,1.2fr)]">
             <nav className={`flex min-w-0 items-center gap-4 ${isRTL ? 'justify-end' : 'justify-start'} lg:gap-5`}>
               {leftNavLinks.map((link) => (
                 <Link
@@ -245,7 +245,7 @@ const Header = () => {
 
             <div className="flex min-h-[72px] flex-col items-center justify-center px-2 lg:px-4">
               <Link href="/" className="flex items-center justify-center">
-                {mounted && safeLogoUrl ? (
+                {safeLogoUrl ? (
                   <Image
                     src={safeLogoUrl}
                     alt={settings.company.name || ""}
@@ -256,7 +256,7 @@ const Header = () => {
                     className="h-12 w-[190px] object-contain lg:h-14"
                   />
                 ) : (
-                  <span style={{ color: headerText }} className="text-center text-2xl font-heading font-bold tracking-[0.18em]">
+                  <span style={{ color: headerText }} className="inline-flex h-12 w-[190px] items-center justify-center text-center text-2xl font-heading font-bold tracking-[0.18em] lg:h-14">
                     {settings.company.name || ""}
                   </span>
                 )}

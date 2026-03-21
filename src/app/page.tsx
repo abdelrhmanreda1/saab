@@ -23,10 +23,6 @@ import { getAllProductBundles } from '@/lib/firestore/product_bundles_db';
 import { ProductBundle } from '@/lib/firestore/product_bundles';
 import { getReviewsByProductId, getAllReviews } from '@/lib/firestore/reviews_enhanced_db';
 import type { Review } from '@/lib/firestore/reviews_enhanced';
-import { useCart } from '../context/CartContext';
-import { getColors } from '@/lib/firestore/attributes_db';
-import { Color } from '@/lib/firestore/attributes';
-import { getColorName } from '@/lib/utils/translations';
 import { getAllPosts } from '@/lib/firestore/blog_db';
 import { BlogPost } from '@/lib/firestore/blog';
 import { addNewsletterSubscription } from '@/lib/firestore/newsletter_db';
@@ -41,8 +37,6 @@ import {
 } from '@/lib/firestore/homepage_sections';
 import { getHomepageSections } from '@/lib/firestore/homepage_sections_db';
 
-const QuickViewModal = dynamic(() => import('../components/QuickViewModal'), { ssr: false });
-const ProductComparison = dynamic(() => import('../components/ProductComparison'), { ssr: false });
 const CountdownTimer = dynamic(() => import('../components/CountdownTimer'), { ssr: false });
 
 const runWhenIdle = (task: () => void) => {
@@ -76,8 +70,6 @@ export default function Home() {
   const [collections, setCollections] = useState<Collection[]>([]);
   const [activeBundles, setActiveBundles] = useState<ProductBundle[]>([]);
   const [reviewStats, setReviewStats] = useState<Record<string, { averageRating: number; reviewCount: number }>>({});
-  const [quickViewProduct, setQuickViewProduct] = useState<Product | null>(null);
-  const [colors, setColors] = useState<Color[]>([]);
   const [testimonials, setTestimonials] = useState<Review[]>([]);
   const [featuredBlogPosts, setFeaturedBlogPosts] = useState<BlogPost[]>([]);
   const [newsletterEmail, setNewsletterEmail] = useState('');
@@ -85,7 +77,6 @@ export default function Home() {
   const [newsletterSuccess, setNewsletterSuccess] = useState(false);
   const [currentTestimonialIndex, setCurrentTestimonialIndex] = useState(0);
   const [recentlyViewedProducts, setRecentlyViewedProducts] = useState<Product[]>([]);
-  const [comparisonProducts, setComparisonProducts] = useState<Product[]>([]);
   const [goldBasePrice, setGoldBasePrice] = useState(0);
   const [goldPriceFetchedAt, setGoldPriceFetchedAt] = useState('');
   const [homepageSections, setHomepageSections] = useState(defaultHomepageSections);
@@ -110,7 +101,6 @@ export default function Home() {
     [languageCode]
   );
   const { user, demoUser } = useAuth();
-  const { addToCart, setShowCartDialog, setCartDialogMessage } = useCart();
 
   useEffect(() => {
     // Detect mobile device
@@ -138,12 +128,6 @@ export default function Home() {
       if (intervalId) clearInterval(intervalId);
     };
   }, [banners.length]);
-
-  useEffect(() => {
-    getColors().then(setColors).catch(() => {
-      // Failed to fetch colors
-    });
-  }, []);
 
   useEffect(() => {
     const fetchGoldPrice = async () => {
@@ -393,61 +377,6 @@ export default function Home() {
     runWhenIdle(loadRecentlyViewed);
   }, [user, demoUser, settings?.demoMode]);
 
-  // Load comparison products from localStorage
-  useEffect(() => {
-    const loadComparison = () => {
-      try {
-        const stored = localStorage.getItem('productComparison');
-        if (stored) {
-          const productIds: string[] = JSON.parse(stored);
-          // Load products by IDs
-          const loadProducts = async () => {
-            const allProducts = await getAllProducts();
-            const comparison = allProducts.filter(p => productIds.includes(p.id));
-            setComparisonProducts(comparison);
-          };
-          runWhenIdle(loadProducts);
-        }
-      } catch {
-        // Failed to load comparison
-      }
-    };
-    
-    loadComparison();
-  }, []);
-
-  const handleAddToComparison = (product: Product) => {
-    const maxComparison = 4;
-    if (comparisonProducts.length >= maxComparison) {
-      setCartDialogMessage(t('product.comparison_limit') || `Maximum ${maxComparison} products can be compared`);
-      setShowCartDialog(true);
-      return;
-    }
-    
-    if (comparisonProducts.some(p => p.id === product.id)) {
-      setCartDialogMessage(t('product.already_in_comparison') || 'Product already in comparison');
-      setShowCartDialog(true);
-      return;
-    }
-    
-    const updated = [...comparisonProducts, product];
-    setComparisonProducts(updated);
-    localStorage.setItem('productComparison', JSON.stringify(updated.map(p => p.id)));
-    setCartDialogMessage(t('product.added_to_comparison') || 'Added to comparison');
-    setShowCartDialog(true);
-  };
-
-  const handleRemoveFromComparison = (productId: string) => {
-    const updated = comparisonProducts.filter(p => p.id !== productId);
-    setComparisonProducts(updated);
-    localStorage.setItem('productComparison', JSON.stringify(updated.map(p => p.id)));
-  };
-
-  const handleClearComparison = () => {
-    setComparisonProducts([]);
-    localStorage.removeItem('productComparison');
-  };
-
   const handleNewsletterSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!newsletterEmail || newsletterLoading) return;
@@ -514,18 +443,6 @@ export default function Home() {
   const ProductCard = ({ product }: { product: Product }) => {
     const matchedCategory = categories.find(c => c.id === product.category);
     const categoryName = matchedCategory ? getCategoryName(matchedCategory, languageCode) : undefined;
-    const [isInWishlist, setIsInWishlist] = useState(false);
-    const [hoveredColor, setHoveredColor] = useState<string | null>(null);
-    const [mounted, setMounted] = useState(false);
-
-    useEffect(() => {
-      setMounted(true);
-      const stored = localStorage.getItem('wishlist');
-      if (stored) {
-        const wishlistItems = JSON.parse(stored);
-        setIsInWishlist(wishlistItems.some((item: { id: string }) => item.id === product.id));
-      }
-    }, [product.id]);
 
     const getStockStatus = () => {
       if (product.variants && product.variants.length > 0) {
@@ -542,72 +459,14 @@ export default function Home() {
     const pricing = getProductPricingSummary(product, settings?.goldPricing, settings?.goldPricing?.cache);
     const isOnSale = pricing.hasDiscount;
     const isBestSeller = (product.analytics?.purchases || 0) > 50;
-
-    const colorVariants = product.variants?.filter(v => v.name.toLowerCase() === 'color') || [];
-    const displayImage = getSafeImageUrl(
-      hoveredColor && colorVariants.length > 0
-        ? colorVariants.find(v => v.value.toLowerCase() === hoveredColor.toLowerCase())?.imageUrl || product.images?.[0]
-        : product.images?.[0]
-    );
-
-    const handleToggleWishlist = (e: React.MouseEvent) => {
-      e.preventDefault();
-      e.stopPropagation();
-      if (!mounted) return;
-      
-      const stored = localStorage.getItem('wishlist');
-      let wishlistItems: Array<{ id: string; name: string; price: number; image?: string; inStock: boolean; slug?: string }> = stored ? JSON.parse(stored) : [];
-      
-      const productItem = {
-        id: product.id,
-        name: getProductName(product, languageCode),
-        price: pricing.currentPrice,
-        image: product.images?.[0],
-        inStock: stockInfo.status !== 'out_of_stock',
-        slug: product.slug,
-      };
-      
-      if (isInWishlist) {
-        wishlistItems = wishlistItems.filter(item => item.id !== product.id);
-        setIsInWishlist(false);
-      } else {
-        wishlistItems.push(productItem);
-        setIsInWishlist(true);
-      }
-      
-      localStorage.setItem('wishlist', JSON.stringify(wishlistItems));
-    };
-
-    const handleQuickView = (e: React.MouseEvent) => {
-      e.preventDefault();
-      e.stopPropagation();
-      setQuickViewProduct(product);
-    };
-
-    const handleQuickAdd = (e: React.MouseEvent) => {
-      e.preventDefault();
-      e.stopPropagation();
-      if (stockInfo.status === 'out_of_stock') return;
-      addToCart({ ...product, price: pricing.currentPrice, salePrice: undefined }, 1);
-      setCartDialogMessage(t('cart.added_to_cart') || 'Added to cart');
-      setShowCartDialog(true);
-    };
+    const displayImage = getSafeImageUrl(product.images?.[0]);
 
     return (
-      <>
-        <div className="group relative flex flex-col h-full rounded-2xl border-2 border-gray-200 bg-white overflow-hidden transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl hover:border-gray-300 shadow-lg">
+        <div className="group relative flex h-full flex-col overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:border-gray-300">
           <Link 
             href={`/products/${product.slug}`} 
             className="absolute inset-0 z-10"
             aria-label={t('home.view_product', { name: getProductName(product, languageCode) }) || `View product: ${getProductName(product, languageCode)}`}
-            onClick={async () => {
-              try {
-                const { incrementProductClick } = await import('@/lib/firestore/products_db');
-                await incrementProductClick(product.id);
-              } catch {
-                // Failed to track click
-              }
-            }}
           />
           
           {/* Badges */}
@@ -647,6 +506,7 @@ export default function Home() {
                 fill 
                 className="object-cover object-center transition-transform duration-700 group-hover:scale-110"
                 sizes="(max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
+                quality={55}
                 loading="lazy"
               />
             ) : (
@@ -654,90 +514,6 @@ export default function Home() {
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1} stroke="currentColor" className="w-12 h-12">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 001.5-1.5V6a1.5 1.5 0 00-1.5-1.5H3.75A1.5 1.5 0 002.25 6v12a1.5 1.5 0 001.5 1.5zm10.5-11.25h.008v.008h-.008V8.25zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z" />
                 </svg>
-              </div>
-            )}
-
-            {/* Action Buttons - Touch-friendly on mobile */}
-            <div className="absolute bottom-3 right-3 z-20 flex gap-2 opacity-0 group-hover:opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity">
-              <button 
-                onClick={handleQuickView}
-                className="bg-white/95 backdrop-blur-sm p-3 md:p-2.5 rounded-full shadow-md hover:bg-gray-900 hover:text-white active:scale-95 transition-all touch-manipulation min-w-[44px] min-h-[44px] md:min-w-0 md:min-h-0 flex items-center justify-center"
-                title={t('product.quick_view') || 'Quick View'}
-              >
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5 md:w-4 md:h-4">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" />
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                </svg>
-              </button>
-              <button 
-                onClick={handleQuickAdd}
-                disabled={stockInfo.status === 'out_of_stock'}
-                className="bg-white/95 backdrop-blur-sm p-3 md:p-2.5 rounded-full shadow-md hover:bg-gray-900 hover:text-white active:scale-95 transition-all disabled:opacity-50 disabled:cursor-not-allowed touch-manipulation min-w-[44px] min-h-[44px] md:min-w-0 md:min-h-0 flex items-center justify-center"
-                title={t('product.quick_add') || 'Quick Add'}
-              >
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5 md:w-4 md:h-4">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
-                </svg>
-              </button>
-              <button 
-                onClick={(e) => {
-                  e.preventDefault();
-                  e.stopPropagation();
-                  handleAddToComparison(product);
-                }}
-                className="bg-white/95 backdrop-blur-sm p-3 md:p-2.5 rounded-full shadow-md hover:bg-blue-600 hover:text-white active:scale-95 transition-all touch-manipulation min-w-[44px] min-h-[44px] md:min-w-0 md:min-h-0 flex items-center justify-center"
-                title={t('product.add_to_comparison') || 'Add to Comparison'}
-              >
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5 md:w-4 md:h-4">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M3 13.5l6-6m0 0l6 6m-6-6v12" />
-                </svg>
-              </button>
-              {settings?.features?.wishlist && (
-                <button 
-                  onClick={handleToggleWishlist}
-                  className={`backdrop-blur-sm p-3 md:p-2.5 rounded-full shadow-md transition-all active:scale-95 ${
-                    isInWishlist
-                      ? 'bg-red-500 text-white hover:bg-red-600'
-                      : 'bg-white/95 hover:bg-gray-900 hover:text-white'
-                  } touch-manipulation min-w-[44px] min-h-[44px] md:min-w-0 md:min-h-0 flex items-center justify-center`}
-                  title={isInWishlist ? (t('product.remove_from_wishlist') || 'Remove from Wishlist') : (t('product.add_to_wishlist') || 'Add to Wishlist')}
-                >
-                  <svg xmlns="http://www.w3.org/2000/svg" fill={isInWishlist ? 'currentColor' : 'none'} viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5 md:w-4 md:h-4">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z" />
-                  </svg>
-                </button>
-              )}
-            </div>
-
-            {/* Color Swatches */}
-            {colorVariants.length > 0 && (
-              <div className="absolute bottom-3 left-3 z-20 flex gap-1.5 opacity-0 group-hover:opacity-100 transition-opacity">
-                {colorVariants.slice(0, 4).map((variant) => {
-                  const color = colors.find(c => c.name.toLowerCase() === variant.value.toLowerCase());
-                  return (
-                    <button
-                      key={variant.id}
-                      onMouseEnter={() => setHoveredColor(variant.value)}
-                      onMouseLeave={() => setHoveredColor(null)}
-                      className={`w-6 h-6 rounded-full border-2 transition-all ${
-                        hoveredColor === variant.value
-                          ? 'border-gray-900 scale-110'
-                          : 'border-white shadow-md'
-                      }`}
-                      style={{ backgroundColor: color?.hexCode || '#ccc' }}
-                      title={color ? getColorName(color, languageCode) : variant.value}
-                      onClick={(e) => {
-                        e.preventDefault();
-                        e.stopPropagation();
-                      }}
-                    />
-                  );
-                })}
-                {colorVariants.length > 4 && (
-                  <span className="w-6 h-6 rounded-full border-2 border-white bg-gray-200 flex items-center justify-center text-[8px] font-bold text-gray-600 shadow-md">
-                    +{colorVariants.length - 4}
-                  </span>
-                )}
               </div>
             )}
           </div>
@@ -792,7 +568,6 @@ export default function Home() {
             </div>
           </div>
         </div>
-      </>
     );
   };
 
@@ -1856,24 +1631,6 @@ export default function Home() {
           </div>
           </div>
         </section>
-      )}
-
-      {/* Quick View Modal */}
-      {quickViewProduct && (
-        <QuickViewModal
-          product={quickViewProduct}
-          isOpen={!!quickViewProduct}
-          onClose={() => setQuickViewProduct(null)}
-        />
-      )}
-
-      {/* Product Comparison Bar */}
-      {comparisonProducts.length > 0 && (
-        <ProductComparison
-          products={comparisonProducts}
-          onRemove={handleRemoveFromComparison}
-          onClear={handleClearComparison}
-        />
       )}
 
       {/* 13. Recently Viewed Products Section - Container */}

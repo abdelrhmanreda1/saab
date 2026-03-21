@@ -15,7 +15,7 @@ type RateItem = {
 };
 
 const TopBar = () => {
-  const { settings } = useSettings();
+  const { settings, loading } = useSettings();
   const { currentLanguage, t } = useLanguage();
   const topBar = settings?.theme?.topBar;
   const langCode = String(currentLanguage?.code || '').trim().toLowerCase();
@@ -61,6 +61,17 @@ const TopBar = () => {
   }, [basePrice, isArabic, t]);
 
   const shouldRender = Boolean((topBar?.enabled && topBar?.text) || rates.length > 0);
+
+  if (loading) {
+    return (
+      <div className="border-b border-[#8f6b28] bg-[#050505]">
+        <div className="page-container">
+          <div className="hidden min-h-[84px] md:block" />
+          <div className="min-h-[56px] md:hidden" />
+        </div>
+      </div>
+    );
+  }
 
   if (!shouldRender) {
     return null;
