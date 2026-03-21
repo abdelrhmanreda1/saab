@@ -540,6 +540,9 @@ const ProductForm: React.FC<ProductFormProps> = ({ productId, onSuccess, onCance
 
   // Handle language change
   const handleLanguageChange = (languageCode: string) => {
+    const normalizedSelected = String(selectedLanguageCode || '').trim().toLowerCase();
+    const normalizedTarget = String(languageCode || '').trim().toLowerCase();
+
     if (selectedLanguageCode === 'en') {
       baseEnglishRef.current = {
         name: product.name || '',
@@ -556,14 +559,23 @@ const ProductForm: React.FC<ProductFormProps> = ({ productId, onSuccess, onCance
 
     setSelectedLanguageCode(languageCode);
     
-    if (String(languageCode || '').trim().toLowerCase() === 'en') {
+    if (normalizedTarget === 'en') {
       setProduct(prev => ({
         ...prev,
         name: baseEnglishRef.current.name || '',
         description: baseEnglishRef.current.description || ''
       }));
     } else {
-      const translation = translations.find(t => t.languageCode === languageCode);
+      const latestTranslations =
+        normalizedSelected !== 'en'
+          ? upsertTranslation(translations, selectedLanguageCode, {
+              name: product.name || '',
+              description: product.description || '',
+            })
+          : translations;
+      const translation = latestTranslations.find(
+        (t) => String(t.languageCode || '').trim().toLowerCase() === normalizedTarget
+      );
       if (translation) {
         setProduct(prev => ({
           ...prev,

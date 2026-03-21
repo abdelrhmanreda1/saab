@@ -97,7 +97,6 @@ const ProductClient: React.FC<ProductClientProps> = ({
     contextSettings?.goldPricing?.enabled || contextSettings?.goldPricing?.cache?.pricePerGram
       ? contextSettings.goldPricing
       : initialSettings?.goldPricing;
-  const priceCurrency = activeGoldPricing?.cache?.currency || 'SAR';
   
   // Ensure component is mounted before using context
   useEffect(() => {
@@ -868,11 +867,11 @@ const ProductClient: React.FC<ProductClientProps> = ({
                 <div className="flex items-center gap-3 mb-2">
                   {hasDiscount ? (
                     <>
-                      <span className="text-2xl font-bold text-black">{formatPrice(displayPrice)} <span className="text-base font-medium text-gray-500">{priceCurrency}</span></span>
-                      <span className="text-lg text-gray-500 line-through">{formatPrice(originalPrice)} <span className="text-sm">{priceCurrency}</span></span>
+                      <span className="text-2xl font-bold text-black">{formatPrice(displayPrice)}</span>
+                      <span className="text-lg text-gray-500 line-through">{formatPrice(originalPrice)}</span>
                     </>
                   ) : (
-                    <span className="text-2xl font-bold text-black">{formatPrice(displayPrice)} <span className="text-base font-medium text-gray-500">{priceCurrency}</span></span>
+                    <span className="text-2xl font-bold text-black">{formatPrice(displayPrice)}</span>
                   )}
                 </div>
                 
@@ -1247,7 +1246,7 @@ const ProductClient: React.FC<ProductClientProps> = ({
 
           {/* Tab Content */}
           <div className="p-6 md:p-10">
-            {activeTab === 'description' && product.description && (
+            {activeTab === 'description' && Boolean(getProductDescription(product as Product, languageCode)) && (
               <div 
                 className="quill-content prose prose-lg max-w-none prose-headings:font-heading prose-headings:font-bold prose-headings:text-gray-900 prose-p:text-gray-600 prose-p:leading-relaxed"
                 dangerouslySetInnerHTML={{ __html: getProductDescription(product as Product, languageCode) }}
