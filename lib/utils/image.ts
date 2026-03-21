@@ -7,7 +7,29 @@ const normalizeImageUrl = (url?: string | null): string => {
 };
 
 export const getDirectImageUrl = (url?: string | null): string => {
-  return normalizeImageUrl(url);
+  const normalizedUrl = normalizeImageUrl(url);
+  if (!normalizedUrl) {
+    return '';
+  }
+
+  if (
+    normalizedUrl.startsWith('/') ||
+    normalizedUrl.startsWith('data:') ||
+    normalizedUrl.startsWith('blob:')
+  ) {
+    return normalizedUrl;
+  }
+
+  try {
+    const parsedUrl = new URL(normalizedUrl);
+    if (parsedUrl.protocol === 'http:' || parsedUrl.protocol === 'https:') {
+      return normalizedUrl;
+    }
+  } catch {
+    return '';
+  }
+
+  return '';
 };
 
 export const getProxyImageUrl = (url?: string | null): string => {
@@ -30,10 +52,10 @@ export const getProxyImageUrl = (url?: string | null): string => {
       return `/api/image-proxy?url=${encodeURIComponent(normalizedUrl)}`;
     }
   } catch {
-    return normalizedUrl;
+    return '';
   }
 
-  return normalizedUrl;
+  return '';
 };
 
 export const getSafeImageUrl = (url?: string | null): string => getDirectImageUrl(url);

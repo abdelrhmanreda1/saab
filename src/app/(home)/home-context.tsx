@@ -299,6 +299,19 @@ export function HomeProviders({
   );
 
   useEffect(() => {
+    const saved = (localStorage.getItem('preferredLanguage') || '').trim().toLowerCase();
+    if (!saved) return;
+
+    const savedLanguage =
+      HOME_LANGUAGES.find((language) => language.code.toLowerCase() === saved) || null;
+
+    if (savedLanguage) {
+      setCurrentLanguageState(savedLanguage);
+      setTranslations(getTranslationsFor(savedLanguage.code));
+    }
+  }, []);
+
+  useEffect(() => {
     document.documentElement.lang = currentLanguage?.code || 'ar';
     document.documentElement.dir = currentLanguage?.isRTL ? 'rtl' : 'ltr';
     localStorage.setItem('preferredLanguage', currentLanguage?.code || 'ar');
@@ -331,7 +344,7 @@ export function HomeProviders({
     () => ({
       code: 'SAR',
       name: 'Saudi Riyal',
-      symbol: currentLanguage?.code === 'ar' ? 'ر.س' : 'SAR',
+      symbol: currentLanguage?.code === 'ar' ? '\u0631.\u0633' : 'SAR',
       symbolPosition: 'right',
       decimalPlaces: Number(initialCurrency?.decimalPlaces ?? settings?.site?.digitsAfterDecimal ?? 0),
       isActive: true,

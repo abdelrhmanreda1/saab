@@ -436,30 +436,53 @@ export default function HomeDeferredSectionsClient({
             <div className="grid grid-cols-2 gap-4 md:grid-cols-4 md:gap-8">
               {categories
                 .slice(0, getHomepageSectionLimit(homepageSections, 'categories', 8))
-                .map((category) => (
-                  <Link
-                    key={category.id}
-                    href={`/categories/${category.slug || category.id}`}
-                    className="group overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm transition-all hover:border-gray-300 hover:shadow-lg"
-                  >
-                    <div className="relative aspect-square bg-gray-100">
-                      <Image
-                        src={getSafeImageUrl(category.imageUrl)}
-                        alt={getCategoryName(category as never, languageCode)}
-                        fill
-                        sizes="(max-width: 768px) 50vw, 25vw"
-                        quality={42}
-                        loading="lazy"
-                        className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
-                      />
-                    </div>
-                    <div className="p-4">
-                      <h3 className="text-center text-base font-semibold text-gray-900 md:text-xl">
-                        {getCategoryName(category as never, languageCode)}
-                      </h3>
-                    </div>
-                  </Link>
-                ))}
+                .map((category) => {
+                  const categoryImage = getSafeImageUrl(category.imageUrl);
+
+                  return (
+                    <Link
+                      key={category.id}
+                      href={`/categories/${category.slug || category.id}`}
+                      className="group overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm transition-all hover:border-gray-300 hover:shadow-lg"
+                    >
+                      <div className="relative aspect-square bg-gray-100">
+                        {categoryImage ? (
+                          <Image
+                            src={categoryImage}
+                            alt={getCategoryName(category as never, languageCode)}
+                            fill
+                            sizes="(max-width: 768px) 50vw, 25vw"
+                            quality={42}
+                            loading="lazy"
+                            className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                          />
+                        ) : (
+                          <div className="flex h-full items-center justify-center text-gray-300">
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              fill="none"
+                              viewBox="0 0 24 24"
+                              strokeWidth={1}
+                              stroke="currentColor"
+                              className="h-12 w-12"
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 001.5-1.5V6a1.5 1.5 0 00-1.5-1.5H3.75A1.5 1.5 0 002.25 6v12a1.5 1.5 0 001.5 1.5zm10.5-11.25h.008v.008h-.008V8.25zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z"
+                              />
+                            </svg>
+                          </div>
+                        )}
+                      </div>
+                      <div className="p-4">
+                        <h3 className="text-center text-base font-semibold text-gray-900 md:text-xl">
+                          {getCategoryName(category as never, languageCode)}
+                        </h3>
+                      </div>
+                    </Link>
+                  );
+                })}
             </div>
           </div>
         </section>
