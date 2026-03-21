@@ -2,9 +2,9 @@
 
 import React, { createContext, useState, useContext, useEffect, ReactNode, useCallback, useMemo } from 'react';
 import { Product, ProductVariant } from '@/lib/firestore/products';
-import { getAllFlashSales } from '@/lib/firestore/campaigns_db';
 import { FlashSale } from '@/lib/firestore/campaigns';
 import { useLanguage } from './LanguageContext';
+import { scheduleNonCriticalTask } from '@/lib/utils/schedule';
 
 export interface CartItem {
   productId: string;
@@ -105,9 +105,15 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
 
   // Load active flash sales for pricing
   useEffect(() => {
+    let cancelled = false;
+
     const loadFlashSales = async () => {
       try {
+        const { getAllFlashSales } = await import('@/lib/firestore/campaigns_db');
         const sales = await getAllFlashSales(true);
+        if (cancelled) {
+          return;
+        }
         const now = new Date();
 
         const validSales = sales.filter((sale) => {
@@ -124,7 +130,14 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
       }
     };
 
-    loadFlashSales();
+    const scheduledTask = scheduleNonCriticalTask(() => {
+      void loadFlashSales();
+    }, 250);
+
+    return () => {
+      cancelled = true;
+      scheduledTask.cancel();
+    };
   }, []);
 
   // Save cart to localStorage whenever it changes (only after mount)

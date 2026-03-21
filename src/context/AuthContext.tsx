@@ -1,10 +1,10 @@
 'use client';
 
 import React, { createContext, useContext, useEffect, useMemo, useState, ReactNode } from 'react';
-import { onAuthStateChanged, User as FirebaseUser } from 'firebase/auth';
-import { doc, getDoc, getFirestore } from 'firebase/firestore';
-import { auth, app } from '@/lib/firebase';
 import { useSettings } from './SettingsContext';
+import { scheduleNonCriticalTask } from '@/lib/utils/schedule';
+
+type FirebaseUser = import('firebase/auth').User;
 
 interface AuthContextType {
   user: FirebaseUser | null;
@@ -21,7 +21,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [loading, setLoading] = useState(true);
   const [isAdmin, setIsAdmin] = useState(false);
   const [demoUser, setDemoUser] = useState<{ uid: string; phoneNumber?: string; displayName?: string } | null>(null);
-  const db = getFirestore(app);
   const demoMode = settings?.demoMode || false;
 
   // Sync demo user from localStorage when demo mode changes
@@ -100,68 +99,109 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   // Handle Firebase Auth state changes
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
-      if (firebaseUser) {
-        setUser(firebaseUser);
+    let unsubscribe: () => void = () => undefined;
+    let cancelled = false;
+
+    const authTask = scheduleNonCriticalTask(() => {
+      void (async () => {
         try {
-          const userDocRef = doc(db, 'users', firebaseUser.uid);
-          const userDoc = await getDoc(userDocRef);
-          if (userDoc.exists()) {
-            setIsAdmin(userDoc.data().isAdmin || false);
-          } else {
+          const [{ onAuthStateChanged }, firebaseModule] = await Promise.all([
+            import('firebase/auth'),
+            import('@/lib/firebase'),
+          ]);
+
+          if (cancelled) {
+            return;
+          }
+
+          unsubscribe = onAuthStateChanged(firebaseModule.auth, (firebaseUser) => {
+            if (cancelled) {
+              return;
+            }
+
+            if (firebaseUser) {
+              setUser(firebaseUser);
+              setLoading(false);
+              setIsAdmin(false);
+
+              scheduleNonCriticalTask(() => {
+                void (async () => {
+                  try {
+                    const [{ doc, getDoc, getFirestore }, { app }] = await Promise.all([
+                      import('firebase/firestore'),
+                      import('@/lib/firebase'),
+                    ]);
+
+                    if (cancelled) {
+                      return;
+                    }
+
+                    const userDocRef = doc(getFirestore(app), 'users', firebaseUser.uid);
+                    const userDoc = await getDoc(userDocRef);
+
+                    if (!cancelled) {
+                      setIsAdmin(userDoc.exists() ? Boolean(userDoc.data().isAdmin) : false);
+                    }
+                  } catch {
+                    if (!cancelled) {
+                      setIsAdmin(false);
+                    }
+                  }
+                })();
+              }, 250);
+
+              setDemoUser((prevDemoUser) => {
+                if (prevDemoUser) {
+                  if (typeof window !== 'undefined') {
+                    localStorage.removeItem('pardah_demo_user');
+                  }
+                  return null;
+                }
+                return prevDemoUser;
+              });
+              return;
+            }
+
+            setUser(null);
+            setIsAdmin(false);
+
+            if (demoMode && typeof window !== 'undefined') {
+              const storedDemoUser = localStorage.getItem('pardah_demo_user');
+              if (storedDemoUser) {
+                try {
+                  const demoUserData = JSON.parse(storedDemoUser);
+                  setDemoUser((prevDemoUser) => {
+                    if (prevDemoUser?.uid === demoUserData.uid) {
+                      return prevDemoUser;
+                    }
+                    return demoUserData;
+                  });
+                } catch {
+                  // ignore parse error
+                }
+              } else {
+                setDemoUser((prevDemoUser) => (prevDemoUser ? null : prevDemoUser));
+              }
+            }
+
+            setLoading(false);
+          });
+        } catch {
+          if (!cancelled) {
+            setLoading(false);
+            setUser(null);
             setIsAdmin(false);
           }
-        } catch {
-          setIsAdmin(false);
         }
-        // Clear demo user if Firebase user exists
-        setDemoUser((prevDemoUser) => {
-          if (prevDemoUser) {
-            if (typeof window !== 'undefined') {
-              localStorage.removeItem('pardah_demo_user');
-            }
-            return null;
-          }
-          return prevDemoUser;
-        });
-        setLoading(false);
-      } else {
-        setUser(null);
-        setIsAdmin(false);
-        // If no Firebase user but demo mode is enabled and demo user exists, keep it
-        // Check if demo user exists in localStorage (it should already be loaded)
-        // Use functional update to avoid dependency on demoUser state
-        if (demoMode && typeof window !== 'undefined') {
-          const storedDemoUser = localStorage.getItem('pardah_demo_user');
-          if (storedDemoUser) {
-            try {
-              const demoUserData = JSON.parse(storedDemoUser);
-              // Only update if different to avoid infinite loop
-              setDemoUser((prevDemoUser) => {
-                if (prevDemoUser?.uid === demoUserData.uid) {
-                  return prevDemoUser; // No change needed
-                }
-                return demoUserData;
-              });
-            } catch {
-              // ignore parse error
-            }
-          } else {
-            // Clear demo user if it exists in state but not in localStorage
-            setDemoUser((prevDemoUser) => {
-              if (prevDemoUser) {
-                return null;
-              }
-              return prevDemoUser;
-            });
-          }
-        }
-        setLoading(false);
-      }
-    });
+      })();
+    }, 50);
 
-    return () => unsubscribe();
-  }, [db, demoMode]);
+    return () => {
+      cancelled = true;
+      authTask.cancel();
+      unsubscribe();
+    };
+  }, [demoMode]);
 
   const value = useMemo(
     () => ({ user, loading, isAdmin, demoUser }),

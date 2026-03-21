@@ -2,10 +2,9 @@
 
 import React, { createContext, useContext, useState, useEffect, ReactNode, useRef, useMemo, useCallback } from 'react';
 import { Language } from '@/lib/firestore/internationalization';
-import { getAllLanguages } from '@/lib/firestore/internationalization_db';
-import { getTranslationsByLanguage } from '@/lib/firestore/translations_db';
 import { DEFAULT_TRANSLATION_KEYS } from '@/lib/firestore/translations';
 import arabicPack from '@/data/translations/ar.json';
+import { scheduleNonCriticalTask } from '@/lib/utils/schedule';
 
 interface LanguageContextType {
   currentLanguage: Language | null;
@@ -35,6 +34,27 @@ export const LanguageProvider: React.FC<LanguageProviderProps> = ({
   children, 
   defaultLanguageCode = 'en' 
 }) => {
+  const createFallbackLanguage = (code: string): Language => ({
+    code,
+    name: code === 'ar' ? 'Arabic' : 'English',
+    nativeName: code === 'ar' ? 'العربية' : 'English',
+    isRTL: code === 'ar',
+    isActive: true,
+    createdAt: null as unknown as Language['createdAt'],
+    updatedAt: null as unknown as Language['updatedAt'],
+  });
+
+  const getInitialLanguage = (): Language => {
+    let langCode = defaultLanguageCode;
+    if (typeof window !== 'undefined') {
+      const saved = (localStorage.getItem('preferredLanguage') || '').trim().toLowerCase();
+      if (saved) {
+        langCode = saved;
+      }
+    }
+    return createFallbackLanguage(langCode);
+  };
+
   // Read saved preference synchronously to avoid flash of wrong language
   const getInitialTranslations = (): Record<string, string> => {
     let langCode = defaultLanguageCode;
@@ -55,10 +75,10 @@ export const LanguageProvider: React.FC<LanguageProviderProps> = ({
     return DEFAULT_TRANSLATION_KEYS;
   };
 
-  const [currentLanguage, setCurrentLanguage] = useState<Language | null>(null);
+  const [currentLanguage, setCurrentLanguage] = useState<Language | null>(getInitialLanguage);
   const [languages, setLanguages] = useState<Language[]>([]);
   const [translations, setTranslations] = useState<Record<string, string>>(getInitialTranslations);
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
 
   // Load translations when language changes
   const normalizeCode = (code?: string | null) => String(code || '').trim().toLowerCase();
@@ -130,6 +150,7 @@ export const LanguageProvider: React.FC<LanguageProviderProps> = ({
       const promise =
         existingInFlight ||
         (async () => {
+          const { getTranslationsByLanguage } = await import('@/lib/firestore/translations_db');
           const remote = await getTranslationsByLanguage(languageCode);
           if (languageCode === 'ar') {
             // For Arabic, always prefer the bundled `ar.json` pack over remote values to avoid
@@ -172,9 +193,16 @@ export const LanguageProvider: React.FC<LanguageProviderProps> = ({
 
   // Load languages on mount
   useEffect(() => {
+    let cancelled = false;
+
     const loadLanguages = async () => {
       try {
+        const { getAllLanguages } = await import('@/lib/firestore/internationalization_db');
         const allLanguages = await getAllLanguages(true); // Only active languages
+        if (cancelled) {
+          return;
+        }
+
         setLanguages(allLanguages);
         const normalizedDefault = normalizeCode(defaultLanguageCode);
         
@@ -203,11 +231,20 @@ export const LanguageProvider: React.FC<LanguageProviderProps> = ({
         }
       } catch {
         // Failed to load languages
-        setIsLoading(false);
+        if (!cancelled) {
+          setIsLoading(false);
+        }
       }
     };
-    
-    loadLanguages();
+
+    const scheduledTask = scheduleNonCriticalTask(() => {
+      void loadLanguages();
+    }, 150);
+
+    return () => {
+      cancelled = true;
+      scheduledTask.cancel();
+    };
   }, [defaultLanguageCode]);
 
   const value = useMemo(

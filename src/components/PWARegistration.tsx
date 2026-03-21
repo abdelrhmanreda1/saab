@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
+import { scheduleNonCriticalTask } from "@/lib/utils/schedule";
 
 export default function PWARegistration() {
   useEffect(() => {
@@ -22,7 +23,29 @@ export default function PWARegistration() {
       }
     };
 
-    disableServiceWorker();
+    const runCleanup = () => {
+      const scheduledTask = scheduleNonCriticalTask(() => {
+        void disableServiceWorker();
+      }, 2000);
+
+      return () => scheduledTask.cancel();
+    };
+
+    if (document.readyState === "complete") {
+      return runCleanup();
+    }
+
+    let cleanup: () => void = () => undefined;
+    const onLoad = () => {
+      cleanup = runCleanup();
+    };
+
+    window.addEventListener("load", onLoad, { once: true });
+
+    return () => {
+      window.removeEventListener("load", onLoad);
+      cleanup();
+    };
   }, []);
 
   return null;

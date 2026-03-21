@@ -12,9 +12,6 @@ import LanguageSwitcher from './LanguageSwitcher';
 import TopBar from './TopBar';
 import { getSafeImageUrl } from '@/lib/utils/image';
 
-import { getAuth, signOut } from 'firebase/auth';
-import { app } from '@/lib/firebase';
-
 const Header = () => {
   const { cart } = useCart();
   const { user, demoUser } = useAuth();
@@ -28,7 +25,6 @@ const Header = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
   const router = useRouter();
-  const auth = getAuth(app);
   const navLinks = [
     { name: t('nav.home'), key: 'home', path: '/', show: true },
     { name: t('nav.shop'), key: 'shop', path: '/shop', show: true },
@@ -68,7 +64,11 @@ const Header = () => {
   const handleLogout = async () => {
     try {
       if (user) {
-        await signOut(auth);
+        const [{ getAuth, signOut }, { app }] = await Promise.all([
+          import('firebase/auth'),
+          import('@/lib/firebase'),
+        ]);
+        await signOut(getAuth(app));
       }
       // Clear demo user if exists
       if (settings?.demoMode && demoUser) {

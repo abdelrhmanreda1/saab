@@ -1,8 +1,8 @@
 'use client';
 
 import React, { createContext, useContext, ReactNode, useState, useEffect, useMemo } from 'react';
-import { getDefaultCurrency } from '@/lib/firestore/internationalization_db';
 import { Currency } from '@/lib/firestore/internationalization';
+import { scheduleNonCriticalTask } from '@/lib/utils/schedule';
 
 const PRICE_FORMAT_LOCALE = 'en-US';
 
@@ -31,22 +31,39 @@ export const CurrencyProvider: React.FC<CurrencyProviderProps> = ({
   children
 }) => {
   const [defaultCurrency, setDefaultCurrency] = useState<Currency | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
+    let cancelled = false;
+
     const loadDefaultCurrency = async () => {
       try {
+        setIsLoading(true);
+        const { getDefaultCurrency } = await import('@/lib/firestore/internationalization_db');
         const currency = await getDefaultCurrency();
-        setDefaultCurrency(currency);
+        if (!cancelled) {
+          setDefaultCurrency(currency);
+        }
       } catch {
         // Failed to load default currency
-        setDefaultCurrency(null);
+        if (!cancelled) {
+          setDefaultCurrency(null);
+        }
       } finally {
-        setIsLoading(false);
+        if (!cancelled) {
+          setIsLoading(false);
+        }
       }
     };
-    
-    loadDefaultCurrency();
+
+    const scheduledTask = scheduleNonCriticalTask(() => {
+      void loadDefaultCurrency();
+    }, 200);
+
+    return () => {
+      cancelled = true;
+      scheduledTask.cancel();
+    };
   }, []);
 
   // Format price using default currency
