@@ -106,6 +106,7 @@ export default function HomeHeroClient({
   );
 
   const currentBanner = visibleBanners[currentBannerIndex];
+  const currentBannerImageUrl = getSafeImageUrl(currentBanner?.imageUrl);
 
   if (!heroConfig.enabled) {
     return null;
@@ -120,35 +121,20 @@ export default function HomeHeroClient({
       <div className="page-container py-3 md:py-5">
         <div className="relative overflow-hidden rounded-[2rem] border border-[#ead8ab] bg-[#f8f3e8] shadow-[0_30px_80px_rgba(115,84,28,0.12)]">
           <div className="relative min-h-[480px] md:min-h-[680px]">
-            {visibleBanners.length > 0 && currentBanner ? (
-              <>
-                {visibleBanners.map((banner, index) => {
-                  const imageUrl = getSafeImageUrl(banner.imageUrl);
-                  if (!imageUrl) return null;
-
-                  return (
-                    <div
-                      key={banner.id}
-                      className={`absolute inset-0 transition-opacity duration-500 ${
-                        index === currentBannerIndex ? 'z-10 opacity-100' : 'z-0 opacity-0'
-                      }`}
-                    >
-                      <Image
-                        src={imageUrl}
-                        alt={getBannerText(banner, 'title') || companyName || 'Hero banner'}
-                        fill
-                        priority={index === 0}
-                        loading={index === 0 ? 'eager' : 'lazy'}
-                        fetchPriority={index === 0 ? 'high' : undefined}
-                        unoptimized
-                        sizes="(max-width: 768px) 100vw, 50vw"
-                        quality={index === 0 ? 36 : 32}
-                        className="object-cover"
-                      />
-                    </div>
-                  );
-                })}
-              </>
+            {currentBanner && currentBannerImageUrl ? (
+              <div key={currentBanner.id} className="absolute inset-0 z-10 transition-opacity duration-500 opacity-100">
+                <Image
+                  src={currentBannerImageUrl}
+                  alt={getBannerText(currentBanner, 'title') || companyName || 'Hero banner'}
+                  fill
+                  priority
+                  loading="eager"
+                  fetchPriority="high"
+                  sizes="100vw"
+                  quality={60}
+                  className="object-cover"
+                />
+              </div>
             ) : null}
 
             <div className="absolute inset-0 z-20 bg-[linear-gradient(90deg,rgba(24,18,9,0.42)_0%,rgba(24,18,9,0.28)_36%,rgba(24,18,9,0.72)_100%)]" />

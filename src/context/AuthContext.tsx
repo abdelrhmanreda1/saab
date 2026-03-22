@@ -194,7 +194,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
           }
         }
       })();
-    }, 50);
+    }, 1200);
 
     return () => {
       cancelled = true;

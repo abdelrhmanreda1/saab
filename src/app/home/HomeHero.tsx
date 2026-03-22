@@ -1,7 +1,9 @@
+import { preload } from 'react-dom';
 import { getAllBanners } from '@/lib/firestore/banners_db';
 import { defaultHomepageSections } from '@/lib/firestore/homepage_sections';
 import { getHomepageSections } from '@/lib/firestore/homepage_sections_db';
 import { getCachedSettings } from '@/lib/server/site-config';
+import { getSafeImageUrl } from '@/lib/utils/image';
 import HomeHeroClient from './HomeHeroClient';
 
 type HeroBanner = {
@@ -49,6 +51,11 @@ export default async function HomeHero() {
       isActive: banner.isActive,
       order: banner.order || 0,
     }));
+
+  const heroImageUrl = getSafeImageUrl(normalizedBanners[0]?.imageUrl);
+  if (heroImageUrl) {
+    preload(heroImageUrl, { as: 'image', fetchPriority: 'high' });
+  }
 
   return (
     <HomeHeroClient

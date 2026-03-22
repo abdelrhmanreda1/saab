@@ -1,6 +1,5 @@
 'use client';
 
-import dynamic from 'next/dynamic';
 import { CartProvider } from '../context/CartContext';
 import { AuthProvider } from '../context/AuthContext';
 import { SettingsProvider } from '../context/SettingsContext';
@@ -9,8 +8,6 @@ import { CurrencyProvider } from '../context/CurrencyContext';
 import { ThemeProvider } from '../components/ThemeProvider';
 import { ToastProvider } from '../components/Toast';
 import type { Settings } from '@/lib/firestore/settings';
-
-const PWARegistration = dynamic(() => import('../components/PWARegistration'), { ssr: false });
 
 export default function Providers({
   children,
@@ -27,7 +24,6 @@ export default function Providers({
             <CartProvider>
               <ThemeProvider>
                 <ToastProvider>
-                  <PWARegistration />
                   {children}
                 </ToastProvider>
               </ThemeProvider>

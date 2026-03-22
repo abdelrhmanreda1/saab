@@ -8,6 +8,9 @@ const nextConfig: NextConfig = {
   turbopack: {},
   images: {
     // Use Next.js image optimizer for faster perceived loads (resized/cached).
+    formats: ["image/avif", "image/webp"],
+    deviceSizes: [360, 414, 640, 768, 1024, 1280, 1536],
+    imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
     remotePatterns: [
       {
         protocol: "https",
@@ -30,26 +33,41 @@ const nextConfig: NextConfig = {
         hostname: "images.unsplash.com",
       },
     ],
-    qualities: [75, 85],
+    qualities: [60, 75, 85],
   },
   compress: true,
   async headers() {
     return [
       {
-        source: "/:path*",
+        source: "/_next/static/:path*",
         headers: [
           {
             key: "Cache-Control",
-            value: "no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0",
+            value: "public, max-age=31536000, immutable",
           },
+        ],
+      },
+      {
+        source: "/_next/image",
+        headers: [
           {
-            key: "Pragma",
-            value: "no-cache",
+            key: "Cache-Control",
+            value: "public, max-age=31536000, immutable",
           },
+        ],
+      },
+      {
+        source: "/:all*(svg|jpg|jpeg|png|webp|avif|gif|ico|woff|woff2|ttf)",
+        headers: [
           {
-            key: "Expires",
-            value: "0",
+            key: "Cache-Control",
+            value: "public, max-age=31536000, immutable",
           },
+        ],
+      },
+      {
+        source: "/:path*",
+        headers: [
           {
             key: "X-DNS-Prefetch-Control",
             value: "on",
