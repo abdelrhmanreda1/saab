@@ -82,8 +82,9 @@ const ProductClient: React.FC<ProductClientProps> = ({
   const { t, currentLanguage } = useLanguage();
   const { formatPrice } = useCurrency();
   const { showError, showSuccess } = useToast();
-  const languageCode = currentLanguage?.code || 'en';
-  const isArabic = String(languageCode || '').trim().toLowerCase() === 'ar';
+  const normalizeCode = (value?: string | null) => String(value || '').trim().toLowerCase();
+  const languageCode = normalizeCode(currentLanguage?.code) || 'ar';
+  const isArabic = languageCode === 'ar';
   const tt = (key: string, fallback: string) => {
     const value = t(key);
     return value && value !== key ? value : fallback;

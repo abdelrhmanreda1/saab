@@ -20,7 +20,32 @@ const ReviewForm: React.FC<ReviewFormProps> = ({ productId, onReviewSubmitted })
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
-  const isArabic = String(currentLanguage?.code || '').trim().toLowerCase() === 'ar';
+  const normalizeCode = (value?: string | null) => String(value || '').trim().toLowerCase();
+  const getEffectiveLanguageCode = () => {
+    if (normalizeCode(currentLanguage?.code)) {
+      return normalizeCode(currentLanguage?.code);
+    }
+    if (currentLanguage?.isRTL) {
+      return 'ar';
+    }
+    if (typeof document !== 'undefined') {
+      const htmlLang = normalizeCode(document.documentElement.lang);
+      if (htmlLang) {
+        return htmlLang;
+      }
+      if (document.documentElement.dir === 'rtl') {
+        return 'ar';
+      }
+    }
+    if (typeof window !== 'undefined') {
+      const stored = normalizeCode(localStorage.getItem('preferredLanguage'));
+      if (stored) {
+        return stored;
+      }
+    }
+    return 'ar';
+  };
+  const isArabic = getEffectiveLanguageCode() === 'ar';
   const looksLikeTranslationKey = (value: string) =>
     /^([a-z0-9_-]+\.)+[a-z0-9_-]+$/i.test(value.trim());
   const tt = (key: string, fallback: string) => {
