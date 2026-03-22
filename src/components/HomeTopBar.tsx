@@ -54,6 +54,28 @@ const HomeTopBar = () => {
       </svg>
     );
 
+  const renderMobileItem = (item: RateItem, index: number) => {
+    const rowDirection = isArabic ? 'flex-row-reverse' : 'flex-row';
+    const valueAlignment = isArabic ? 'justify-end text-right' : 'justify-start text-left';
+    const labelAlignment = isArabic ? 'text-left' : 'text-right';
+
+    return (
+      <div
+        key={item.key}
+        className={`flex min-h-[56px] items-center px-4 py-3 ${index > 0 ? 'border-t border-[#2a2a2a]' : ''}`}
+      >
+        <div className={`flex w-full items-center justify-between gap-3 ${rowDirection}`}>
+          <span className={`shrink-0 text-sm font-semibold text-white ${labelAlignment}`}>{item.label}</span>
+          <div className={`flex items-center gap-1.5 tabular-nums whitespace-nowrap text-[#f0c24f] ${valueAlignment}`}>
+            {renderArrow(item.trend)}
+            <span className="text-[11px] font-semibold">{item.currencyLabel}</span>
+            <span className="text-[10px] font-semibold tracking-[0.06em]">{formatValue(item.value)}</span>
+          </div>
+        </div>
+      </div>
+    );
+  };
+
   const primaryMobileRate = rates[0];
   const secondaryMobileRates = rates.slice(1);
   const promoText = t('topbar.promo') || topBar?.text;
@@ -86,22 +108,13 @@ const HomeTopBar = () => {
         <div className="md:hidden">
           {primaryMobileRate && (
             <div className="min-h-[56px] bg-black">
-              <div className="flex items-center">
-                <div className="min-w-0 flex-1 px-4 py-3">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-1.5 text-[#f0c24f]">
-                      {renderArrow(primaryMobileRate.trend)}
-                      <span className="text-[11px] font-semibold">{primaryMobileRate.currencyLabel}</span>
-                      <span className="text-[10px] font-semibold tracking-[0.06em]">{formatValue(primaryMobileRate.value)}</span>
-                    </div>
-                    <span className="text-sm font-semibold text-white">{primaryMobileRate.label}</span>
-                  </div>
-                </div>
+              <div className="flex min-h-[56px] items-stretch">
+                <div className="min-w-0 flex-1">{renderMobileItem(primaryMobileRate, 0)}</div>
                 {secondaryMobileRates.length > 0 && (
                   <button
                     type="button"
                     onClick={() => setIsMobileExpanded((prev) => !prev)}
-                    className="flex h-full w-12 shrink-0 items-center justify-center self-stretch border-s border-[#2a2a2a] text-white"
+                    className="flex w-12 shrink-0 items-center justify-center border-s border-[#2a2a2a] text-white"
                     aria-label={isMobileExpanded ? t('topbar.hide_other_prices') || 'Hide other prices' : t('topbar.show_other_prices') || 'Show other prices'}
                     aria-expanded={isMobileExpanded}
                   >
@@ -111,16 +124,7 @@ const HomeTopBar = () => {
                   </button>
                 )}
               </div>
-              {isMobileExpanded && secondaryMobileRates.map((item, index) => (
-                <div key={item.key} className={`flex items-center justify-between px-4 py-3 ${index >= 0 ? 'border-t border-[#2a2a2a]' : ''}`}>
-                  <div className="flex items-center gap-1.5 text-[#f0c24f]">
-                    {renderArrow(item.trend)}
-                    <span className="text-[11px] font-semibold">{item.currencyLabel}</span>
-                    <span className="text-[10px] font-semibold tracking-[0.06em]">{formatValue(item.value)}</span>
-                  </div>
-                  <span className="text-sm font-semibold text-white">{item.label}</span>
-                </div>
-              ))}
+              {isMobileExpanded && secondaryMobileRates.map((item, index) => renderMobileItem(item, index + 1))}
             </div>
           )}
         </div>

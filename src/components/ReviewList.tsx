@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect, useMemo } from 'react';
 import { Review, getReviewsByProductId } from '@/lib/firestore/reviews';
+import { useLanguage } from '../context/LanguageContext';
 
 interface ReviewListProps {
   productId: string;
@@ -9,11 +10,13 @@ interface ReviewListProps {
 }
 
 const ReviewList: React.FC<ReviewListProps> = ({ productId, reviewsRefreshKey }) => {
+  const { currentLanguage, t } = useLanguage();
   const [reviews, setReviews] = useState<Review[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [sortBy, setSortBy] = useState<'newest' | 'oldest' | 'highest' | 'lowest'>('newest');
   const [filterRating, setFilterRating] = useState<number | null>(null);
+  const isArabic = String(currentLanguage?.code || '').trim().toLowerCase() === 'ar';
 
   useEffect(() => {
     const fetchReviews = async () => {
@@ -30,9 +33,9 @@ const ReviewList: React.FC<ReviewListProps> = ({ productId, reviewsRefreshKey })
         // Check if it's a permissions error
         const errorObj = err as { message?: string; code?: string };
         if (errorObj?.message?.includes('permissions') || errorObj?.code === 'permission-denied') {
-          setError("Unable to load reviews due to permissions.");
+          setError(isArabic ? 'تعذر تحميل التقييمات بسبب الصلاحيات.' : 'Unable to load reviews due to permissions.');
         } else {
-        setError("Failed to load reviews.");
+        setError(isArabic ? 'فشل تحميل التقييمات.' : 'Failed to load reviews.');
         }
         // Set empty array on error to prevent UI issues
         setReviews([]);
@@ -94,7 +97,7 @@ const ReviewList: React.FC<ReviewListProps> = ({ productId, reviewsRefreshKey })
   }, [reviews, sortBy, filterRating]);
 
   if (loading) {
-    return <div className="text-center py-8">Loading reviews...</div>;
+    return <div className="text-center py-8">{isArabic ? 'جارٍ تحميل التقييمات...' : 'Loading reviews...'}</div>;
   }
 
   if (error) {
@@ -107,8 +110,8 @@ const ReviewList: React.FC<ReviewListProps> = ({ productId, reviewsRefreshKey })
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-16 h-16 text-gray-300 mx-auto mb-4">
           <path strokeLinecap="round" strokeLinejoin="round" d="M11.48 3.499a.562.562 0 0 1 1.04 0l2.125 5.111a.563.563 0 0 0 .475.345l5.518.442c.499.04.701.663.321.988l-4.204 3.602a.563.563 0 0 0-.182.557l1.285 5.385a.562.562 0 0 1-.84.61l-4.725-2.885a.562.562 0 0 0-.586 0L6.982 20.54a.562.562 0 0 1-.84-.61l1.285-5.386a.562.562 0 0 0-.182-.557l-4.204-3.602a.562.562 0 0 1 .321-.988l5.518-.442a.563.563 0 0 0 .475-.345L11.48 3.5Z" />
         </svg>
-        <p className="text-gray-500 text-lg">No reviews yet.</p>
-        <p className="text-gray-400 text-sm mt-2">Be the first to review this product!</p>
+        <p className="text-gray-500 text-lg">{t('product.no_reviews_yet') || (isArabic ? 'لا توجد تقييمات بعد.' : 'No reviews yet.')}</p>
+        <p className="text-gray-400 text-sm mt-2">{isArabic ? 'كن أول من يقيّم هذا المنتج.' : 'Be the first to review this product!'}</p>
       </div>
     );
   }
@@ -135,7 +138,9 @@ const ReviewList: React.FC<ReviewListProps> = ({ productId, reviewsRefreshKey })
                   </svg>
                 ))}
               </div>
-              <p className="text-sm text-gray-600">{ratingStats.total} {ratingStats.total === 1 ? 'review' : 'reviews'}</p>
+              <p className="text-sm text-gray-600">
+                {ratingStats.total} {ratingStats.total === 1 ? (t('product.review_singular') || (isArabic ? 'تقييم' : 'review')) : (t('product.review_plural') || (isArabic ? 'تقييمات' : 'reviews'))}
+              </p>
             </div>
             
             <div className="flex-1 w-full md:w-auto">
@@ -148,7 +153,9 @@ const ReviewList: React.FC<ReviewListProps> = ({ productId, reviewsRefreshKey })
                       filterRating === star ? 'opacity-100' : 'opacity-70'
                     }`}
                   >
-                    <span className="text-gray-600 w-8">{star} star</span>
+                    <span className="text-gray-600 w-14">
+                      {isArabic ? `${star} نجوم` : `${star} star`}
+                    </span>
                     <div className="flex-1 h-2 bg-gray-200 rounded-full overflow-hidden">
                       <div 
                         className={`h-full rounded-full transition-all ${
@@ -169,16 +176,16 @@ const ReviewList: React.FC<ReviewListProps> = ({ productId, reviewsRefreshKey })
       {/* Sort and Filter Controls */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
         <div className="flex items-center gap-2 flex-wrap">
-          <span className="text-sm text-gray-600">Sort by:</span>
+          <span className="text-sm text-gray-600">{isArabic ? 'ترتيب حسب:' : 'Sort by:'}</span>
           <select
             value={sortBy}
             onChange={(e) => setSortBy(e.target.value as 'newest' | 'oldest' | 'highest' | 'lowest')}
             className="border border-gray-300 rounded-lg px-3 py-1.5 text-sm focus:outline-none focus:border-black"
           >
-            <option value="newest">Newest First</option>
-            <option value="oldest">Oldest First</option>
-            <option value="highest">Highest Rating</option>
-            <option value="lowest">Lowest Rating</option>
+            <option value="newest">{isArabic ? 'الأحدث أولاً' : 'Newest First'}</option>
+            <option value="oldest">{isArabic ? 'الأقدم أولاً' : 'Oldest First'}</option>
+            <option value="highest">{isArabic ? 'الأعلى تقييماً' : 'Highest Rating'}</option>
+            <option value="lowest">{isArabic ? 'الأقل تقييماً' : 'Lowest Rating'}</option>
           </select>
         </div>
         {filterRating && (
@@ -186,7 +193,7 @@ const ReviewList: React.FC<ReviewListProps> = ({ productId, reviewsRefreshKey })
             onClick={() => setFilterRating(null)}
             className="text-sm text-gray-600 hover:text-black flex items-center gap-1"
           >
-            <span>Clear filter</span>
+            <span>{isArabic ? 'مسح الفلتر' : 'Clear filter'}</span>
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4">
               <path strokeLinecap="round" strokeLinejoin="round" d="M6 18 18 6M6 6l12 12" />
             </svg>
@@ -198,7 +205,7 @@ const ReviewList: React.FC<ReviewListProps> = ({ productId, reviewsRefreshKey })
       <div className="space-y-4">
         {sortedAndFilteredReviews.length === 0 ? (
           <div className="text-center py-8 text-gray-500">
-            No reviews found with selected filter.
+            {isArabic ? 'لا توجد تقييمات مطابقة للفلتر المحدد.' : 'No reviews found with selected filter.'}
           </div>
         ) : (
           sortedAndFilteredReviews.map((review) => (
@@ -234,19 +241,19 @@ const ReviewList: React.FC<ReviewListProps> = ({ productId, reviewsRefreshKey })
                   {(() => {
                     const createdAt = review.createdAt as { toDate?: () => Date } | undefined;
                     if (createdAt?.toDate) {
-                      return createdAt.toDate().toLocaleDateString('en-US', { 
+                      return createdAt.toDate().toLocaleDateString(isArabic ? 'ar-SA' : 'en-US', { 
                         year: 'numeric', 
                         month: 'short', 
                         day: 'numeric' 
                       });
                     } else if (createdAt && 'seconds' in createdAt && typeof (createdAt as { seconds: number }).seconds === 'number') {
-                      return new Date((createdAt as { seconds: number }).seconds * 1000).toLocaleDateString('en-US', {
+                      return new Date((createdAt as { seconds: number }).seconds * 1000).toLocaleDateString(isArabic ? 'ar-SA' : 'en-US', {
                         year: 'numeric',
                         month: 'short',
                         day: 'numeric'
                       });
                     }
-                    return 'Recently';
+                    return isArabic ? 'حديثاً' : 'Recently';
                   })()}
                 </span>
               </div>

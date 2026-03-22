@@ -83,6 +83,7 @@ const ProductClient: React.FC<ProductClientProps> = ({
   const { formatPrice } = useCurrency();
   const { showError, showSuccess } = useToast();
   const languageCode = currentLanguage?.code || 'en';
+  const isArabic = String(languageCode || '').trim().toLowerCase() === 'ar';
   const [colors, setColors] = useState<Color[]>([]);
   const [sizes, setSizes] = useState<Size[]>([]);
   const [category, setCategory] = useState<Category | null>(null);
@@ -97,6 +98,12 @@ const ProductClient: React.FC<ProductClientProps> = ({
     contextSettings?.goldPricing?.enabled || contextSettings?.goldPricing?.cache?.pricePerGram
       ? contextSettings.goldPricing
       : initialSettings?.goldPricing;
+  const forwardArrowPath = isArabic
+    ? 'M10.5 4.5 3 12m0 0 7.5 7.5M3 12h18'
+    : 'M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3';
+  const compactArrowPath = isArabic
+    ? 'M17 10a.75.75 0 0 0-.75-.75H5.612l4.158-3.96a.75.75 0 1 0-1.04-1.08l-5.5 5.25a.75.75 0 0 0 0 1.08l5.5 5.25a.75.75 0 1 0 1.04-1.08L5.612 10.75H16.25A.75.75 0 0 0 17 10Z'
+    : 'M3 10a.75.75 0 0 1 .75-.75h10.638L10.23 5.29a.75.75 0 1 1 1.04-1.08l5.5 5.25a.75.75 0 0 1 0 1.08l-5.5 5.25a.75.75 0 1 1-1.04-1.08l4.158-3.96H3.75A.75.75 0 0 1 3 10Z';
   
   // Ensure component is mounted before using context
   useEffect(() => {
@@ -1099,7 +1106,7 @@ const ProductClient: React.FC<ProductClientProps> = ({
                   >
                   {t('products.buy_now') || 'Buy Now'}
                   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-4 h-4">
-                      <path fillRule="evenodd" d="M3 10a.75.75 0 0 1 .75-.75h10.638L10.23 5.29a.75.75 0 1 1 1.04-1.08l5.5 5.25a.75.75 0 0 1 0 1.08l-5.5 5.25a.75.75 0 1 1-1.04-1.08l4.158-3.96H3.75A.75.75 0 0 1 3 10Z" clipRule="evenodd" />
+                      <path fillRule="evenodd" d={compactArrowPath} clipRule="evenodd" />
                     </svg>
                   </button>
               </div>
@@ -1300,7 +1307,7 @@ const ProductClient: React.FC<ProductClientProps> = ({
                 >
                   {t('product.view_full_size_guide') || 'View Full Size Guide'}
                   <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-4 h-4">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+                    <path strokeLinecap="round" strokeLinejoin="round" d={forwardArrowPath} />
                   </svg>
                 </Link>
               </div>
@@ -1335,7 +1342,7 @@ const ProductClient: React.FC<ProductClientProps> = ({
           >
             {t('products.buy_now') || 'Buy Now'}
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-4 h-4">
-              <path fillRule="evenodd" d="M3 10a.75.75 0 0 1 .75-.75h10.638L10.23 5.29a.75.75 0 1 1 1.04-1.08l5.5 5.25a.75.75 0 0 1 0 1.08l-5.5 5.25a.75.75 0 1 1-1.04-1.08l4.158-3.96H3.75A.75.75 0 0 1 3 10Z" clipRule="evenodd" />
+              <path fillRule="evenodd" d={compactArrowPath} clipRule="evenodd" />
             </svg>
           </button>
         </div>
@@ -1387,7 +1394,7 @@ const ProductClient: React.FC<ProductClientProps> = ({
               >
                 {t('product.view_full_size_guide') || 'View Full Size Guide'}
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-4 h-4">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+                  <path strokeLinecap="round" strokeLinejoin="round" d={forwardArrowPath} />
                 </svg>
               </Link>
             </div>
@@ -1458,7 +1465,7 @@ const ProductClient: React.FC<ProductClientProps> = ({
                 >
                   {t('product.view_full_size_guide') || 'View Full Size Guide'}
                   <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-4 h-4">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+                    <path strokeLinecap="round" strokeLinejoin="round" d={forwardArrowPath} />
                   </svg>
                 </Link>
               </div>

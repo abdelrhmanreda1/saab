@@ -26,6 +26,7 @@ const CartPage = () => {
   const { settings } = useSettings();
   const { currentLanguage, t } = useLanguage();
   const languageCode = currentLanguage?.code || 'en';
+  const isArabic = String(languageCode || '').trim().toLowerCase() === 'ar';
   const router = useRouter();
   const [isClient, setIsClient] = useState(false);
   const [promoCode, setPromoCode] = useState('');
@@ -95,6 +96,14 @@ const CartPage = () => {
   const [, setTaxBreakdown] = useState<Array<{ taxRate: { name: string; rate: number; type: string }; amount: number }>>([]);
   const activeGoldPricing = settings?.goldPricing;
   const activeGoldCache = settings?.goldPricing?.cache;
+  const forwardArrowPath = isArabic
+    ? 'M10.5 4.5 3 12m0 0 7.5 7.5M3 12h18'
+    : 'M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3';
+  const backArrowPath = isArabic
+    ? 'M13.5 19.5 21 12m0 0-7.5-7.5M21 12H3'
+    : 'M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18';
+  const effectiveSubtotal = currentTotal > 0 || cart.length === 0 ? currentTotal : getCartTotal();
+  const effectiveGrandTotal = effectiveSubtotal + (giftWrap ? (settings?.giftWrap?.price || 150) : 0) + taxAmount;
 
   useEffect(() => {
     const updateTotals = async () => {
@@ -250,14 +259,16 @@ const CartPage = () => {
         }
       });
       
-      setCurrentTotal(baseTotal);
+      const fallbackStoredTotal = getCartTotal();
+      setCurrentTotal(baseTotal > 0 || cart.length === 0 ? baseTotal : fallbackStoredTotal);
       
       // Only calculate free shipping if there's an active rule
       if (freeShippingRule && freeShippingRule.threshold) {
         const threshold = freeShippingRule.threshold;
-        const remaining = Math.max(0, threshold - baseTotal);
+        const effectiveTotal = baseTotal > 0 || cart.length === 0 ? baseTotal : fallbackStoredTotal;
+        const remaining = Math.max(0, threshold - effectiveTotal);
         setRemainingForFreeShipping(remaining);
-        setProgressPercentage(Math.min(100, (baseTotal / threshold) * 100));
+        setProgressPercentage(Math.min(100, (effectiveTotal / threshold) * 100));
       } else {
         setRemainingForFreeShipping(0);
         setProgressPercentage(0);
@@ -864,8 +875,8 @@ const CartPage = () => {
 
             <div className="mt-10">
                <Link href="/shop" className="inline-flex items-center text-sm font-medium text-gray-500 hover:text-black transition-colors group">
-                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4 mr-2 group-hover:-translate-x-1 transition-transform">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18" />
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className={`w-4 h-4 ${isArabic ? 'ml-2 group-hover:translate-x-1' : 'mr-2 group-hover:-translate-x-1'} transition-transform`}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d={backArrowPath} />
                   </svg>
                   {t('cart.continue_shopping') || 'Continue Shopping'}
                </Link>
@@ -936,7 +947,7 @@ const CartPage = () => {
                 <div className="space-y-4 mb-6 pb-6 border-b border-gray-100 border-dashed">
                     <div className="flex justify-between text-gray-600">
                     <span>{t('cart.subtotal') || 'Subtotal'}</span>
-                    <span className="font-medium text-gray-900">{formatPrice(currentTotal)}</span>
+                    <span className="font-medium text-gray-900">{formatPrice(effectiveSubtotal)}</span>
                     </div>
                     {giftWrap && settings?.giftWrap?.enabled && (
                         <div className="flex justify-between text-gray-600">
@@ -973,7 +984,7 @@ const CartPage = () => {
                     <span className="text-lg font-bold text-gray-900">{t('cart.total') || 'Total'}</span>
                     <div className="text-right">
                         <span className="block text-3xl font-bold text-gray-900">
-                          {formatPrice(currentTotal + (giftWrap ? (settings?.giftWrap?.price || 150) : 0) + taxAmount)}
+                          {formatPrice(effectiveGrandTotal)}
                         </span>
                         <span className="text-xs text-gray-400">{taxAmount > 0 ? (t('cart.including_taxes') || 'Including taxes') : (t('cart.tax_calculated_at_checkout') || 'Tax calculated at checkout')}</span>
                     </div>
@@ -990,8 +1001,8 @@ const CartPage = () => {
                 >
                     <span className="relative z-10 flex items-center gap-2">
                         {t('cart.proceed_to_checkout') || 'Proceed to Checkout'}
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-5 h-5 group-hover:translate-x-1 transition-transform">
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" />
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className={`w-5 h-5 ${isArabic ? 'group-hover:-translate-x-1' : 'group-hover:translate-x-1'} transition-transform`}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d={forwardArrowPath} />
                         </svg>
                     </span>
                     <div className="absolute inset-0 bg-gray-800 transform scale-x-0 group-hover:scale-x-100 transition-transform origin-left duration-500 ease-out"></div>
@@ -1043,7 +1054,7 @@ const CartPage = () => {
           <div className="flex-1">
             <p className="text-xs text-gray-500 mb-0.5">{t('cart.total') || 'Total'}</p>
             <p className="text-lg font-bold text-gray-900">
-              {formatPrice(currentTotal + (giftWrap ? (settings?.giftWrap?.price || 150) : 0) + taxAmount)}
+              {formatPrice(effectiveGrandTotal)}
             </p>
           </div>
           <button
@@ -1056,7 +1067,7 @@ const CartPage = () => {
           >
             <span>{t('cart.checkout') || 'Checkout'}</span>
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-4 h-4">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" />
+              <path strokeLinecap="round" strokeLinejoin="round" d={forwardArrowPath} />
             </svg>
           </button>
         </div>

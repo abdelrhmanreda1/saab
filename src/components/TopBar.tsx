@@ -137,18 +137,23 @@ const TopBar = () => {
 
   const renderMobileItem = (item: RateItem, index: number) => {
     const valueColor = item.trend === 'up' ? 'text-[#f0c24f]' : 'text-[#f0c24f]';
+    const rowDirection = isArabic ? 'flex-row-reverse' : 'flex-row';
+    const valueAlignment = isArabic ? 'justify-end text-right' : 'justify-start text-left';
+    const labelAlignment = isArabic ? 'text-left' : 'text-right';
 
     return (
       <div
         key={item.key}
-        className={`flex items-center justify-between px-4 py-3 ${index > 0 ? 'border-t border-[#2a2a2a]' : ''}`}
+        className={`flex min-h-[56px] items-center px-4 py-3 ${index > 0 ? 'border-t border-[#2a2a2a]' : ''}`}
       >
-        <div className={`flex items-center gap-1.5 ${valueColor}`}>
-          {renderArrow(item.trend)}
-          <span className="text-[11px] font-semibold">{item.currencyLabel}</span>
-          <span className="text-[10px] font-semibold tracking-[0.06em]">{formatValue(item.value)}</span>
+        <div className={`flex w-full items-center justify-between gap-3 ${rowDirection}`}>
+          <span className={`shrink-0 text-sm font-semibold text-white ${labelAlignment}`}>{item.label}</span>
+          <div className={`flex items-center gap-1.5 tabular-nums whitespace-nowrap ${valueAlignment} ${valueColor}`}>
+            {renderArrow(item.trend)}
+            <span className="text-[11px] font-semibold">{item.currencyLabel}</span>
+            <span className="text-[10px] font-semibold tracking-[0.06em]">{formatValue(item.value)}</span>
+          </div>
         </div>
-        <span className="text-sm font-semibold text-white">{item.label}</span>
       </div>
     );
   };
@@ -187,13 +192,13 @@ const TopBar = () => {
         <div className="md:hidden">
           {primaryMobileRate && (
             <div className="min-h-[56px] bg-black">
-              <div className="flex items-center">
+              <div className="flex min-h-[56px] items-stretch">
                 <div className="min-w-0 flex-1">{renderMobileItem(primaryMobileRate, 0)}</div>
                 {secondaryMobileRates.length > 0 && (
                   <button
                     type="button"
                     onClick={() => setIsMobileExpanded((prev) => !prev)}
-                    className="flex h-full w-12 shrink-0 items-center justify-center self-stretch border-s border-[#2a2a2a] text-white"
+                    className="flex w-12 shrink-0 items-center justify-center border-s border-[#2a2a2a] text-white"
                     aria-label={
                       isMobileExpanded
                         ? (t('topbar.hide_other_prices') || (isArabic ? 'إخفاء باقي الأسعار' : 'Hide other prices'))

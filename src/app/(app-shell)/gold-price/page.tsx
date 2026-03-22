@@ -2,8 +2,8 @@ import type { Metadata } from 'next';
 import GoldPriceClient from './GoldPriceClient';
 
 export const metadata: Metadata = {
-  title: 'Gold Prices',
-  description: 'Track current gold prices by karat and view the latest gram rates used in the store.',
+  title: 'أسعار الذهب',
+  description: 'تابع أسعار الذهب حسب العيارات وشاهد أحدث أسعار الجرام المستخدمة داخل المتجر.',
 };
 
 const GoldPricePage = () => {

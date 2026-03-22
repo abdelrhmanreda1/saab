@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import { addReview } from '@/lib/firestore/reviews';
 import { useAuth } from '../context/AuthContext';
 import { useSettings } from '../context/SettingsContext';
+import { useLanguage } from '../context/LanguageContext';
 
 interface ReviewFormProps {
   productId: string;
@@ -13,25 +14,27 @@ interface ReviewFormProps {
 const ReviewForm: React.FC<ReviewFormProps> = ({ productId, onReviewSubmitted }) => {
   const { user, demoUser } = useAuth();
   const { settings } = useSettings();
+  const { currentLanguage, t } = useLanguage();
   const [rating, setRating] = useState(0);
   const [comment, setComment] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
+  const isArabic = String(currentLanguage?.code || '').trim().toLowerCase() === 'ar';
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const userId = user?.uid || (settings?.demoMode && demoUser ? demoUser.uid : null);
     if (!userId) {
-      setError('You must be logged in to submit a review.');
+      setError(isArabic ? 'يجب تسجيل الدخول لإرسال تقييم.' : 'You must be logged in to submit a review.');
       return;
     }
     if (rating === 0) {
-      setError('Please select a rating.');
+      setError(isArabic ? 'يرجى اختيار تقييم.' : 'Please select a rating.');
       return;
     }
     if (comment.trim() === '') {
-      setError('Please enter a comment.');
+      setError(isArabic ? 'يرجى كتابة تعليق.' : 'Please enter a comment.');
       return;
     }
 
@@ -43,11 +46,11 @@ const ReviewForm: React.FC<ReviewFormProps> = ({ productId, onReviewSubmitted })
       await addReview({
         productId,
         userId: userId,
-        userName: user?.displayName || demoUser?.displayName || user?.email || demoUser?.phoneNumber || 'Anonymous',
+        userName: user?.displayName || demoUser?.displayName || user?.email || demoUser?.phoneNumber || (isArabic ? 'مستخدم' : 'Anonymous'),
         rating,
         comment,
       });
-      setSuccess('Review submitted successfully!');
+      setSuccess(isArabic ? 'تم إرسال التقييم بنجاح.' : 'Review submitted successfully!');
       setRating(0);
       setComment('');
       onReviewSubmitted(); // Notify parent component to refresh reviews
@@ -56,9 +59,9 @@ const ReviewForm: React.FC<ReviewFormProps> = ({ productId, onReviewSubmitted })
       // Check if it's a permissions error
       const errorObj = err as { message?: string; code?: string };
       if (errorObj?.message?.includes('permissions') || errorObj?.code === 'permission-denied') {
-        setError('Unable to submit review due to permissions. Please contact support.');
+        setError(isArabic ? 'تعذر إرسال التقييم بسبب الصلاحيات. يرجى التواصل مع الدعم.' : 'Unable to submit review due to permissions. Please contact support.');
       } else {
-      setError('Failed to submit review. Please try again.');
+      setError(isArabic ? 'فشل إرسال التقييم. حاول مرة أخرى.' : 'Failed to submit review. Please try again.');
       }
     } finally {
       setLoading(false);
@@ -67,19 +70,25 @@ const ReviewForm: React.FC<ReviewFormProps> = ({ productId, onReviewSubmitted })
 
   return (
     <div>
-      <h3 className="text-lg font-heading font-bold mb-2 text-gray-900">Write a Review</h3>
-      <p className="text-sm text-gray-500 mb-4">Share your thoughts with other customers.</p>
+      <h3 className="text-lg font-heading font-bold mb-2 text-gray-900">
+        {t('product.write_review') || (isArabic ? 'اكتب تقييمك' : 'Write a Review')}
+      </h3>
+      <p className="text-sm text-gray-500 mb-4">
+        {t('product.share_review_thoughts') || (isArabic ? 'شارك رأيك مع باقي العملاء.' : 'Share your thoughts with other customers.')}
+      </p>
       
       {!user && !(settings?.demoMode && demoUser) ? (
         <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 text-sm text-yellow-800">
-          Please <a href="/login" className="underline font-semibold">log in</a> to submit a review.
+          {isArabic ? 'يرجى ' : 'Please '}
+          <a href="/login" className="underline font-semibold">{isArabic ? 'تسجيل الدخول' : 'log in'}</a>
+          {isArabic ? ' لإرسال تقييم.' : ' to submit a review.'}
         </div>
       ) : (
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
             <label className="block text-gray-700 text-sm font-semibold mb-2">
-              Your Rating:
-          </label>
+              {t('product.your_rating') || (isArabic ? 'تقييمك:' : 'Your Rating:')}
+            </label>
             <div className="flex gap-1">
             {[1, 2, 3, 4, 5].map((star) => (
                 <button
@@ -102,29 +111,31 @@ const ReviewForm: React.FC<ReviewFormProps> = ({ productId, onReviewSubmitted })
             </div>
             {rating > 0 && (
               <p className="text-xs text-gray-500 mt-1">
-                {rating === 5 && 'Excellent!'}
-                {rating === 4 && 'Very Good'}
-                {rating === 3 && 'Good'}
-                {rating === 2 && 'Fair'}
-                {rating === 1 && 'Poor'}
+                {rating === 5 && (isArabic ? 'ممتاز' : 'Excellent!')}
+                {rating === 4 && (isArabic ? 'جيد جداً' : 'Very Good')}
+                {rating === 3 && (isArabic ? 'جيد' : 'Good')}
+                {rating === 2 && (isArabic ? 'مقبول' : 'Fair')}
+                {rating === 1 && (isArabic ? 'ضعيف' : 'Poor')}
               </p>
             )}
           </div>
           
           <div>
             <label htmlFor="comment" className="block text-gray-700 text-sm font-semibold mb-2">
-              Your Review:
-          </label>
+              {t('product.your_review') || (isArabic ? 'تقييمك:' : 'Your Review:')}
+            </label>
           <textarea
             id="comment"
               rows={5}
               className="w-full border border-gray-300 rounded-lg px-4 py-3 text-gray-700 focus:outline-none focus:border-black focus:ring-1 focus:ring-black transition-colors resize-none"
-              placeholder="Share your experience with this product..."
+              placeholder={t('product.review_placeholder') || (isArabic ? 'شارك تجربتك مع هذا المنتج...' : 'Share your experience with this product...')}
             value={comment}
             onChange={(e) => setComment(e.target.value)}
               disabled={loading}
             />
-            <p className="text-xs text-gray-500 mt-1">{comment.length} characters</p>
+            <p className="text-xs text-gray-500 mt-1">
+              {comment.length} {isArabic ? 'حرف' : 'characters'}
+            </p>
           </div>
           
           {error && (
@@ -146,7 +157,7 @@ const ReviewForm: React.FC<ReviewFormProps> = ({ productId, onReviewSubmitted })
           }`}
             disabled={loading || rating === 0 || comment.trim() === ''}
         >
-          {loading ? 'Submitting...' : 'Submit Review'}
+          {loading ? (isArabic ? 'جارٍ الإرسال...' : 'Submitting...') : (t('product.submit_review') || (isArabic ? 'إرسال التقييم' : 'Submit Review'))}
         </button>
       </form>
       )}

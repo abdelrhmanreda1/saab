@@ -2,26 +2,30 @@
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import { useCart } from '../context/CartContext';
 import { useCurrency } from '../context/CurrencyContext';
 import { useLanguage } from '../context/LanguageContext';
 
 export default function MobileStickyCart() {
-  const { cart, setShowCartDialog } = useCart();
+  const { cart, getCartTotal, setShowCartDialog } = useCart();
   const { formatPrice } = useCurrency();
-  const { t } = useLanguage();
+  const { currentLanguage, t } = useLanguage();
+  const pathname = usePathname();
   const [isVisible, setIsVisible] = useState(false);
   const [lastScrollY, setLastScrollY] = useState(0);
+  const isArabic = String(currentLanguage?.code || '').trim().toLowerCase() === 'ar';
 
   const cartItemCount = cart.reduce((total, item) => total + item.quantity, 0);
-  const cartTotal = cart.reduce((total, item) => total + (item.price * item.quantity), 0);
+  const cartTotal = getCartTotal();
+  const shouldHideOnPage = pathname === '/cart' || pathname === '/checkout';
 
   useEffect(() => {
     const handleScroll = () => {
       const currentScrollY = window.scrollY;
       
       // Show sticky cart when scrolling down and cart has items
-      if (cartItemCount > 0) {
+      if (cartItemCount > 0 && !shouldHideOnPage) {
         if (currentScrollY > 200 && currentScrollY > lastScrollY) {
           setIsVisible(true);
         } else if (currentScrollY < lastScrollY || currentScrollY < 100) {
@@ -36,9 +40,9 @@ export default function MobileStickyCart() {
 
     window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
-  }, [lastScrollY, cartItemCount]);
+  }, [cartItemCount, lastScrollY, shouldHideOnPage]);
 
-  if (!isVisible || cartItemCount === 0) return null;
+  if (!isVisible || cartItemCount === 0 || shouldHideOnPage) return null;
 
   return (
     <div className="fixed bottom-20 left-0 right-0 z-40 md:hidden animate-slide-up">
@@ -57,7 +61,7 @@ export default function MobileStickyCart() {
             </div>
             <div className="flex-1 min-w-0">
               <p className="text-xs text-gray-500 truncate">
-                {cartItemCount} {cartItemCount === 1 ? (t('cart.item') || 'item') : (t('cart.items') || 'items')}
+                {cartItemCount} {cartItemCount === 1 ? (t('cart.item') || (isArabic ? 'منتج' : 'item')) : (t('cart.items') || (isArabic ? 'منتجات' : 'items'))}
               </p>
               <p className="text-sm font-bold text-gray-900 truncate">
                 {formatPrice(cartTotal)}
