@@ -119,10 +119,10 @@ export default function HomeHeroClient({
       style={{ order: heroConfig.order ?? 0 }}
     >
       <div className="page-container py-3 md:py-5">
-        <div className="relative overflow-hidden rounded-[2rem] border border-[#ead8ab] bg-[#f8f3e8] shadow-[0_30px_80px_rgba(115,84,28,0.12)]">
+        <div className="relative overflow-hidden rounded-[2rem] border border-[#ead8ab] bg-[#f8f3e8]">
           <div className="relative min-h-[480px] md:min-h-[680px]">
             {currentBanner && currentBannerImageUrl ? (
-              <div key={currentBanner.id} className="absolute inset-0 z-10 transition-opacity duration-500 opacity-100">
+              <div key={currentBanner.id} className="absolute inset-0 z-10">
                 <Image
                   src={currentBannerImageUrl}
                   alt={getBannerText(currentBanner, 'title') || companyName || 'Hero banner'}
@@ -137,23 +137,21 @@ export default function HomeHeroClient({
               </div>
             ) : null}
 
-            <div className="absolute inset-0 z-20 bg-[linear-gradient(90deg,rgba(24,18,9,0.42)_0%,rgba(24,18,9,0.28)_36%,rgba(24,18,9,0.72)_100%)]" />
-
             <div className="absolute inset-0 z-30 flex items-center">
-              <div className="w-full px-6 md:px-12">
+              <div className="w-full bg-black/35 px-6 py-8 md:px-12 md:py-10">
                 <div className="max-w-2xl">
                   <span className="inline-flex items-center rounded-full border border-[#caa14d] bg-white/95 px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.28em] text-[#8a6721] shadow-sm">
                     {isArabic ? 'مجموعة ذهبية مختارة' : 'Curated Gold Collection'}
                   </span>
 
-                  <h1 className="mt-5 text-4xl font-heading font-bold leading-[1.05] tracking-tight text-white drop-shadow-[0_4px_14px_rgba(0,0,0,0.55)] md:text-6xl lg:text-7xl">
+                  <h1 className="mt-5 text-4xl font-heading font-bold leading-[1.05] tracking-tight text-white md:text-6xl lg:text-7xl">
                     {getBannerText(currentBanner, 'title') ||
                       heroConfig.title?.trim() ||
                       (isArabic ? 'اكتشف أناقتك' : t('home.banner_title') || 'Discover Your Elegance') ||
                       companyName}
                   </h1>
 
-                  <p className="mt-5 max-w-xl text-lg leading-relaxed text-white/95 drop-shadow-[0_2px_8px_rgba(0,0,0,0.45)] md:text-xl lg:text-2xl">
+                  <p className="mt-5 max-w-xl text-lg leading-relaxed text-white/95 md:text-xl lg:text-2xl">
                     {getBannerText(currentBanner, 'subtitle') ||
                       heroConfig.subtitle?.trim() ||
                       (isArabic

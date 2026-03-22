@@ -1,6 +1,15 @@
+'use client';
+
+import dynamic from 'next/dynamic';
 import HomeHeader from './HomeHeader';
-import HomeFooter from './HomeFooter';
-import HomeGlobalOverlays from './HomeGlobalOverlays';
+
+const HomeFooter = dynamic(() => import('./HomeFooter'), {
+  ssr: false,
+});
+
+const HomeGlobalOverlays = dynamic(() => import('./HomeGlobalOverlays'), {
+  ssr: false,
+});
 
 export default function HomeLayoutWrapper({ children }: { children: React.ReactNode }) {
   return (
