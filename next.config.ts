@@ -33,7 +33,7 @@ const nextConfig: NextConfig = {
         hostname: "images.unsplash.com",
       },
     ],
-    qualities: [60, 75, 85],
+    qualities: [42, 60, 75, 85],
   },
   compress: true,
   async headers() {

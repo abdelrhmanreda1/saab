@@ -4408,6 +4408,15 @@ export const DEFAULT_TRANSLATION_KEYS = {
   'product.stock_available_label': 'Stock Available',
   'product.tab_details': 'Details',
   'product.share_product_label': 'Share this product',
+  'product.write_review': 'Write a Review',
+  'product.share_review_thoughts': 'Share your thoughts with other customers.',
+  'product.your_rating': 'Your Rating:',
+  'product.your_review': 'Your Review:',
+  'product.review_placeholder': 'Share your experience with this product...',
+  'product.submit_review': 'Submit Review',
+  'product.review_singular': 'review',
+  'product.review_plural': 'reviews',
+  'product.no_reviews_yet': 'No reviews yet',
 
   // Blog
   'blog.title': 'Our Blog',

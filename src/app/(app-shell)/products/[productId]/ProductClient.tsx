@@ -84,6 +84,10 @@ const ProductClient: React.FC<ProductClientProps> = ({
   const { showError, showSuccess } = useToast();
   const languageCode = currentLanguage?.code || 'en';
   const isArabic = String(languageCode || '').trim().toLowerCase() === 'ar';
+  const tt = (key: string, fallback: string) => {
+    const value = t(key);
+    return value && value !== key ? value : fallback;
+  };
   const [colors, setColors] = useState<Color[]>([]);
   const [sizes, setSizes] = useState<Size[]>([]);
   const [category, setCategory] = useState<Category | null>(null);
@@ -861,11 +865,11 @@ const ProductClient: React.FC<ProductClientProps> = ({
                 </div>
                 {averageRating > 0 && (
                   <span className="text-sm text-gray-600">
-                    {averageRating.toFixed(1)} ({reviewCount} {reviewCount === 1 ? (t('product.review_singular') || 'review') : (t('product.review_plural') || 'reviews')})
+                    {averageRating.toFixed(1)} ({reviewCount} {reviewCount === 1 ? tt('product.review_singular', 'review') : tt('product.review_plural', 'reviews')})
                   </span>
                 )}
                 {averageRating === 0 && reviewCount === 0 && (
-                  <span className="text-sm text-gray-400">{t('product.no_reviews_yet') || 'No reviews yet'}</span>
+                  <span className="text-sm text-gray-400">{tt('product.no_reviews_yet', isArabic ? 'لا توجد تقييمات بعد' : 'No reviews yet')}</span>
                 )}
               </div>
               
@@ -1154,7 +1158,7 @@ const ProductClient: React.FC<ProductClientProps> = ({
 
               {/* Product Specifications */}
               <div className="mt-8 pt-8 border-t border-gray-100">
-                <h3 className="text-lg font-bold text-gray-900 mb-4">{t('product.product_details') || 'Product Details'}</h3>
+                <h3 className="text-lg font-bold text-gray-900 mb-4">{tt('product.product_details', isArabic ? 'تفاصيل المنتج' : 'Product Details')}</h3>
                 <div className="space-y-3">
                   {category && (
                     <div className="flex justify-between py-2 border-b border-gray-100">

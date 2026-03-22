@@ -45,7 +45,13 @@ export default async function HomeHero() {
       imageUrl: banner.imageUrl,
       title: banner.title || '',
       subtitle: banner.subtitle || '',
-      translations: Array.isArray(banner.translations) ? banner.translations : [],
+      translations: Array.isArray(banner.translations)
+        ? banner.translations.map((translation) => ({
+            languageCode: translation?.languageCode ?? null,
+            title: translation?.title ?? null,
+            subtitle: translation?.subtitle ?? null,
+          }))
+        : [],
       linkTo: banner.linkTo || '/shop',
       deviceType: banner.deviceType || 'both',
       isActive: banner.isActive,

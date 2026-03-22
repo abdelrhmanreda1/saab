@@ -21,6 +21,12 @@ const ReviewForm: React.FC<ReviewFormProps> = ({ productId, onReviewSubmitted })
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
   const isArabic = String(currentLanguage?.code || '').trim().toLowerCase() === 'ar';
+  const looksLikeTranslationKey = (value: string) =>
+    /^([a-z0-9_-]+\.)+[a-z0-9_-]+$/i.test(value.trim());
+  const tt = (key: string, fallback: string) => {
+    const value = String(t(key) || '').trim();
+    return !value || value === key || looksLikeTranslationKey(value) ? fallback : value;
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -71,10 +77,10 @@ const ReviewForm: React.FC<ReviewFormProps> = ({ productId, onReviewSubmitted })
   return (
     <div>
       <h3 className="text-lg font-heading font-bold mb-2 text-gray-900">
-        {t('product.write_review') || (isArabic ? 'اكتب تقييمك' : 'Write a Review')}
+        {tt('product.write_review', isArabic ? 'اكتب تقييمك' : 'Write a Review')}
       </h3>
       <p className="text-sm text-gray-500 mb-4">
-        {t('product.share_review_thoughts') || (isArabic ? 'شارك رأيك مع باقي العملاء.' : 'Share your thoughts with other customers.')}
+        {tt('product.share_review_thoughts', isArabic ? 'شارك رأيك مع باقي العملاء.' : 'Share your thoughts with other customers.')}
       </p>
       
       {!user && !(settings?.demoMode && demoUser) ? (
@@ -87,7 +93,7 @@ const ReviewForm: React.FC<ReviewFormProps> = ({ productId, onReviewSubmitted })
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
             <label className="block text-gray-700 text-sm font-semibold mb-2">
-              {t('product.your_rating') || (isArabic ? 'تقييمك:' : 'Your Rating:')}
+              {tt('product.your_rating', isArabic ? 'تقييمك:' : 'Your Rating:')}
             </label>
             <div className="flex gap-1">
             {[1, 2, 3, 4, 5].map((star) => (
@@ -122,13 +128,13 @@ const ReviewForm: React.FC<ReviewFormProps> = ({ productId, onReviewSubmitted })
           
           <div>
             <label htmlFor="comment" className="block text-gray-700 text-sm font-semibold mb-2">
-              {t('product.your_review') || (isArabic ? 'تقييمك:' : 'Your Review:')}
+              {tt('product.your_review', isArabic ? 'تقييمك:' : 'Your Review:')}
             </label>
           <textarea
             id="comment"
               rows={5}
               className="w-full border border-gray-300 rounded-lg px-4 py-3 text-gray-700 focus:outline-none focus:border-black focus:ring-1 focus:ring-black transition-colors resize-none"
-              placeholder={t('product.review_placeholder') || (isArabic ? 'شارك تجربتك مع هذا المنتج...' : 'Share your experience with this product...')}
+              placeholder={tt('product.review_placeholder', isArabic ? 'شارك تجربتك مع هذا المنتج...' : 'Share your experience with this product...')}
             value={comment}
             onChange={(e) => setComment(e.target.value)}
               disabled={loading}
@@ -157,7 +163,7 @@ const ReviewForm: React.FC<ReviewFormProps> = ({ productId, onReviewSubmitted })
           }`}
             disabled={loading || rating === 0 || comment.trim() === ''}
         >
-          {loading ? (isArabic ? 'جارٍ الإرسال...' : 'Submitting...') : (t('product.submit_review') || (isArabic ? 'إرسال التقييم' : 'Submit Review'))}
+          {loading ? (isArabic ? 'جارٍ الإرسال...' : 'Submitting...') : tt('product.submit_review', isArabic ? 'إرسال التقييم' : 'Submit Review')}
         </button>
       </form>
       )}

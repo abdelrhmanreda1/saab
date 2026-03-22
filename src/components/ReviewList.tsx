@@ -17,6 +17,12 @@ const ReviewList: React.FC<ReviewListProps> = ({ productId, reviewsRefreshKey })
   const [sortBy, setSortBy] = useState<'newest' | 'oldest' | 'highest' | 'lowest'>('newest');
   const [filterRating, setFilterRating] = useState<number | null>(null);
   const isArabic = String(currentLanguage?.code || '').trim().toLowerCase() === 'ar';
+  const looksLikeTranslationKey = (value: string) =>
+    /^([a-z0-9_-]+\.)+[a-z0-9_-]+$/i.test(value.trim());
+  const tt = (key: string, fallback: string) => {
+    const value = String(t(key) || '').trim();
+    return !value || value === key || looksLikeTranslationKey(value) ? fallback : value;
+  };
 
   useEffect(() => {
     const fetchReviews = async () => {
@@ -110,7 +116,7 @@ const ReviewList: React.FC<ReviewListProps> = ({ productId, reviewsRefreshKey })
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-16 h-16 text-gray-300 mx-auto mb-4">
           <path strokeLinecap="round" strokeLinejoin="round" d="M11.48 3.499a.562.562 0 0 1 1.04 0l2.125 5.111a.563.563 0 0 0 .475.345l5.518.442c.499.04.701.663.321.988l-4.204 3.602a.563.563 0 0 0-.182.557l1.285 5.385a.562.562 0 0 1-.84.61l-4.725-2.885a.562.562 0 0 0-.586 0L6.982 20.54a.562.562 0 0 1-.84-.61l1.285-5.386a.562.562 0 0 0-.182-.557l-4.204-3.602a.562.562 0 0 1 .321-.988l5.518-.442a.563.563 0 0 0 .475-.345L11.48 3.5Z" />
         </svg>
-        <p className="text-gray-500 text-lg">{t('product.no_reviews_yet') || (isArabic ? 'لا توجد تقييمات بعد.' : 'No reviews yet.')}</p>
+        <p className="text-gray-500 text-lg">{tt('product.no_reviews_yet', isArabic ? 'لا توجد تقييمات بعد.' : 'No reviews yet.')}</p>
         <p className="text-gray-400 text-sm mt-2">{isArabic ? 'كن أول من يقيّم هذا المنتج.' : 'Be the first to review this product!'}</p>
       </div>
     );
@@ -139,7 +145,7 @@ const ReviewList: React.FC<ReviewListProps> = ({ productId, reviewsRefreshKey })
                 ))}
               </div>
               <p className="text-sm text-gray-600">
-                {ratingStats.total} {ratingStats.total === 1 ? (t('product.review_singular') || (isArabic ? 'تقييم' : 'review')) : (t('product.review_plural') || (isArabic ? 'تقييمات' : 'reviews'))}
+                {ratingStats.total} {ratingStats.total === 1 ? tt('product.review_singular', isArabic ? 'تقييم' : 'review') : tt('product.review_plural', isArabic ? 'تقييمات' : 'reviews')}
               </p>
             </div>
             

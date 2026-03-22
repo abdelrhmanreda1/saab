@@ -138,7 +138,7 @@ export default function HomeHeroClient({
             ) : null}
 
             <div className="absolute inset-0 z-30 flex items-center">
-              <div className="w-full bg-black/35 px-6 py-8 md:px-12 md:py-10">
+              <div className="w-full px-6 py-8 md:px-12 md:py-10">
                 <div className="max-w-2xl">
                   <span className="inline-flex items-center rounded-full border border-[#caa14d] bg-white/95 px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.28em] text-[#8a6721] shadow-sm">
                     {isArabic ? 'مجموعة ذهبية مختارة' : 'Curated Gold Collection'}
