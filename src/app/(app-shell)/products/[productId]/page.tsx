@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { getProductBySlug } from '@/lib/firestore/products_db';
 import { Product } from '@/lib/firestore/products';
 import { getBaseUrl } from '@/lib/utils/url';
+import { getProductDescription, getProductName } from '@/lib/utils/translations';
 import ProductClient, { SerializedProduct } from './ProductClient';
 import { getSettings } from '@/lib/firestore/settings_db';
 import { getSEOSettings, getProductSEO } from '@/lib/firestore/seo_db';
@@ -54,8 +55,6 @@ export async function generateMetadata({ params }: ProductPageProps): Promise<Me
   }
 
   const baseUrl = getBaseUrl();
-  const productName = product.name;
-  const productDescription = product.description;
   const productImages = product.images || [];
 
   try {
@@ -67,6 +66,9 @@ export async function generateMetadata({ params }: ProductPageProps): Promise<Me
 
     const globalSEO = seoSettings || settings?.seo;
     const companyName = settings?.company?.name || '';
+    const siteLanguage = settings?.site?.language || 'en';
+    const productName = getProductName(product, siteLanguage);
+    const productDescription = getProductDescription(product, siteLanguage);
 
     return generateSEOMetadata({
       globalSEO,
@@ -74,8 +76,6 @@ export async function generateMetadata({ params }: ProductPageProps): Promise<Me
       fallbackTitle: productName,
       fallbackDescription: productDescription || `View details for ${productName} on ${companyName}.`,
       url: `${baseUrl}/products/${productId}`,
-      productName,
-      productDescription,
       productImages,
       openGraphType: 'website',
       fallbackTitlePriority: 'high',
@@ -87,6 +87,9 @@ export async function generateMetadata({ params }: ProductPageProps): Promise<Me
     try {
       const settings = await getSettings().catch(() => null);
       const companyName = settings?.company?.name || '';
+      const siteLanguage = settings?.site?.language || 'en';
+      const productName = getProductName(product, siteLanguage);
+      const productDescription = getProductDescription(product, siteLanguage);
       return {
         title: productName,
         description: productDescription || `View details for ${productName} on ${companyName}.`,
@@ -117,6 +120,8 @@ export async function generateMetadata({ params }: ProductPageProps): Promise<Me
         },
       };
     } catch {
+      const productName = getProductName(product, 'en');
+      const productDescription = getProductDescription(product, 'en');
       return {
         title: productName,
         description: productDescription,

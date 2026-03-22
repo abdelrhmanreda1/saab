@@ -51,6 +51,7 @@ export async function generateMetadata(): Promise<Metadata> {
     if (settings?.theme?.faviconUrl) {
       return {
         ...metadata,
+        metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'),
         icons: {
           icon: settings.theme.faviconUrl,
           shortcut: settings.theme.faviconUrl,
@@ -62,6 +63,7 @@ export async function generateMetadata(): Promise<Metadata> {
 
     return {
       ...metadata,
+      metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'),
       ...pwaMetadata,
     };
   } catch {
@@ -70,12 +72,14 @@ export async function generateMetadata(): Promise<Metadata> {
       const companyName = settings?.company?.name || 'Pardah';
       const globalSEO = settings?.seo;
       return {
+        metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'),
         title: globalSEO?.siteTitle || companyName || '',
         description: globalSEO?.siteDescription || '',
         keywords: globalSEO?.siteKeywords,
       };
     } catch {
       return {
+        metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'),
         title: 'Pardah',
         description: '',
       };
