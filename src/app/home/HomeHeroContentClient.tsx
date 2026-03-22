@@ -86,11 +86,11 @@ export default function HomeHeroContentClient({
     <div className="absolute inset-0 z-10 flex items-center">
       <div className="w-full px-6 md:px-12">
         <div className="max-w-2xl">
-          <span className="inline-flex items-center rounded-full border border-[#caa14d] bg-white/95 px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.28em] text-[#8a6721] shadow-sm">
+          <span className={`inline-flex items-center rounded-full border border-[#caa14d] bg-white/95 px-4 py-2 text-[11px] font-semibold text-[#8a6721] shadow-sm ${isArabic ? 'tracking-normal' : 'uppercase tracking-[0.28em]'}`}>
             {isArabic ? 'مجموعة ذهبية مختارة' : 'Curated Gold Collection'}
           </span>
 
-          <h1 className="mt-5 text-4xl font-heading font-bold leading-[1.05] tracking-tight text-white drop-shadow-[0_4px_14px_rgba(0,0,0,0.55)] md:text-6xl lg:text-7xl">
+          <h1 className={`mt-5 text-4xl font-heading font-bold text-white drop-shadow-[0_4px_14px_rgba(0,0,0,0.55)] md:text-6xl lg:text-7xl ${isArabic ? 'leading-[1.2] tracking-normal' : 'leading-[1.05] tracking-tight'}`}>
             {title || companyName}
           </h1>
 
@@ -101,13 +101,13 @@ export default function HomeHeroContentClient({
           <div className="mt-8 flex flex-col gap-4 sm:flex-row">
             <Link
               href={primaryBanner?.linkTo || '/shop'}
-              className="inline-flex min-h-[52px] items-center justify-center rounded-full bg-[#1a1307] px-8 py-4 text-sm font-bold uppercase tracking-[0.22em] text-white transition-colors hover:bg-[#36280e] md:px-10 md:py-5 md:text-base"
+              className={`inline-flex min-h-[52px] items-center justify-center rounded-full bg-[#1a1307] px-8 py-4 text-sm font-bold text-white transition-colors hover:bg-[#36280e] md:px-10 md:py-5 md:text-base ${isArabic ? 'tracking-normal' : 'uppercase tracking-[0.22em]'}`}
             >
               {isArabic ? 'تسوق المجموعة' : 'Shop Collection'}
             </Link>
             <Link
               href="/shop"
-              className="inline-flex min-h-[52px] items-center justify-center rounded-full border border-[#caa14d] bg-white/92 px-8 py-4 text-sm font-bold uppercase tracking-[0.22em] text-[#8a6721] transition-colors hover:bg-white md:px-10 md:py-5 md:text-base"
+              className={`inline-flex min-h-[52px] items-center justify-center rounded-full border border-[#caa14d] bg-white/92 px-8 py-4 text-sm font-bold text-[#8a6721] transition-colors hover:bg-white md:px-10 md:py-5 md:text-base ${isArabic ? 'tracking-normal' : 'uppercase tracking-[0.22em]'}`}
             >
               {isArabic ? 'تسوق الآن' : 'Shop Now'}
             </Link>
