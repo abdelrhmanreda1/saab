@@ -24,6 +24,7 @@ import { Language } from '@/lib/firestore/internationalization';
 import { Timestamp } from 'firebase/firestore';
 import { useLanguage } from '@/context/LanguageContext';
 import { optimizeImageForUpload } from '@/lib/utils/client-image';
+import { cleanRichTextHtml } from '@/lib/utils/translations';
 import Dialog from '../ui/Dialog';
 import 'react-quill/dist/quill.snow.css';
 
@@ -75,6 +76,8 @@ const ReactQuill = dynamic(
     )
   }
 );
+
+const normalizeDescriptionHtml = (value: string | undefined | null) => cleanRichTextHtml(value);
 
 interface ProductFormProps {
   productId?: string;
@@ -227,15 +230,23 @@ const ProductForm: React.FC<ProductFormProps> = ({ productId, onSuccess, onCance
             // eslint-disable-next-line @typescript-eslint/no-unused-vars
             const { id, createdAt, updatedAt, ...rest } = fetchedProduct;
             const productTranslations = (fetchedProduct as Product & { translations?: ProductTranslation[] }).translations;
-            setProduct(rest);
+            setProduct({
+              ...rest,
+              description: normalizeDescriptionHtml(rest.description),
+            });
             baseEnglishRef.current = {
               name: rest.name || '',
-              description: rest.description || '',
+              description: normalizeDescriptionHtml(rest.description),
             };
             
             // Set translations
             if (productTranslations && productTranslations.length > 0) {
-              setTranslations(productTranslations);
+              setTranslations(
+                productTranslations.map((translation) => ({
+                  ...translation,
+                  description: normalizeDescriptionHtml(translation.description),
+                }))
+              );
               // Set default language to current language or first available
               const defaultLang = productTranslations.find(t => t.languageCode === currentLanguage?.code) 
                 || productTranslations.find(t => t.languageCode === 'en')
@@ -246,7 +257,7 @@ const ProductForm: React.FC<ProductFormProps> = ({ productId, onSuccess, onCance
                 setProduct(prev => ({
                   ...prev,
                   name: defaultLang.name || prev.name,
-                  description: defaultLang.description || prev.description
+                  description: normalizeDescriptionHtml(defaultLang.description) || prev.description
                 }));
               }
             }
@@ -414,7 +425,7 @@ const ProductForm: React.FC<ProductFormProps> = ({ productId, onSuccess, onCance
         if (editorElement) {
           setProduct(prev => ({
             ...prev,
-            description: editorElement.innerHTML
+            description: normalizeDescriptionHtml(editorElement.innerHTML)
           }));
         }
 
@@ -468,7 +479,6 @@ const ProductForm: React.FC<ProductFormProps> = ({ productId, onSuccess, onCance
         [{ 'script': 'sub'}, { 'script': 'super' }],
         [{ 'align': [] }],
         ['link', 'image', 'video'],
-        [{ 'color': [] }, { 'background': [] }],
         ['clean']
       ],
       handlers: {
@@ -484,7 +494,6 @@ const ProductForm: React.FC<ProductFormProps> = ({ productId, onSuccess, onCance
     'script',
     'align',
     'link', 'image', 'video',
-    'color', 'background',
     'clean'
   ], []);
 
@@ -498,7 +507,9 @@ const ProductForm: React.FC<ProductFormProps> = ({ productId, onSuccess, onCance
           ? checked
           : type === 'number'
             ? (value === '' ? undefined : parseFloat(value))
-            : value;
+            : name === 'description'
+              ? normalizeDescriptionHtml(value)
+              : value;
 
       const updated = {
         ...prevProduct,
@@ -532,7 +543,7 @@ const ProductForm: React.FC<ProductFormProps> = ({ productId, onSuccess, onCance
       setTranslations(prev =>
         upsertTranslation(prev, selectedLanguageCode, {
           name: name === 'name' ? String(value) : product.name,
-          description: name === 'description' ? String(value) : product.description,
+          description: name === 'description' ? normalizeDescriptionHtml(value) : product.description,
         })
       );
     }
@@ -563,7 +574,7 @@ const ProductForm: React.FC<ProductFormProps> = ({ productId, onSuccess, onCance
       setProduct(prev => ({
         ...prev,
         name: baseEnglishRef.current.name || '',
-        description: baseEnglishRef.current.description || ''
+        description: normalizeDescriptionHtml(baseEnglishRef.current.description) || ''
       }));
     } else {
       const latestTranslations =
@@ -580,7 +591,7 @@ const ProductForm: React.FC<ProductFormProps> = ({ productId, onSuccess, onCance
         setProduct(prev => ({
           ...prev,
           name: translation.name || '',
-          description: translation.description || ''
+          description: normalizeDescriptionHtml(translation.description) || ''
         }));
       } else {
         setProduct(prev => ({
@@ -737,7 +748,7 @@ const ProductForm: React.FC<ProductFormProps> = ({ productId, onSuccess, onCance
         selectedLanguageCode,
         {
           name: product.name || '',
-          description: product.description || '',
+          description: normalizeDescriptionHtml(product.description) || '',
         }
       );
 
@@ -755,7 +766,7 @@ const ProductForm: React.FC<ProductFormProps> = ({ productId, onSuccess, onCance
       } = {
         ...product,
         name: englishTranslation?.name || baseEnglishRef.current.name || '',
-        description: englishTranslation?.description || baseEnglishRef.current.description || '',
+        description: normalizeDescriptionHtml(englishTranslation?.description || baseEnglishRef.current.description || ''),
         images: finalImages
       };
       if (!finalProductData.slug || finalProductData.slug.trim() === '') {
@@ -766,8 +777,11 @@ const ProductForm: React.FC<ProductFormProps> = ({ productId, onSuccess, onCance
       const localizedTranslations = finalTranslations.filter(
         (translation) =>
           String(translation.languageCode || '').trim().toLowerCase() !== 'en' &&
-          Boolean(translation.name || translation.description)
-      );
+          Boolean(translation.name || normalizeDescriptionHtml(translation.description))
+      ).map((translation) => ({
+        ...translation,
+        description: normalizeDescriptionHtml(translation.description),
+      }));
 
       if (localizedTranslations.length > 0) {
         finalProductData.translations = localizedTranslations;
@@ -1172,45 +1186,20 @@ const ProductForm: React.FC<ProductFormProps> = ({ productId, onSuccess, onCance
           <label htmlFor="description" className="block text-gray-700 text-sm font-semibold mb-2">
             {t('products.description') || t('common.description') || 'Description'}
           </label>
-          <div className="relative" id="product-description-editor-container">
-            {!isClient ? (
-              <div className="w-full h-[300px] sm:h-[400px] border border-gray-300 rounded-lg flex items-center justify-center bg-gray-50">
-                <div className="text-gray-500 text-sm">{t('admin.products_editor_initializing') || 'Initializing editor...'}</div>
-              </div>
-            ) : (
-              <div className="bg-white rounded-lg border border-gray-300 overflow-hidden">
-                <ReactQuill
-                  theme="snow"
-                  value={product.description || ''}
-                  onChange={(value: string) => {
-                    setProduct(prev => ({ ...prev, description: value }));
-                    // Update translation if editing a specific language
-                    if (selectedLanguageCode === 'en') {
-                      baseEnglishRef.current = {
-                        name: product.name || '',
-                        description: value || '',
-                      };
-                    } else {
-                      setTranslations(prev =>
-                        upsertTranslation(prev, selectedLanguageCode, {
-                          name: product.name || '',
-                          description: value || '',
-                        })
-                      );
-                    }
-                  }}
-                  placeholder={t('admin.products_description_placeholder') || 'Start writing product description here...'}
-                  modules={quillModules}
-                  formats={quillFormats}
-                  style={{ minHeight: '300px' }}
-                  className="bg-white"
-                  preserveWhitespace={true}
-                />
-              </div>
-            )}
-          </div>
+          <textarea
+            id="description"
+            name="description"
+            value={product.description || ''}
+            onChange={handleChange}
+            rows={12}
+            dir={selectedLanguageCode === 'ar' ? 'rtl' : 'ltr'}
+            className={`w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-900 focus:border-transparent outline-none transition-all resize-y ${
+              selectedLanguageCode === 'ar' ? 'text-right' : ''
+            }`}
+            placeholder={t('admin.products_description_placeholder') || 'Write product description here...'}
+          />
           <p className="text-xs text-gray-500 mt-2">
-            {t('admin.products_description_help') || 'Use the toolbar above to format your content. You can add images, links, videos, and more.'}
+            {t('admin.products_description_help') || 'Use plain text here so the saved content stays visible and easy to edit.'}
           </p>
         </div>
 

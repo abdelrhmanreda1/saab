@@ -199,7 +199,7 @@ function ProductCard({
         </div>
       )}
 
-      <div className="relative aspect-[3/4] w-full overflow-hidden bg-gray-50">
+      <div className="relative aspect-[3/4] w-full overflow-hidden bg-white p-4">
         {displayImage ? (
           <Image
             src={displayImage}
@@ -208,7 +208,7 @@ function ProductCard({
             sizes="(max-width: 768px) 50vw, (max-width: 1280px) 25vw, 280px"
             quality={42}
             loading="lazy"
-            className="object-cover object-center transition-transform duration-700 group-hover:scale-110"
+            className="object-contain object-center transition-transform duration-500 group-hover:scale-105"
           />
         ) : (
           <div className="flex h-full items-center justify-center text-gray-300">
@@ -231,14 +231,14 @@ function ProductCard({
       </div>
 
       <div className="p-3 md:p-4">
-        {categoryName && (
-          <p className="mb-1 text-xs font-medium uppercase tracking-[0.18em] text-[#9f7424]">
-            {categoryName}
-          </p>
-        )}
         <h3 className="truncate text-sm font-medium text-gray-900 md:text-base">
           {getProductName(product as never, languageCode)}
         </h3>
+        {categoryName && (
+          <p className="mt-1 text-xs font-medium uppercase tracking-[0.18em] text-[#9f7424]">
+            {categoryName}
+          </p>
+        )}
         <div className="mt-1">
           {reviewStats && reviewStats.reviewCount > 0 ? (
             <div className="flex items-center gap-1">

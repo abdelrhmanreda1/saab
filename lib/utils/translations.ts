@@ -10,6 +10,53 @@ const normalizeLangCode = (code: string | undefined | null) =>
     .trim()
     .toLowerCase();
 
+const stripColorStyles = (html: string): string => {
+  let sanitized = html;
+
+  sanitized = sanitized.replace(/\sstyle=(["'])(.*?)\1/gi, (_match, quote: string, styles: string) => {
+    const cleanedStyles = styles
+      .split(';')
+      .map((style) => style.trim())
+      .filter(Boolean)
+      .filter((style) => {
+        const property = style.split(':')[0]?.trim().toLowerCase();
+        return property !== 'color' && property !== 'background' && property !== 'background-color';
+      });
+
+    return cleanedStyles.length > 0 ? ` style=${quote}${cleanedStyles.join('; ')}${quote}` : '';
+  });
+
+  sanitized = sanitized.replace(/\sclass=(["'])(.*?)\1/gi, (_match, quote: string, classNames: string) => {
+    const cleanedClassNames = classNames
+      .split(/\s+/)
+      .map((className) => className.trim())
+      .filter(Boolean)
+      .filter((className) => !/^ql-(color|bg)-/i.test(className));
+
+    return cleanedClassNames.length > 0 ? ` class=${quote}${cleanedClassNames.join(' ')}${quote}` : '';
+  });
+
+  sanitized = sanitized.replace(/<mark\b[^>]*>/gi, '<span>');
+  sanitized = sanitized.replace(/<\/mark>/gi, '</span>');
+
+  return sanitized;
+};
+
+export function cleanRichTextHtml(html: string | undefined | null): string {
+  const value = String(html || '').trim();
+  if (!value) return '';
+
+  const sanitized = stripColorStyles(value)
+    .replace(/&nbsp;/gi, ' ')
+    .replace(/<p><br><\/p>/gi, '')
+    .replace(/<p>\s*<\/p>/gi, '')
+    .replace(/<span>\s*<\/span>/gi, '')
+    .trim();
+
+  const plainText = sanitized.replace(/<[^>]+>/g, '').replace(/\s+/g, ' ').trim();
+  return plainText ? sanitized : '';
+}
+
 const findTranslation = <T extends { languageCode: string }>(
   translations: T[] | undefined,
   languageCode: string
@@ -38,11 +85,11 @@ export function getProductName(product: Product, languageCode: string = 'en'): s
 export function getProductDescription(product: Product, languageCode: string = 'en'): string {
   const lang = normalizeLangCode(languageCode);
   if (lang === 'en' || !product.translations || product.translations.length === 0) {
-    return product.description;
+    return cleanRichTextHtml(product.description);
   }
   
   const translation = findTranslation(product.translations, lang);
-  return translation?.description || product.description;
+  return cleanRichTextHtml(translation?.description || product.description);
 }
 
 /**
@@ -148,4 +195,3 @@ export function getSizeName(size: Size, languageCode: string = 'en'): string {
   const translation = findTranslation(size.translations, lang);
   return translation?.name || size.name;
 }
-

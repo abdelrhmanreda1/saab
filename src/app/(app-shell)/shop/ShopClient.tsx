@@ -805,14 +805,14 @@ const ShopClient: React.FC<ShopClientProps> = ({
         )}
 
         {/* Image Container */}
-        <div className="relative w-full overflow-hidden bg-gray-50 aspect-square">
+        <div className="relative w-full overflow-hidden bg-white aspect-square p-4">
           {displayImage ? (
             <Image
               src={displayImage}
               alt={getProductName(product, languageCode)}
               width={800}
               height={1067}
-              className="h-full w-full object-cover object-center transition-transform duration-700 group-hover:scale-110"
+              className="h-full w-full object-contain object-center transition-transform duration-500 group-hover:scale-105"
               sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
               priority={prioritizeImage}
             />
@@ -907,40 +907,9 @@ const ShopClient: React.FC<ShopClientProps> = ({
               getProductName(product, languageCode)
             )}
           </h3>
-          <div className="mt-1">
-            {settings?.features?.productReviews &&
-            reviewStats[product.id] &&
-            reviewStats[product.id].reviewCount > 0 ? (
-              <div className="flex items-center gap-1">
-                <div className="flex">
-                  {Array.from({ length: 5 }).map((_, index) => {
-                    const rating = reviewStats[product.id].averageRating || 0;
-                    const roundedRating = Math.round(rating);
-                    const isFilled = index < roundedRating;
-                    return (
-                      <svg
-                        key={index}
-                        className={`w-3 h-3 md:w-4 md:h-4 ${
-                          isFilled ? 'text-yellow-400' : 'text-gray-300'
-                        }`}
-                        fill="currentColor"
-                        viewBox="0 0 20 20"
-                      >
-                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.538 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.783.57-1.838-.197-1.538-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.381-1.81.588-1.81h3.462a1 1 0 00.95-.69l1.07-3.292z" />
-                      </svg>
-                    );
-                  })}
-                </div>
-                <span className="text-[10px] md:text-xs text-gray-600 font-medium">
-                  ({reviewStats[product.id].reviewCount} {t('product.reviews') || 'reviews'})
-                </span>
-              </div>
-            ) : (
-              <p className="text-xs md:text-sm text-gray-600 mt-1 truncate font-medium">
-                {categoryName || t('product.collection') || 'Collection'}
-              </p>
-            )}
-          </div>
+          <p className="mt-1 text-xs md:text-sm text-[#9f7424] truncate font-medium">
+            {categoryName || t('product.collection') || 'Collection'}
+          </p>
           <div className="flex items-baseline gap-2 mt-auto pt-2">
             {pricing.originalPrice !== null && (
               <span className="text-sm md:text-base text-gray-500 line-through font-medium">

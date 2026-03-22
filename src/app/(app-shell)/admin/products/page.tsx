@@ -11,6 +11,7 @@ import { useCurrency } from '../../../context/CurrencyContext';
 import { useLanguage } from '../../../context/LanguageContext';
 import { getSettings } from '@/lib/firestore/settings_db';
 import { Settings, defaultSettings } from '@/lib/firestore/settings';
+import { getProductPricingSummary } from '@/lib/utils/product-pricing';
 import Dialog from '@/components/ui/Dialog';
 
 const ProductList = () => {
@@ -145,6 +146,8 @@ const ProductList = () => {
   const paginatedProducts = products.slice(startIndex, endIndex);
   const isAllSelected = paginatedProducts.length > 0 && paginatedProducts.every(product => product.id && selectedIds.has(product.id));
   const isSomeSelected = paginatedProducts.some(product => product.id && selectedIds.has(product.id));
+  const getDisplayPrice = (product: Product) =>
+    getProductPricingSummary(product, settings.goldPricing, settings.goldPricing?.cache).currentPrice;
 
   if (loading) {
     return (
@@ -366,7 +369,7 @@ const ProductList = () => {
                         {categories.find(cat => cat.id === product.category)?.name || product.category}
                       </td>
                       <td className="px-4 sm:px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                        {formatPrice(product.price)}
+                        {formatPrice(getDisplayPrice(product))}
                       </td>
                       <td className="px-4 sm:px-6 py-4 whitespace-nowrap">
                         <span className={`px-2.5 py-1 inline-flex text-xs font-semibold rounded-md ${
@@ -463,7 +466,7 @@ const ProductList = () => {
                       <p className="text-xs text-gray-500 mb-1">
                         {categories.find(cat => cat.id === product.category)?.name || product.category}
                       </p>
-                      <p className="text-sm font-medium text-gray-900">{formatPrice(product.price)}</p>
+                      <p className="text-sm font-medium text-gray-900">{formatPrice(getDisplayPrice(product))}</p>
                     </div>
                     <span className={`px-2.5 py-1 text-xs font-semibold rounded-md ml-3 ${
                       product.isActive ? 'bg-green-50 text-green-700' : 'bg-red-50 text-red-700'
