@@ -1,12 +1,22 @@
 'use client';
 
-import React, { useEffect, useState, Suspense } from 'react';
+import React, { Suspense } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { getAllPosts } from '@/lib/firestore/blog_db';
 import { BlogPost } from '@/lib/firestore/blog';
 import { useLanguage } from '@/context/LanguageContext';
 import { useSettings } from '@/context/SettingsContext';
+
+interface SerializedTimestamp {
+  seconds: number;
+  nanoseconds: number;
+}
+
+interface SerializedBlogPost extends Omit<BlogPost, 'createdAt' | 'updatedAt' | 'publishedAt'> {
+  createdAt?: SerializedTimestamp | null;
+  updatedAt?: SerializedTimestamp | null;
+  publishedAt?: SerializedTimestamp | null;
+}
 
 const getBlogTitle = (post: BlogPost, lang: string) => {
   if (lang === 'ar' && post.title_ar) return post.title_ar;
@@ -18,43 +28,28 @@ const getBlogExcerpt = (post: BlogPost, lang: string) => {
   return post.excerpt;
 };
 
-function BlogPostsContent() {
+const formatPublishedDate = (
+  publishedAt: BlogPost['publishedAt'] | SerializedTimestamp | null | undefined,
+  locale: string
+) => {
+  if (!publishedAt) return null;
+
+  if (typeof publishedAt === 'object' && 'toDate' in publishedAt && typeof publishedAt.toDate === 'function') {
+    return publishedAt.toDate().toLocaleDateString(locale);
+  }
+
+  if (typeof publishedAt === 'object' && 'seconds' in publishedAt) {
+    return new Date((Number(publishedAt.seconds) || 0) * 1000).toLocaleDateString(locale);
+  }
+
+  return null;
+};
+
+function BlogPostsContent({ initialPosts }: { initialPosts: SerializedBlogPost[] }) {
   const { t, currentLanguage } = useLanguage();
   const { settings } = useSettings();
   const langCode = String(currentLanguage?.code || 'ar').trim().toLowerCase();
-  const [posts, setPosts] = useState<BlogPost[]>([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const fetchPosts = async () => {
-      try {
-        const fetched = await getAllPosts(true);
-        setPosts(fetched);
-      } catch {
-        // ignore
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchPosts();
-  }, []);
-
-  if (loading) {
-    return (
-      <div className="bg-white min-h-screen pb-20">
-        <div className="bg-gray-50 border-b border-gray-100 py-8 mb-6">
-          <div className="page-container text-center">
-            <h1 className="text-4xl md:text-5xl font-heading font-bold text-gray-900 mb-2">
-              {t('blog.title') || 'Our Blog'}
-            </h1>
-            <p className="text-sm text-gray-500">
-              {t('blog.subtitle') || 'Stay updated with the latest trends, styling tips, and news.'}
-            </p>
-          </div>
-        </div>
-      </div>
-    );
-  }
+  const posts = initialPosts as BlogPost[];
 
   if (!settings?.features?.blog) {
     return (
@@ -118,8 +113,11 @@ function BlogPostsContent() {
                   </div>
                   <div className="p-4 flex flex-col flex-grow">
                     <div className="flex items-center gap-3 text-xs text-gray-500 mb-2">
-                      <span>{post.publishedAt?.toDate ? post.publishedAt.toDate().toLocaleDateString(langCode === 'ar' ? 'ar-SA' : 'en-US') : (t('blog.recent') || 'Recent')}</span>
-                      <span>•</span>
+                      <span>
+                        {formatPublishedDate(post.publishedAt, langCode === 'ar' ? 'ar-SA' : 'en-US') ||
+                          (t('blog.recent') || 'Recent')}
+                      </span>
+                      <span>&bull;</span>
                       <span>{post.author}</span>
                     </div>
                     <h2 className="text-sm font-semibold text-gray-900 mb-2 group-hover:text-gray-600 transition-colors line-clamp-2">
@@ -142,10 +140,10 @@ function BlogPostsContent() {
   );
 }
 
-export default function BlogPageClient() {
+export default function BlogPageClient({ initialPosts }: { initialPosts: SerializedBlogPost[] }) {
   return (
     <Suspense fallback={<div className="bg-white min-h-screen pb-20" />}>
-      <BlogPostsContent />
+      <BlogPostsContent initialPosts={initialPosts} />
     </Suspense>
   );
 }
