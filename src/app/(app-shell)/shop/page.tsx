@@ -31,7 +31,7 @@ export async function generateMetadata(): Promise<Metadata> {
       globalSEO,
       pageSEO,
       fallbackTitle: `Shop | ${companyName}`,
-      fallbackDescription: 'Browse our collection of modest fashion products.',
+      fallbackDescription: 'Browse our gold jewelry collection, including rings, necklaces, bracelets, and premium pieces.',
       fallbackImage: pageSEO?.metaImage,
       url: '/shop',
       fallbackTitlePriority: 'high',
@@ -44,12 +44,12 @@ export async function generateMetadata(): Promise<Metadata> {
       const companyName = settings?.company?.name || '';
       return {
         title: `Shop | ${companyName}`,
-        description: 'Browse our collection of modest fashion products.',
+        description: 'Browse our gold jewelry collection, including rings, necklaces, bracelets, and premium pieces.',
       };
     } catch {
       return {
         title: 'Shop',
-        description: 'Browse our collection of modest fashion products.',
+        description: 'Browse our gold jewelry collection, including rings, necklaces, bracelets, and premium pieces.',
       };
     }
   }

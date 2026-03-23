@@ -59,6 +59,19 @@ export function generateSEOMetadata(options: GenerateMetadataOptions): Metadata 
     return normalized.length > 200 ? `${normalized.slice(0, 197).trim()}...` : normalized;
   };
 
+  const buildGeneratedOgImageUrl = (imageTitle: string, imageDescription: string): string => {
+    const searchParams = new URLSearchParams();
+    searchParams.set('title', imageTitle || globalSEO?.siteTitle || 'Saab');
+    if (imageDescription) {
+      searchParams.set('description', imageDescription);
+    }
+    if (url) {
+      searchParams.set('path', url);
+    }
+
+    return `${baseUrl}/api/og?${searchParams.toString()}`;
+  };
+
   const toAbsoluteUrl = (value?: string): string | undefined => {
     if (!value) return undefined;
     return value.startsWith('http') ? value : `${baseUrl}${value}`;
@@ -139,7 +152,7 @@ export function generateSEOMetadata(options: GenerateMetadataOptions): Metadata 
   // Open Graph
   const ogTitle = title;
   const ogDescription = description;
-  const ogImage = toAbsoluteUrl(metaImage);
+  const ogImage = toAbsoluteUrl(metaImage) || buildGeneratedOgImageUrl(ogTitle, ogDescription);
   const ogUrl = toAbsoluteUrl(canonicalUrl) || baseUrl;
   const ogSiteName = globalSEO?.ogSiteName || 'Pardah';
   const ogLocale = globalSEO?.ogLocale || 'en_US';
