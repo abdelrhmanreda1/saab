@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useCallback } from 'react';
 import { onAuthStateChanged, User } from 'firebase/auth';
-import { auth } from '@/lib/firebase';
+import { getFirebaseAuth } from '@/lib/firebase';
 import { getAllJobApplications, updateJobApplication } from '@/lib/firestore/job_applications_db';
 import { JobApplication } from '@/lib/firestore/job_applications_db';
 import { useLanguage } from '@/context/LanguageContext';
@@ -26,17 +26,22 @@ const CareerPage = () => {
   }, [t]);
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
-      if (currentUser) {
-        setUser(currentUser);
-        await loadApplications();
-      } else {
-        window.location.href = '/login?returnUrl=/admin/customers/career';
-      }
-      setLoading(false);
-    });
+    let unsubscribe: (() => void) | undefined;
 
-    return () => unsubscribe();
+    void (async () => {
+      const auth = await getFirebaseAuth();
+      unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
+        if (currentUser) {
+          setUser(currentUser);
+          await loadApplications();
+        } else {
+          window.location.href = '/login?returnUrl=/admin/customers/career';
+        }
+        setLoading(false);
+      });
+    })();
+
+    return () => unsubscribe?.();
   }, [loadApplications]);
 
   const handleStatusChange = async (id: string, status: 'pending' | 'reviewed' | 'shortlisted' | 'rejected' | 'hired', notes?: string) => {

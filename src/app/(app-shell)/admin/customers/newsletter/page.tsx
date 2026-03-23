@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useCallback } from 'react';
 import { onAuthStateChanged, User } from 'firebase/auth';
-import { auth } from '@/lib/firebase';
+import { getFirebaseAuth } from '@/lib/firebase';
 import { getAllNewsletterSubscriptions, unsubscribeNewsletter } from '@/lib/firestore/newsletter_db';
 import { NewsletterSubscription } from '@/lib/firestore/newsletter_db';
 import { useLanguage } from '@/context/LanguageContext';
@@ -26,17 +26,22 @@ const NewsletterPage = () => {
   }, [t]);
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
-      if (currentUser) {
-        setUser(currentUser);
-        await loadSubscriptions();
-      } else {
-        window.location.href = '/login?returnUrl=/admin/customers/newsletter';
-      }
-      setLoading(false);
-    });
+    let unsubscribe: (() => void) | undefined;
 
-    return () => unsubscribe();
+    void (async () => {
+      const auth = await getFirebaseAuth();
+      unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
+        if (currentUser) {
+          setUser(currentUser);
+          await loadSubscriptions();
+        } else {
+          window.location.href = '/login?returnUrl=/admin/customers/newsletter';
+        }
+        setLoading(false);
+      });
+    })();
+
+    return () => unsubscribe?.();
   }, [loadSubscriptions]);
 
   const handleUnsubscribe = async (email: string) => {

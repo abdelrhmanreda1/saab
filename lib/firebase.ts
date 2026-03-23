@@ -1,5 +1,4 @@
 import { initializeApp, getApps, getApp } from 'firebase/app';
-import { getAuth } from 'firebase/auth';
 import { getFirestore, initializeFirestore } from 'firebase/firestore';
 import { getStorage } from 'firebase/storage';
  
@@ -14,7 +13,6 @@ const firebaseConfig = {
 
 const isNewApp = getApps().length === 0;
 const app = isNewApp ? initializeApp(firebaseConfig) : getApp();
-const auth = getAuth(app);
 const db = isNewApp
   ? initializeFirestore(app, {
       experimentalForceLongPolling: true,
@@ -22,4 +20,9 @@ const db = isNewApp
   : getFirestore(app);
 const storage = getStorage(app);
 
-export { app, auth, db, storage };
+export async function getFirebaseAuth() {
+  const { getAuth } = await import('firebase/auth');
+  return getAuth(app);
+}
+
+export { app, db, storage };

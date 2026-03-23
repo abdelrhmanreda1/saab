@@ -2,6 +2,20 @@
   "name": "store",
   "version": "0.1.0",
   "private": true,
+  "browserslist": {
+    "production": [
+      "chrome >= 111",
+      "edge >= 111",
+      "firefox >= 111",
+      "safari >= 16.4",
+      "ios_saf >= 16.4"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
   "scripts": {
     "dev": "next dev --webpack",
     "build": "next build",

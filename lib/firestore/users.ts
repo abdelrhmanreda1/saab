@@ -1,4 +1,4 @@
-import { auth, db } from '../firebase';
+import { db, getFirebaseAuth } from '../firebase';
 import { collection, getDocs, Timestamp, doc, setDoc, getDoc, updateDoc, increment, addDoc, deleteDoc } from "firebase/firestore";
 
 export interface User {
@@ -47,6 +47,7 @@ export interface UserProfile {
 }
 
 const getCurrentUserToken = async (uid: string): Promise<string | null> => {
+  const auth = await getFirebaseAuth();
   const currentUser = auth.currentUser;
   if (!currentUser || currentUser.uid !== uid) {
     return null;

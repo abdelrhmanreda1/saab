@@ -75,7 +75,6 @@ export default function HomeHeader() {
                     width={152}
                     height={54}
                     sizes="152px"
-                    priority
                     className="h-12 w-[152px] object-contain"
                   />
                 ) : (
@@ -132,7 +131,6 @@ export default function HomeHeader() {
                     width={190}
                     height={70}
                     sizes="190px"
-                    priority
                     className="h-12 w-[190px] object-contain lg:h-14"
                   />
                 ) : (

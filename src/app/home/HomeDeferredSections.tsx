@@ -1,5 +1,6 @@
 import HomeHero from './HomeHero';
 import HomeDeferredSectionsClient from './HomeDeferredSectionsClient';
+import HomeSectionViewportGate from './HomeSectionViewportGate';
 import { getCachedSettings } from '@/lib/server/site-config';
 import { getAllProducts } from '@/lib/firestore/products_db';
 import { getAllCategories } from '@/lib/firestore/categories_db';
@@ -140,18 +141,20 @@ export default async function HomeDeferredSections({ showHero = false }: { showH
   return (
     <>
       {showHero ? <HomeHero /> : null}
-      <HomeDeferredSectionsClient
-        featuredProducts={toPlain(featuredProducts)}
-        flashSaleProducts={toPlain(flashSaleProducts)}
-        categories={toPlain(topLevelCategories)}
-        allCategories={toPlain(fetchedCategories)}
-        collections={toPlain(topLevelCollections)}
-        bundles={toPlain(activeBundles)}
-        testimonials={toPlain(testimonials)}
-        posts={toPlain(blogPosts)}
-        reviewStats={toPlain(reviewStats)}
-        homepageSections={toPlain(homepageSections as HomepageSection[])}
-      />
+      <HomeSectionViewportGate minHeightClass="min-h-[1200px]" rootMargin="320px">
+        <HomeDeferredSectionsClient
+          featuredProducts={toPlain(featuredProducts)}
+          flashSaleProducts={toPlain(flashSaleProducts)}
+          categories={toPlain(topLevelCategories)}
+          allCategories={toPlain(fetchedCategories)}
+          collections={toPlain(topLevelCollections)}
+          bundles={toPlain(activeBundles)}
+          testimonials={toPlain(testimonials)}
+          posts={toPlain(blogPosts)}
+          reviewStats={toPlain(reviewStats)}
+          homepageSections={toPlain(homepageSections as HomepageSection[])}
+        />
+      </HomeSectionViewportGate>
     </>
   );
 }

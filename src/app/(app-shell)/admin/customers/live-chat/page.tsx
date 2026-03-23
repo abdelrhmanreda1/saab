@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import { onAuthStateChanged, User } from 'firebase/auth';
-import { auth, storage, db } from '@/lib/firebase';
+import { getFirebaseAuth, storage, db } from '@/lib/firebase';
 import { getAllChatSessions, updateChatSession, addChatMessage } from '@/lib/firestore/notifications_db';
 import { ChatSession } from '@/lib/firestore/notifications';
 import { doc, onSnapshot, Unsubscribe } from 'firebase/firestore';
@@ -38,18 +38,23 @@ const LiveChatPage = () => {
   }, []);
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
-      if (currentUser) {
-        setUser(currentUser);
-        await loadSessions();
-        await loadProducts();
-      } else {
-        window.location.href = '/login?returnUrl=/admin/customers/live-chat';
-      }
-      setLoading(false);
-    });
+    let unsubscribe: (() => void) | undefined;
 
-    return () => unsubscribe();
+    void (async () => {
+      const auth = await getFirebaseAuth();
+      unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
+        if (currentUser) {
+          setUser(currentUser);
+          await loadSessions();
+          await loadProducts();
+        } else {
+          window.location.href = '/login?returnUrl=/admin/customers/live-chat';
+        }
+        setLoading(false);
+      });
+    })();
+
+    return () => unsubscribe?.();
   }, []);
 
   useEffect(() => {

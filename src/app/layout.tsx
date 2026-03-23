@@ -115,9 +115,19 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const criticalStyles = `
+    html{background:#fff}body{margin:0;background:#fff;color:#0f172a}
+    .page-container{max-width:80rem;margin-inline:auto;padding-inline:1rem}
+    @media (min-width:768px){.page-container{padding-inline:2rem}}
+    .home-critical-hero{content-visibility:auto;contain-intrinsic-size:900px}
+    .home-critical-hero-media{position:relative;isolation:isolate}
+    .home-critical-hero-panel{background:linear-gradient(90deg,rgba(14,10,4,.42) 0%,rgba(14,10,4,.18) 44%,rgba(14,10,4,.04) 72%,rgba(14,10,4,0) 100%)}
+  `;
+
   return (
     <html lang="ar" suppressHydrationWarning dir="rtl">
       <head>
+        <style dangerouslySetInnerHTML={{ __html: criticalStyles }} />
         <link rel="dns-prefetch" href="https://firebasestorage.googleapis.com" />
         <link rel="preconnect" href="https://firebasestorage.googleapis.com" crossOrigin="anonymous" />
         <link rel="dns-prefetch" href="https://firebasestorage.app" />

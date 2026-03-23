@@ -83,18 +83,18 @@ export default function HomeHeroContentClient({
   );
 
   return (
-    <div className="absolute inset-0 z-10 flex items-center">
+    <div className="home-critical-hero-panel absolute inset-0 z-10 flex items-center">
       <div className="w-full px-6 md:px-12">
         <div className="max-w-2xl">
           <span className={`inline-flex items-center rounded-full border border-[#caa14d] bg-white/95 px-4 py-2 text-[11px] font-semibold text-[#8a6721] shadow-sm ${isArabic ? 'tracking-normal' : 'uppercase tracking-[0.28em]'}`}>
             {isArabic ? 'مجموعة ذهبية مختارة' : 'Curated Gold Collection'}
           </span>
 
-          <h1 className={`mt-5 text-4xl font-heading font-bold text-white drop-shadow-[0_4px_14px_rgba(0,0,0,0.55)] md:text-6xl lg:text-7xl ${isArabic ? 'leading-[1.2] tracking-normal' : 'leading-[1.05] tracking-tight'}`}>
+          <h1 className={`mt-5 text-4xl font-heading font-bold text-white md:text-6xl lg:text-7xl ${isArabic ? 'leading-[1.2] tracking-normal' : 'leading-[1.05] tracking-tight'}`}>
             {title || companyName}
           </h1>
 
-          <p className="mt-5 max-w-xl text-lg leading-relaxed text-white/95 drop-shadow-[0_2px_8px_rgba(0,0,0,0.45)] md:text-xl lg:text-2xl">
+          <p className="mt-5 max-w-xl text-lg leading-relaxed text-white/95 md:text-xl lg:text-2xl">
             {subtitle}
           </p>
 

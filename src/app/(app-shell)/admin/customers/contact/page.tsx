@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useCallback } from 'react';
 import { onAuthStateChanged, User } from 'firebase/auth';
-import { auth } from '@/lib/firebase';
+import { getFirebaseAuth } from '@/lib/firebase';
 import { getAllContactSubmissions, updateContactSubmission } from '@/lib/firestore/contact_db';
 import { ContactSubmission } from '@/lib/firestore/contact_db';
 import { useLanguage } from '@/context/LanguageContext';
@@ -26,17 +26,22 @@ const ContactPage = () => {
   }, [t]);
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
-      if (currentUser) {
-        setUser(currentUser);
-        await loadSubmissions();
-      } else {
-        window.location.href = '/login?returnUrl=/admin/customers/contact';
-      }
-      setLoading(false);
-    });
+    let unsubscribe: (() => void) | undefined;
 
-    return () => unsubscribe();
+    void (async () => {
+      const auth = await getFirebaseAuth();
+      unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
+        if (currentUser) {
+          setUser(currentUser);
+          await loadSubmissions();
+        } else {
+          window.location.href = '/login?returnUrl=/admin/customers/contact';
+        }
+        setLoading(false);
+      });
+    })();
+
+    return () => unsubscribe?.();
   }, [loadSubmissions]);
 
   const handleStatusChange = async (id: string, status: 'new' | 'read' | 'replied' | 'archived') => {

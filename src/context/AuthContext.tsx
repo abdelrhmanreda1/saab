@@ -114,7 +114,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
             return;
           }
 
-          unsubscribe = onAuthStateChanged(firebaseModule.auth, (firebaseUser) => {
+          const auth = await firebaseModule.getFirebaseAuth();
+
+          unsubscribe = onAuthStateChanged(auth, (firebaseUser) => {
             if (cancelled) {
               return;
             }
