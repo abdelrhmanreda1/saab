@@ -4,25 +4,31 @@ import { getAllCategories } from '@/lib/firestore/categories_db';
 import { getSettings } from '@/lib/firestore/settings_db';
 import { getSEOSettings, getPageSEO } from '@/lib/firestore/seo_db';
 import { generateSEOMetadata } from '@/lib/utils/seo';
+import { pickFirstImage } from '@/lib/utils/metadata-images';
 import CategoriesClient from './CategoriesClient';
 
 export async function generateMetadata(): Promise<Metadata> {
   try {
-    const [settings, seoSettings, pageSEO] = await Promise.all([
+    const [settings, seoSettings, pageSEO, categories] = await Promise.all([
       getSettings().catch(() => null),
       getSEOSettings().catch(() => null),
       getPageSEO('/categories').catch(() => null),
+      getAllCategories().catch(() => []),
     ]);
 
     const globalSEO = seoSettings || settings?.seo;
     const companyName = settings?.company?.name || '';
+
+    const categoryImage = pickFirstImage(
+      ...categories.map((category) => category.imageUrl)
+    );
 
     return generateSEOMetadata({
       globalSEO,
       pageSEO,
       fallbackTitle: `Categories | ${companyName}`,
       fallbackDescription: 'Explore our product categories.',
-      fallbackImage: pageSEO?.metaImage,
+      fallbackImage: pickFirstImage(pageSEO?.metaImage, categoryImage),
       url: '/categories',
       fallbackTitlePriority: 'high',
       fallbackDescriptionPriority: 'high',

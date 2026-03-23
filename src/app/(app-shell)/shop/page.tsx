@@ -15,24 +15,32 @@ import ShopClient from './ShopClient';
 import { getSettings } from '@/lib/firestore/settings_db';
 import { getSEOSettings, getPageSEO } from '@/lib/firestore/seo_db';
 import { generateSEOMetadata } from '@/lib/utils/seo';
+import { pickFirstImage } from '@/lib/utils/metadata-images';
 
 export async function generateMetadata(): Promise<Metadata> {
   try {
-    const [settings, seoSettings, pageSEO] = await Promise.all([
+    const [settings, seoSettings, pageSEO, products] = await Promise.all([
       getSettings().catch(() => null),
       getSEOSettings().catch(() => null),
       getPageSEO('/shop').catch(() => null),
+      getAllProducts().catch(() => []),
     ]);
 
     const globalSEO = seoSettings || settings?.seo;
     const companyName = settings?.company?.name || '';
+
+    const shopImage = pickFirstImage(
+      ...products
+        .filter((product) => product.isActive !== false)
+        .flatMap((product) => product.images || [])
+    );
 
     return generateSEOMetadata({
       globalSEO,
       pageSEO,
       fallbackTitle: `Shop | ${companyName}`,
       fallbackDescription: 'Browse our gold jewelry collection, including rings, necklaces, bracelets, and premium pieces.',
-      fallbackImage: pageSEO?.metaImage,
+      fallbackImage: pickFirstImage(pageSEO?.metaImage, shopImage),
       url: '/shop',
       fallbackTitlePriority: 'high',
       fallbackDescriptionPriority: 'high',

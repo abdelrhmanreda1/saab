@@ -6,6 +6,7 @@ import { getSettings } from '@/lib/firestore/settings_db';
 import { getSEOSettings, getPageSEO } from '@/lib/firestore/seo_db';
 import { generateSEOMetadata } from '@/lib/utils/seo';
 import { Page } from '@/lib/firestore/pages';
+import { extractFirstImageFromHtml, pickFirstImage } from '@/lib/utils/metadata-images';
 import ShippingClient from './ShippingClient';
 
 // Serialized types for client components
@@ -84,6 +85,7 @@ export async function generateMetadata(): Promise<Metadata> {
     const pageTranslation = page?.translations?.find(t => t.languageCode === 'en') || page?.translations?.[0];
     const pageMetaTitle = pageTranslation?.metaTitle?.trim();
     const pageMetaDescription = pageTranslation?.metaDescription?.trim();
+    const pageContentImage = extractFirstImageFromHtml(pageTranslation?.content);
 
     // Create a PageSEO-like object prioritizing page translation SEO over page_seo collection
     // Only use page translation SEO if it's not empty
@@ -102,6 +104,7 @@ export async function generateMetadata(): Promise<Metadata> {
       pageSEO: pageSEOData as typeof pageSEO,
       fallbackTitle: pageMetaTitle || pageSEO?.title || globalSEO?.siteTitle || companyName || '',
       fallbackDescription: pageMetaDescription || pageSEO?.description || globalSEO?.siteDescription || '',
+      fallbackImage: pickFirstImage(pageSEO?.metaImage, pageContentImage),
       url: '/shipping-returns',
     });
   } catch {

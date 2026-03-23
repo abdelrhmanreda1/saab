@@ -7,26 +7,48 @@ import { FlashSale } from '@/lib/firestore/campaigns';
 import { getSettings } from '@/lib/firestore/settings_db';
 import { getSEOSettings, getPageSEO } from '@/lib/firestore/seo_db';
 import { generateSEOMetadata } from '@/lib/utils/seo';
+import { pickFirstImage } from '@/lib/utils/metadata-images';
 import { Timestamp } from 'firebase/firestore';
 import FlashClient from './FlashClient';
 import { generateSlug } from '@/lib/utils/slug';
 
 export async function generateMetadata(): Promise<Metadata> {
   try {
-    const [settings, seoSettings, pageSEO] = await Promise.all([
+    const [settings, seoSettings, pageSEO, products, flashSales] = await Promise.all([
       getSettings().catch(() => null),
       getSEOSettings().catch(() => null),
       getPageSEO('/flash').catch(() => null),
+      getAllProducts().catch(() => []),
+      getAllFlashSales(true).catch(() => []),
     ]);
 
     const globalSEO = seoSettings || settings?.seo;
     const companyName = settings?.company?.name || '';
+
+    const now = new Date();
+    const activeFlashProductIds = new Set(
+      flashSales
+        .filter((sale) => {
+          if (!sale.isActive) return false;
+          const startTime = sale.startTime?.toDate ? sale.startTime.toDate() : new Date(0);
+          const endTime = sale.endTime?.toDate ? sale.endTime.toDate() : new Date(0);
+          return now >= startTime && now <= endTime;
+        })
+        .flatMap((sale) => sale.productIds)
+    );
+
+    const flashImage = pickFirstImage(
+      ...products
+        .filter((product) => product.isActive !== false && activeFlashProductIds.has(product.id))
+        .flatMap((product) => product.images || [])
+    );
 
     return generateSEOMetadata({
       globalSEO,
       pageSEO,
       fallbackTitle: `Flash Sale | ${companyName}`,
       fallbackDescription: 'Limited time flash sale offers - grab them before they\'re gone!',
+      fallbackImage: pickFirstImage(pageSEO?.metaImage, flashImage),
       url: '/flash',
     });
   } catch {

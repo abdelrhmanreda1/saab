@@ -5,25 +5,30 @@ import { ProductBundle } from '@/lib/firestore/product_bundles';
 import { getSettings } from '@/lib/firestore/settings_db';
 import { getSEOSettings, getPageSEO } from '@/lib/firestore/seo_db';
 import { generateSEOMetadata } from '@/lib/utils/seo';
+import { pickFirstImage } from '@/lib/utils/metadata-images';
 import { Timestamp } from 'firebase/firestore';
 import ProductBundlesClient from './ProductBundlesClient';
 
 export async function generateMetadata(): Promise<Metadata> {
   try {
-    const [settings, seoSettings, pageSEO] = await Promise.all([
+    const [settings, seoSettings, pageSEO, bundles] = await Promise.all([
       getSettings().catch(() => null),
       getSEOSettings().catch(() => null),
       getPageSEO('/product-bundles').catch(() => null),
+      getAllProductBundles(true).catch(() => []),
     ]);
 
     const globalSEO = seoSettings || settings?.seo;
     const companyName = settings?.company?.name || '';
+
+    const bundleImage = pickFirstImage(...bundles.map((bundle) => bundle.image));
 
     return generateSEOMetadata({
       globalSEO,
       pageSEO,
       fallbackTitle: `Product Bundles | ${companyName}`,
       fallbackDescription: 'Exclusive bundle deals and special offers - save more when you buy together!',
+      fallbackImage: pickFirstImage(pageSEO?.metaImage, bundleImage),
       url: '/product-bundles',
     });
   } catch {

@@ -7,6 +7,7 @@ import { getSEOSettings, getPageSEO } from '@/lib/firestore/seo_db';
 import { generateSEOMetadata } from '@/lib/utils/seo';
 import { Page } from '@/lib/firestore/pages';
 import { DEFAULT_TRANSLATION_KEYS } from '@/lib/firestore/translations';
+import { extractFirstImageFromHtml, pickFirstImage } from '@/lib/utils/metadata-images';
 import AboutClient from './AboutClient';
 
 // Serialized types for client components
@@ -128,6 +129,7 @@ export async function generateMetadata(): Promise<Metadata> {
     const pageMetaDescription = pageTranslation?.metaDescription?.trim();
     const pageTitle = pageTranslation?.title?.trim();
     const pageContent = pageTranslation?.content?.trim();
+    const pageContentImage = extractFirstImageFromHtml(pageContent);
 
     // Create a PageSEO-like object prioritizing page translation SEO over page_seo collection
     // Only use page translation SEO if it's not empty
@@ -154,7 +156,7 @@ export async function generateMetadata(): Promise<Metadata> {
         pageSEO?.description ||
         pageContent ||
         `Learn more about ${companyName}.`,
-      fallbackImage: pageSEO?.metaImage,
+      fallbackImage: pickFirstImage(pageSEO?.metaImage, pageContentImage),
       url: '/about',
       fallbackTitlePriority: 'high',
       fallbackDescriptionPriority: 'high',

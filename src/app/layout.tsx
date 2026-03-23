@@ -3,7 +3,9 @@ import { Inter, Cairo } from "next/font/google";
 import "./globals.css";
 import { generateSEOMetadata } from '@/lib/utils/seo';
 import { getBaseUrl } from '@/lib/utils/url';
+import { getAllBanners } from '@/lib/firestore/banners_db';
 import { getCachedPageSEO, getCachedSEOSettings, getCachedSettings } from '@/lib/server/site-config';
+import { pickFirstImage } from '@/lib/utils/metadata-images';
 
 const inter = Inter({
   variable: "--font-inter",
@@ -23,21 +25,30 @@ const cairo = Cairo({
 export async function generateMetadata(): Promise<Metadata> {
   try {
     const metadataBase = new URL(getBaseUrl());
-    const [settings, seoSettings, homepageSEO] = await Promise.all([
+    const [settings, seoSettings, homepageSEO, banners] = await Promise.all([
       getCachedSettings(),
       getCachedSEOSettings(),
       getCachedPageSEO('/'),
+      getAllBanners().catch(() => []),
     ]);
 
     const globalSEO = seoSettings || settings?.seo;
     const companyName = settings?.company?.name || 'Pardah';
+
+    const heroImage = pickFirstImage(
+      homepageSEO?.metaImage,
+      ...banners
+        .filter((banner) => banner?.isActive !== false)
+        .sort((a, b) => (a.order || 0) - (b.order || 0))
+        .map((banner) => banner.imageUrl)
+    );
 
     const metadata = generateSEOMetadata({
       globalSEO,
       pageSEO: homepageSEO,
       fallbackTitle: globalSEO?.siteTitle || companyName || '',
       fallbackDescription: globalSEO?.siteDescription || '',
-      fallbackImage: homepageSEO?.metaImage,
+      fallbackImage: heroImage,
       url: '/',
       fallbackTitlePriority: 'high',
       fallbackDescriptionPriority: 'high',

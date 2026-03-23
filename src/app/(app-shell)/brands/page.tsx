@@ -5,25 +5,30 @@ import { Brand } from '@/lib/firestore/brands';
 import { getSettings } from '@/lib/firestore/settings_db';
 import { getSEOSettings, getPageSEO } from '@/lib/firestore/seo_db';
 import { generateSEOMetadata } from '@/lib/utils/seo';
+import { pickFirstImage } from '@/lib/utils/metadata-images';
 import BrandsClient from './BrandsClient';
 import { Timestamp } from 'firebase/firestore';
 
 export async function generateMetadata(): Promise<Metadata> {
   try {
-    const [settings, seoSettings, pageSEO] = await Promise.all([
+    const [settings, seoSettings, pageSEO, brands] = await Promise.all([
       getSettings(),
       getSEOSettings(),
       getPageSEO('/brands'),
+      getAllBrands().catch(() => []),
     ]);
 
     const globalSEO = seoSettings || settings?.seo;
     const companyName = settings?.company?.name || '';
+
+    const brandImage = pickFirstImage(...brands.map((brand) => brand.logoUrl));
 
     return generateSEOMetadata({
       globalSEO,
       pageSEO,
       fallbackTitle: `Brands | ${companyName}`,
       fallbackDescription: 'Shop by your favorite brands.',
+      fallbackImage: pickFirstImage(pageSEO?.metaImage, brandImage),
       url: '/brands',
     });
   } catch {

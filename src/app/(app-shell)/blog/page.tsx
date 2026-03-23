@@ -2,24 +2,33 @@ import { Metadata } from 'next';
 import BlogPageClient from './BlogPageClient';
 import { getSEOSettings, getPageSEO } from '@/lib/firestore/seo_db';
 import { getSettings } from '@/lib/firestore/settings_db';
+import { getAllPosts } from '@/lib/firestore/blog_db';
 import { generateSEOMetadata } from '@/lib/utils/seo';
+import { pickFirstImage } from '@/lib/utils/metadata-images';
 
 export async function generateMetadata(): Promise<Metadata> {
-  const [settings, seoSettings, pageSEO] = await Promise.all([
+  const [settings, seoSettings, pageSEO, posts] = await Promise.all([
     getSettings().catch(() => null),
     getSEOSettings().catch(() => null),
     getPageSEO('/blog').catch(() => null),
+    getAllPosts(true).catch(() => []),
   ]);
 
   const globalSEO = seoSettings || settings?.seo;
   const companyName = settings?.company?.name || 'Store';
+
+  const blogImage = pickFirstImage(
+    ...posts
+      .filter((post) => post.isPublished !== false)
+      .map((post) => post.coverImage)
+  );
 
   return generateSEOMetadata({
     globalSEO,
     pageSEO,
     fallbackTitle: `Blog | ${companyName}`,
     fallbackDescription: 'Discover guides, updates, and useful articles from our store.',
-    fallbackImage: pageSEO?.metaImage,
+    fallbackImage: pickFirstImage(pageSEO?.metaImage, blogImage),
     url: '/blog',
     fallbackTitlePriority: 'high',
     fallbackDescriptionPriority: 'high',
