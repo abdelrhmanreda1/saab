@@ -22,7 +22,10 @@ export async function generateMetadata(): Promise<Metadata> {
       pageSEO,
       fallbackTitle: `Categories | ${companyName}`,
       fallbackDescription: 'Explore our product categories.',
+      fallbackImage: pageSEO?.metaImage,
       url: '/categories',
+      fallbackTitlePriority: 'high',
+      fallbackDescriptionPriority: 'high',
     });
   } catch {
     // Failed to generate categories metadata - return fallback

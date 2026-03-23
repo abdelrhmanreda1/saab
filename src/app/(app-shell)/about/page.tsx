@@ -85,6 +85,8 @@ export async function generateMetadata(): Promise<Metadata> {
     const pageTranslation = page?.translations?.find(t => t.languageCode === 'en') || page?.translations?.[0];
     const pageMetaTitle = pageTranslation?.metaTitle?.trim();
     const pageMetaDescription = pageTranslation?.metaDescription?.trim();
+    const pageTitle = pageTranslation?.title?.trim();
+    const pageContent = pageTranslation?.content?.trim();
 
     // Create a PageSEO-like object prioritizing page translation SEO over page_seo collection
     // Only use page translation SEO if it's not empty
@@ -101,9 +103,20 @@ export async function generateMetadata(): Promise<Metadata> {
     return generateSEOMetadata({
       globalSEO,
       pageSEO: pageSEOData as typeof pageSEO,
-      fallbackTitle: pageMetaTitle || pageSEO?.title || globalSEO?.siteTitle || companyName || '',
-      fallbackDescription: pageMetaDescription || pageSEO?.description || globalSEO?.siteDescription || '',
+      fallbackTitle:
+        pageMetaTitle ||
+        pageSEO?.title ||
+        pageTitle ||
+        `${DEFAULT_TRANSLATION_KEYS['footer.about_us'] || 'About Us'} | ${companyName}`,
+      fallbackDescription:
+        pageMetaDescription ||
+        pageSEO?.description ||
+        pageContent ||
+        `Learn more about ${companyName}.`,
+      fallbackImage: pageSEO?.metaImage,
       url: '/about',
+      fallbackTitlePriority: 'high',
+      fallbackDescriptionPriority: 'high',
     });
   } catch {
     // Error generating about metadata - return fallback

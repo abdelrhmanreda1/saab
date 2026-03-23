@@ -4,7 +4,6 @@ import { getPostBySlug } from '@/lib/firestore/blog_db';
 import { getBlogSEO, getSEOSettings } from '@/lib/firestore/seo_db';
 import { getSettings } from '@/lib/firestore/settings_db';
 import { generateSEOMetadata } from '@/lib/utils/seo';
-import { getAllBanners } from '@/lib/firestore/banners_db';
 
 type BlogPostPageProps = {
   params: Promise<{ slug: string }>;
@@ -14,14 +13,12 @@ export async function generateMetadata({ params }: BlogPostPageProps): Promise<M
   const { slug } = await params;
   const post = await getPostBySlug(slug).catch(() => null);
 
-  const [settings, seoSettings, blogSEO, banners] = await Promise.all([
+  const [settings, seoSettings, blogSEO] = await Promise.all([
     getSettings().catch(() => null),
     getSEOSettings().catch(() => null),
     post?.id ? getBlogSEO(post.id).catch(() => null) : Promise.resolve(null),
-    getAllBanners().catch(() => []),
   ]);
 
-  const activeBannerImage = banners.find((banner) => banner.isActive && banner.imageUrl)?.imageUrl;
   const globalSEO = seoSettings || settings?.seo;
   const siteLanguage = String(settings?.site?.language || 'ar').trim().toLowerCase();
   const title = post ? (siteLanguage === 'ar' && post.title_ar ? post.title_ar : post.title) : 'Blog Post';
@@ -34,7 +31,7 @@ export async function generateMetadata({ params }: BlogPostPageProps): Promise<M
     blogSEO,
     fallbackTitle: title,
     fallbackDescription: description,
-    fallbackImage: post?.coverImage || activeBannerImage,
+    fallbackImage: post?.coverImage || blogSEO?.metaImage || globalSEO?.defaultMetaImage || globalSEO?.ogDefaultImage,
     url: `/blog/${slug}`,
     openGraphType: 'article',
     fallbackTitlePriority: 'high',

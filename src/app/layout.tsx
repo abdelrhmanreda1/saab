@@ -3,7 +3,6 @@ import { Inter, Cairo } from "next/font/google";
 import "./globals.css";
 import { generateSEOMetadata } from '@/lib/utils/seo';
 import { getCachedPageSEO, getCachedSEOSettings, getCachedSettings } from '@/lib/server/site-config';
-import { getAllBanners } from '@/lib/firestore/banners_db';
 
 const inter = Inter({
   variable: "--font-inter",
@@ -22,24 +21,24 @@ const cairo = Cairo({
 
 export async function generateMetadata(): Promise<Metadata> {
   try {
-    const [settings, seoSettings, homepageSEO, banners] = await Promise.all([
+    const [settings, seoSettings, homepageSEO] = await Promise.all([
       getCachedSettings(),
       getCachedSEOSettings(),
       getCachedPageSEO('/'),
-      getAllBanners().catch(() => []),
     ]);
 
     const globalSEO = seoSettings || settings?.seo;
     const companyName = settings?.company?.name || 'Pardah';
-    const activeBannerImage = banners.find((banner) => banner.isActive && banner.imageUrl)?.imageUrl;
 
     const metadata = generateSEOMetadata({
       globalSEO,
       pageSEO: homepageSEO,
       fallbackTitle: globalSEO?.siteTitle || companyName || '',
       fallbackDescription: globalSEO?.siteDescription || '',
-      fallbackImage: activeBannerImage || globalSEO?.defaultMetaImage || globalSEO?.ogDefaultImage,
+      fallbackImage: homepageSEO?.metaImage || globalSEO?.defaultMetaImage || globalSEO?.ogDefaultImage,
       url: '/',
+      fallbackTitlePriority: 'high',
+      fallbackDescriptionPriority: 'high',
     });
 
     const pwaMetadata = {

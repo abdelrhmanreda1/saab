@@ -2,7 +2,6 @@ import { getPostBySlug } from '@/lib/firestore/blog_db';
 import { getPageBySlug } from '@/lib/firestore/pages_db';
 import { getPageSEO, getBlogSEO, getSEOSettings } from '@/lib/firestore/seo_db';
 import { getSettings } from '@/lib/firestore/settings_db';
-import { getAllBanners } from '@/lib/firestore/banners_db';
 import { getBaseUrl } from '@/lib/utils/url';
 
 export type SocialMetadata = {
@@ -30,17 +29,10 @@ const toAbsoluteUrl = (value?: string): string | undefined => {
   return value.startsWith('http') ? value : `${baseUrl}${value}`;
 };
 
-const getPreferredFallbackImage = async (): Promise<string | undefined> => {
-  const banners = await getAllBanners().catch(() => []);
-  const activeBanner = banners.find((banner) => banner.isActive && banner.imageUrl);
-  return activeBanner?.imageUrl;
-};
-
 const getSiteName = async () => {
-  const [settings, seoSettings, bannerImage] = await Promise.all([
+  const [settings, seoSettings] = await Promise.all([
     getSettings().catch(() => null),
     getSEOSettings().catch(() => null),
-    getPreferredFallbackImage(),
   ]);
 
   return {
@@ -52,7 +44,6 @@ const getSiteName = async () => {
       settings?.company?.name ||
       'Pardah',
     defaultImage:
-      bannerImage ||
       seoSettings?.defaultMetaImage ||
       seoSettings?.ogDefaultImage ||
       settings?.seo?.defaultMetaImage ||
