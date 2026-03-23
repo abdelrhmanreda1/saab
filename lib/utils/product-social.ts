@@ -1,6 +1,7 @@
 import { getProductBySlug } from '@/lib/firestore/products_db';
 import { getSEOSettings, getProductSEO } from '@/lib/firestore/seo_db';
 import { getSettings } from '@/lib/firestore/settings_db';
+import { getAllBanners } from '@/lib/firestore/banners_db';
 import { getBaseUrl } from '@/lib/utils/url';
 
 type ProductSocialMetadataOptions = {
@@ -48,10 +49,11 @@ export async function getProductSocialMetadata(
     return null;
   }
 
-  const [settings, seoSettings, productSEO] = await Promise.all([
+  const [settings, seoSettings, productSEO, banners] = await Promise.all([
     getSettings().catch(() => null),
     getSEOSettings().catch(() => null),
     getProductSEO(product.id).catch(() => null),
+    getAllBanners().catch(() => []),
   ]);
 
   const baseUrl = getBaseUrl();
@@ -67,9 +69,11 @@ export async function getProductSocialMetadata(
       product.description ||
       `${fallbackDescriptionPrefix} ${product.name} on ${siteName}.`
   );
+  const activeBannerImage = banners.find((banner) => banner.isActive && banner.imageUrl)?.imageUrl;
   const imageUrl = toAbsoluteUrl(
     productSEO?.metaImage ||
       product.images?.[0] ||
+      activeBannerImage ||
       seoSettings?.defaultMetaImage ||
       seoSettings?.ogDefaultImage ||
       settings?.seo?.defaultMetaImage ||
