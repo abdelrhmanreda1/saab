@@ -46,8 +46,8 @@ export async function generateMetadata(): Promise<Metadata> {
     const metadata = generateSEOMetadata({
       globalSEO,
       pageSEO: homepageSEO,
-      fallbackTitle: globalSEO?.siteTitle || companyName || '',
-      fallbackDescription: globalSEO?.siteDescription || '',
+      fallbackTitle: homepageSEO?.title || `${companyName} | متجر الذهب والمجوهرات`,
+      fallbackDescription: homepageSEO?.description || 'اكتشف الذهب والمجوهرات الفاخرة بتصاميم راقية وأسعار واضحة وتجربة شراء موثوقة.',
       fallbackImage: heroImage,
       url: '/',
       fallbackTitlePriority: 'high',

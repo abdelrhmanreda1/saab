@@ -26,8 +26,8 @@ export async function generateMetadata(): Promise<Metadata> {
   return generateSEOMetadata({
     globalSEO,
     pageSEO,
-    fallbackTitle: `Blog | ${companyName}`,
-    fallbackDescription: 'Discover guides, updates, and useful articles from our store.',
+    fallbackTitle: `المدونة | ${companyName}`,
+    fallbackDescription: 'اكتشف المقالات والأدلة والنصائح المفيدة من متجرنا.',
     fallbackImage: pickFirstImage(pageSEO?.metaImage, blogImage),
     url: '/blog',
     fallbackTitlePriority: 'high',

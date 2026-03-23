@@ -72,8 +72,8 @@ export async function generateMetadata({ params }: BundlePageProps): Promise<Met
     const settings = await getSettings();
     const companyName = settings?.company?.name || '';
     return {
-      title: `Product Bundle | ${companyName}`,
-      description: `View product bundle details on ${companyName}.`,
+      title: `الباقة | ${companyName}`,
+      description: `تعرّف على تفاصيل الباقة في ${companyName}.`,
     };
   }
 
@@ -81,8 +81,8 @@ export async function generateMetadata({ params }: BundlePageProps): Promise<Met
     const settings = await getSettings();
     const companyName = settings?.company?.name || '';
     return {
-      title: `Product Bundle Not Found | ${companyName}`,
-      description: 'The product bundle you are looking for does not exist.',
+      title: `الباقة غير موجودة | ${companyName}`,
+      description: 'الباقة التي تبحث عنها غير موجودة.',
     };
   }
 
@@ -103,18 +103,19 @@ export async function generateMetadata({ params }: BundlePageProps): Promise<Met
     return generateSEOMetadata({
       globalSEO,
       pageSEO,
-      fallbackTitle: `${bundleName} - Product Bundle | ${companyName}`,
+      fallbackTitle: `${bundleName} | باقة من ${companyName}`,
       fallbackDescription: bundleDescription,
+      fallbackImage: bundle.image,
       url: `${baseUrl}/product-bundles/${bundleId}`,
     });
   } catch {
     const settings = await getSettings();
     const companyName = settings?.company?.name || '';
     return {
-      title: `${bundleName} - Product Bundle | ${companyName}`,
+      title: `${bundleName} | باقة من ${companyName}`,
       description: bundleDescription,
       openGraph: {
-        title: `${bundleName} - Product Bundle | ${companyName}`,
+        title: `${bundleName} | باقة من ${companyName}`,
         description: bundleDescription,
         url: `${baseUrl}/product-bundles/${bundleId}`,
         ...(bundle.image && {

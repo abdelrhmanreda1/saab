@@ -4,6 +4,7 @@ import { getPostBySlug } from '@/lib/firestore/blog_db';
 import { getBlogSEO, getSEOSettings } from '@/lib/firestore/seo_db';
 import { getSettings } from '@/lib/firestore/settings_db';
 import { generateSEOMetadata } from '@/lib/utils/seo';
+import { DEFAULT_METADATA_LANGUAGE } from '@/lib/utils/metadata-language';
 
 type BlogPostPageProps = {
   params: Promise<{ slug: string }>;
@@ -20,11 +21,11 @@ export async function generateMetadata({ params }: BlogPostPageProps): Promise<M
   ]);
 
   const globalSEO = seoSettings || settings?.seo;
-  const siteLanguage = String(settings?.site?.language || 'ar').trim().toLowerCase();
-  const title = post ? (siteLanguage === 'ar' && post.title_ar ? post.title_ar : post.title) : 'Blog Post';
+  const siteLanguage = DEFAULT_METADATA_LANGUAGE;
+  const title = post ? (siteLanguage === 'ar' && post.title_ar ? post.title_ar : post.title) : 'مقال';
   const description = post
     ? (siteLanguage === 'ar' && post.excerpt_ar ? post.excerpt_ar : post.excerpt || post.content)
-    : 'Read this article.';
+    : 'اقرأ هذا المقال.';
 
   return generateSEOMetadata({
     globalSEO,

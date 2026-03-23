@@ -9,6 +9,7 @@ import ProductClient, { SerializedProduct } from './ProductClient';
 import { getSettings } from '@/lib/firestore/settings_db';
 import { getSEOSettings, getProductSEO } from '@/lib/firestore/seo_db';
 import { generateSEOMetadata } from '@/lib/utils/seo';
+import { DEFAULT_METADATA_LANGUAGE } from '@/lib/utils/metadata-language';
 
 type ProductPageProps = {
   params: Promise<{ productId: string }>;
@@ -27,13 +28,13 @@ export async function generateMetadata({ params }: ProductPageProps): Promise<Me
       const settings = await getSettings().catch(() => null);
       const companyName = settings?.company?.name || '';
       return {
-        title: `Product | ${companyName}`,
-        description: `View product details on ${companyName}.`,
+        title: `المنتج | ${companyName}`,
+        description: `تعرّف على تفاصيل المنتج في ${companyName}.`,
       };
     } catch {
       return {
-        title: 'Product',
-        description: 'View product details.',
+        title: 'المنتج',
+        description: 'تعرّف على تفاصيل المنتج.',
       };
     }
   }
@@ -43,13 +44,13 @@ export async function generateMetadata({ params }: ProductPageProps): Promise<Me
       const settings = await getSettings().catch(() => null);
       const companyName = settings?.company?.name || '';
       return {
-        title: `Product Not Found | ${companyName}`,
-        description: 'The product you are looking for does not exist.',
+        title: `المنتج غير موجود | ${companyName}`,
+        description: 'المنتج الذي تبحث عنه غير موجود.',
       };
     } catch {
       return {
-        title: 'Product Not Found',
-        description: 'The product you are looking for does not exist.',
+        title: 'المنتج غير موجود',
+        description: 'المنتج الذي تبحث عنه غير موجود.',
       };
     }
   }
@@ -66,7 +67,7 @@ export async function generateMetadata({ params }: ProductPageProps): Promise<Me
 
     const globalSEO = seoSettings || settings?.seo;
     const companyName = settings?.company?.name || '';
-    const siteLanguage = settings?.site?.language || 'en';
+    const siteLanguage = DEFAULT_METADATA_LANGUAGE;
     const productName = getProductName(product, siteLanguage);
     const productDescription = getProductDescription(product, siteLanguage);
 
@@ -74,7 +75,7 @@ export async function generateMetadata({ params }: ProductPageProps): Promise<Me
       globalSEO,
       productSEO,
       fallbackTitle: productName,
-      fallbackDescription: productDescription || `View details for ${productName} on ${companyName}.`,
+      fallbackDescription: productDescription || `تعرّف على تفاصيل ${productName} في ${companyName}.`,
       url: `${baseUrl}/products/${productId}`,
       productImages,
       openGraphType: 'website',
@@ -87,15 +88,15 @@ export async function generateMetadata({ params }: ProductPageProps): Promise<Me
     try {
       const settings = await getSettings().catch(() => null);
       const companyName = settings?.company?.name || '';
-      const siteLanguage = settings?.site?.language || 'en';
+      const siteLanguage = DEFAULT_METADATA_LANGUAGE;
       const productName = getProductName(product, siteLanguage);
       const productDescription = getProductDescription(product, siteLanguage);
       return {
         title: productName,
-        description: productDescription || `View details for ${productName} on ${companyName}.`,
+        description: productDescription || `تعرّف على تفاصيل ${productName} في ${companyName}.`,
         openGraph: {
           title: productName,
-          description: productDescription || `View details for ${productName} on ${companyName}.`,
+          description: productDescription || `تعرّف على تفاصيل ${productName} في ${companyName}.`,
           url: `${baseUrl}/products/${productId}`,
           type: 'website',
           siteName: companyName || 'Pardah',
@@ -113,15 +114,15 @@ export async function generateMetadata({ params }: ProductPageProps): Promise<Me
         twitter: {
           card: 'summary_large_image',
           title: productName,
-          description: productDescription || `View details for ${productName} on ${companyName}.`,
+          description: productDescription || `تعرّف على تفاصيل ${productName} في ${companyName}.`,
           ...(productImages.length > 0 && {
             images: [productImages[0].startsWith('http') ? productImages[0] : `${baseUrl}${productImages[0]}`],
           }),
         },
       };
     } catch {
-      const productName = getProductName(product, 'en');
-      const productDescription = getProductDescription(product, 'en');
+      const productName = getProductName(product, DEFAULT_METADATA_LANGUAGE);
+      const productDescription = getProductDescription(product, DEFAULT_METADATA_LANGUAGE);
       return {
         title: productName,
         description: productDescription,

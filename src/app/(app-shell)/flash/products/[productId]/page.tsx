@@ -11,6 +11,8 @@ import { generateSEOMetadata } from '@/lib/utils/seo';
 import { Timestamp } from 'firebase/firestore';
 import { getAllFlashSales } from '@/lib/firestore/campaigns_db';
 import { FlashSale } from '@/lib/firestore/campaigns';
+import { getProductDescription, getProductName } from '@/lib/utils/translations';
+import { DEFAULT_METADATA_LANGUAGE } from '@/lib/utils/metadata-language';
 
 type FlashProductPageProps = {
   params: Promise<{ productId: string }>;
@@ -108,8 +110,8 @@ export async function generateMetadata({ params }: FlashProductPageProps): Promi
     const settings = await getSettings();
     const companyName = settings?.company?.name || '';
     return {
-      title: `Flash Sale Product | ${companyName}`,
-      description: `View flash sale product details on ${companyName}.`,
+      title: `منتج العرض السريع | ${companyName}`,
+      description: `تعرّف على تفاصيل منتج العرض السريع في ${companyName}.`,
     };
   }
 
@@ -117,14 +119,14 @@ export async function generateMetadata({ params }: FlashProductPageProps): Promi
     const settings = await getSettings();
     const companyName = settings?.company?.name || '';
     return {
-      title: `Flash Sale Product Not Found | ${companyName}`,
-      description: 'The flash sale product you are looking for does not exist.',
+      title: `منتج العرض السريع غير موجود | ${companyName}`,
+      description: 'منتج العرض السريع الذي تبحث عنه غير موجود.',
     };
   }
 
   const baseUrl = getBaseUrl();
-  const productName = product.name;
-  const productDescription = product.description;
+  const productName = getProductName(product, DEFAULT_METADATA_LANGUAGE);
+  const productDescription = getProductDescription(product, DEFAULT_METADATA_LANGUAGE);
   const productImages = product.images || [];
 
   try {
@@ -141,7 +143,7 @@ export async function generateMetadata({ params }: FlashProductPageProps): Promi
       globalSEO,
       productSEO,
       fallbackTitle: productName,
-      fallbackDescription: productDescription || `View flash sale details for ${productName} on ${companyName}.`,
+      fallbackDescription: productDescription || `تعرّف على تفاصيل العرض السريع الخاصة بـ ${productName} في ${companyName}.`,
       url: `${baseUrl}/flash/products/${productId}`,
       productName,
       productDescription,
@@ -156,10 +158,10 @@ export async function generateMetadata({ params }: FlashProductPageProps): Promi
     const companyName = settings?.company?.name || '';
     return {
       title: productName,
-      description: productDescription || `View flash sale details for ${productName} on ${companyName}.`,
+      description: productDescription || `تعرّف على تفاصيل العرض السريع الخاصة بـ ${productName} في ${companyName}.`,
       openGraph: {
         title: productName,
-        description: productDescription || `View flash sale details for ${productName} on ${companyName}.`,
+        description: productDescription || `تعرّف على تفاصيل العرض السريع الخاصة بـ ${productName} في ${companyName}.`,
         url: `${baseUrl}/flash/products/${productId}`,
         type: 'website',
         siteName: companyName || 'Pardah',
@@ -177,7 +179,7 @@ export async function generateMetadata({ params }: FlashProductPageProps): Promi
       twitter: {
         card: 'summary_large_image',
         title: productName,
-        description: productDescription || `View flash sale details for ${productName} on ${companyName}.`,
+        description: productDescription || `تعرّف على تفاصيل العرض السريع الخاصة بـ ${productName} في ${companyName}.`,
         ...(productImages.length > 0 && {
           images: [productImages[0].startsWith('http') ? productImages[0] : `${baseUrl}${productImages[0]}`],
         }),

@@ -46,8 +46,8 @@ export async function generateMetadata(): Promise<Metadata> {
     return generateSEOMetadata({
       globalSEO,
       pageSEO,
-      fallbackTitle: `Flash Sale | ${companyName}`,
-      fallbackDescription: 'Limited time flash sale offers - grab them before they\'re gone!',
+      fallbackTitle: `عروض سريعة | ${companyName}`,
+      fallbackDescription: 'عروض لفترة محدودة على منتجات مختارة، اغتنمها قبل انتهاء الوقت.',
       fallbackImage: pickFirstImage(pageSEO?.metaImage, flashImage),
       url: '/flash',
     });
@@ -57,13 +57,13 @@ export async function generateMetadata(): Promise<Metadata> {
       const settings = await getSettings().catch(() => null);
       const companyName = settings?.company?.name || '';
       return {
-        title: `Flash Sale | ${companyName}`,
-        description: 'Limited time flash sale offers - grab them before they\'re gone!',
+        title: `عروض سريعة | ${companyName}`,
+        description: 'عروض لفترة محدودة على منتجات مختارة، اغتنمها قبل انتهاء الوقت.',
       };
     } catch {
       return {
-        title: 'Flash Sale',
-        description: 'Limited time flash sale offers - grab them before they\'re gone!',
+        title: 'عروض سريعة',
+        description: 'عروض لفترة محدودة على منتجات مختارة، اغتنمها قبل انتهاء الوقت.',
       };
     }
   }

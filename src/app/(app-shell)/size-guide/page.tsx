@@ -6,6 +6,7 @@ import { getSettings } from '@/lib/firestore/settings_db';
 import { getSEOSettings, getPageSEO } from '@/lib/firestore/seo_db';
 import { generateSEOMetadata } from '@/lib/utils/seo';
 import { Page } from '@/lib/firestore/pages';
+import { DEFAULT_METADATA_LANGUAGE, pickPreferredPageTranslation } from '@/lib/utils/metadata-language';
 
 // For size-guide we render raw HTML (already contains full layout)
 type SerializedTimestamp = { seconds: number; nanoseconds: number } | null;
@@ -76,8 +77,7 @@ export async function generateMetadata(): Promise<Metadata> {
     const globalSEO = seoSettings || settings?.seo;
     const companyName = settings?.company?.name || '';
 
-    const pageTranslation =
-      page?.translations?.find((t) => t.languageCode === 'en') || page?.translations?.[0];
+    const pageTranslation = pickPreferredPageTranslation(page?.translations, DEFAULT_METADATA_LANGUAGE);
     const pageMetaTitle = pageTranslation?.metaTitle?.trim();
     const pageMetaDescription = pageTranslation?.metaDescription?.trim();
 
@@ -109,12 +109,12 @@ export async function generateMetadata(): Promise<Metadata> {
       const settings = await getSettings().catch(() => null);
       const companyName = settings?.company?.name || '';
       return {
-        title: `Size Guide | ${companyName}`,
+        title: `دليل المقاسات | ${companyName}`,
         description: '',
       };
     } catch {
       return {
-        title: 'Size Guide',
+        title: 'دليل المقاسات',
         description: '',
       };
     }
@@ -139,10 +139,7 @@ const SizeGuidePage = async () => {
   
   const serialized = serializePage(page);
 
-  const translation =
-    serialized?.translations.find((t) => t.languageCode === 'en') ||
-    serialized?.translations[0] ||
-    null;
+  const translation = pickPreferredPageTranslation(serialized?.translations, DEFAULT_METADATA_LANGUAGE) || null;
 
   if (!translation || !translation.content) {
     // Fallback to a simple message if content not configured in admin
@@ -151,9 +148,9 @@ const SizeGuidePage = async () => {
         <div className="bg-gray-50 border-b border-gray-100 py-8 mb-6">
           <div className="page-container text-center">
             <h1 className="text-4xl md:text-5xl font-heading font-bold text-gray-900 mb-2">
-              Size Guide
+              دليل المقاسات
             </h1>
-            <p className="text-sm text-gray-500">Size guide content will appear here soon.</p>
+            <p className="text-sm text-gray-500">سيظهر محتوى دليل المقاسات هنا قريبًا.</p>
           </div>
         </div>
       </div>

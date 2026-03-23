@@ -7,6 +7,7 @@ import { getSEOSettings, getPageSEO } from '@/lib/firestore/seo_db';
 import { generateSEOMetadata } from '@/lib/utils/seo';
 import { Page } from '@/lib/firestore/pages';
 import { extractFirstImageFromHtml, pickFirstImage } from '@/lib/utils/metadata-images';
+import { DEFAULT_METADATA_LANGUAGE, pickPreferredPageTranslation } from '@/lib/utils/metadata-language';
 import ShippingClient from './ShippingClient';
 
 // Serialized types for client components
@@ -80,9 +81,7 @@ export async function generateMetadata(): Promise<Metadata> {
     const globalSEO = seoSettings || settings?.seo;
     const companyName = settings?.company?.name || '';
     
-    // Get metaTitle and metaDescription from page translation (English by default)
-    // Priority: Page Translation SEO > Page SEO Collection > Global SEO
-    const pageTranslation = page?.translations?.find(t => t.languageCode === 'en') || page?.translations?.[0];
+    const pageTranslation = pickPreferredPageTranslation(page?.translations, DEFAULT_METADATA_LANGUAGE);
     const pageMetaTitle = pageTranslation?.metaTitle?.trim();
     const pageMetaDescription = pageTranslation?.metaDescription?.trim();
     const pageContentImage = extractFirstImageFromHtml(pageTranslation?.content);

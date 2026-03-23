@@ -26,8 +26,8 @@ export async function generateMetadata(): Promise<Metadata> {
     return generateSEOMetadata({
       globalSEO,
       pageSEO,
-      fallbackTitle: `Categories | ${companyName}`,
-      fallbackDescription: 'Explore our product categories.',
+      fallbackTitle: `الأقسام | ${companyName}`,
+      fallbackDescription: 'استكشف أقسام المنتجات المختلفة داخل المتجر.',
       fallbackImage: pickFirstImage(pageSEO?.metaImage, categoryImage),
       url: '/categories',
       fallbackTitlePriority: 'high',
@@ -39,13 +39,13 @@ export async function generateMetadata(): Promise<Metadata> {
       const settings = await getSettings().catch(() => null);
       const companyName = settings?.company?.name || '';
       return {
-        title: `Categories | ${companyName}`,
-        description: 'Explore our product categories.',
+        title: `الأقسام | ${companyName}`,
+        description: 'استكشف أقسام المنتجات المختلفة داخل المتجر.',
       };
     } catch {
       return {
-        title: 'Categories',
-        description: 'Explore our product categories.',
+        title: 'الأقسام',
+        description: 'استكشف أقسام المنتجات المختلفة داخل المتجر.',
       };
     }
   }

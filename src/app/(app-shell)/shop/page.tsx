@@ -38,8 +38,8 @@ export async function generateMetadata(): Promise<Metadata> {
     return generateSEOMetadata({
       globalSEO,
       pageSEO,
-      fallbackTitle: `Shop | ${companyName}`,
-      fallbackDescription: 'Browse our gold jewelry collection, including rings, necklaces, bracelets, and premium pieces.',
+      fallbackTitle: `المتجر | ${companyName}`,
+      fallbackDescription: 'تصفح مجموعة الذهب والمجوهرات لدينا، بما يشمل الخواتم والسلاسل والأساور والقطع المميزة.',
       fallbackImage: pickFirstImage(pageSEO?.metaImage, shopImage),
       url: '/shop',
       fallbackTitlePriority: 'high',
@@ -51,13 +51,13 @@ export async function generateMetadata(): Promise<Metadata> {
       const settings = await getSettings().catch(() => null);
       const companyName = settings?.company?.name || '';
       return {
-        title: `Shop | ${companyName}`,
-        description: 'Browse our gold jewelry collection, including rings, necklaces, bracelets, and premium pieces.',
+        title: `المتجر | ${companyName}`,
+        description: 'تصفح مجموعة الذهب والمجوهرات لدينا، بما يشمل الخواتم والسلاسل والأساور والقطع المميزة.',
       };
     } catch {
       return {
-        title: 'Shop',
-        description: 'Browse our gold jewelry collection, including rings, necklaces, bracelets, and premium pieces.',
+        title: 'المتجر',
+        description: 'تصفح مجموعة الذهب والمجوهرات لدينا، بما يشمل الخواتم والسلاسل والأساور والقطع المميزة.',
       };
     }
   }

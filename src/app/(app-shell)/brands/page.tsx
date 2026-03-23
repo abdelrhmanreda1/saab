@@ -26,8 +26,8 @@ export async function generateMetadata(): Promise<Metadata> {
     return generateSEOMetadata({
       globalSEO,
       pageSEO,
-      fallbackTitle: `Brands | ${companyName}`,
-      fallbackDescription: 'Shop by your favorite brands.',
+      fallbackTitle: `العلامات التجارية | ${companyName}`,
+      fallbackDescription: 'تسوق حسب العلامات التجارية المفضلة لديك.',
       fallbackImage: pickFirstImage(pageSEO?.metaImage, brandImage),
       url: '/brands',
     });
@@ -36,8 +36,8 @@ export async function generateMetadata(): Promise<Metadata> {
     const settings = await getSettings();
     const companyName = settings?.company?.name || '';
     return {
-      title: `Brands | ${companyName}`,
-      description: 'Shop by your favorite brands.',
+      title: `العلامات التجارية | ${companyName}`,
+      description: 'تسوق حسب العلامات التجارية المفضلة لديك.',
     };
   }
 }

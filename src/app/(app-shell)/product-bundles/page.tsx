@@ -26,8 +26,8 @@ export async function generateMetadata(): Promise<Metadata> {
     return generateSEOMetadata({
       globalSEO,
       pageSEO,
-      fallbackTitle: `Product Bundles | ${companyName}`,
-      fallbackDescription: 'Exclusive bundle deals and special offers - save more when you buy together!',
+      fallbackTitle: `الباقات | ${companyName}`,
+      fallbackDescription: 'اكتشف الباقات والعروض الخاصة ووفر أكثر عند الشراء معًا.',
       fallbackImage: pickFirstImage(pageSEO?.metaImage, bundleImage),
       url: '/product-bundles',
     });
@@ -37,13 +37,13 @@ export async function generateMetadata(): Promise<Metadata> {
       const settings = await getSettings().catch(() => null);
       const companyName = settings?.company?.name || '';
       return {
-        title: `Product Bundles | ${companyName}`,
-        description: 'Exclusive bundle deals and special offers - save more when you buy together!',
+        title: `الباقات | ${companyName}`,
+        description: 'اكتشف الباقات والعروض الخاصة ووفر أكثر عند الشراء معًا.',
       };
     } catch {
       return {
-        title: 'Product Bundles',
-        description: 'Exclusive bundle deals and special offers - save more when you buy together!',
+        title: 'الباقات',
+        description: 'اكتشف الباقات والعروض الخاصة ووفر أكثر عند الشراء معًا.',
       };
     }
   }
