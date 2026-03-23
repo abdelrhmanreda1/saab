@@ -31,7 +31,7 @@ export async function generateMetadata({ params }: BlogPostPageProps): Promise<M
     blogSEO,
     fallbackTitle: title,
     fallbackDescription: description,
-    fallbackImage: post?.coverImage || blogSEO?.metaImage || globalSEO?.defaultMetaImage || globalSEO?.ogDefaultImage,
+    fallbackImage: post?.coverImage || blogSEO?.metaImage,
     url: `/blog/${slug}`,
     openGraphType: 'article',
     fallbackTitlePriority: 'high',

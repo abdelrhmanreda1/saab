@@ -43,11 +43,6 @@ const getSiteName = async () => {
       settings?.seo?.ogSiteName ||
       settings?.company?.name ||
       'Pardah',
-    defaultImage:
-      seoSettings?.defaultMetaImage ||
-      seoSettings?.ogDefaultImage ||
-      settings?.seo?.defaultMetaImage ||
-      settings?.seo?.ogDefaultImage,
     siteLanguage: String(settings?.site?.language || 'ar').trim().toLowerCase(),
   };
 };
@@ -58,7 +53,7 @@ export async function getBlogPostSocialMetadata(slug: string): Promise<SocialMet
     return null;
   }
 
-  const { siteName, defaultImage, siteLanguage } = await getSiteName();
+  const { siteName, siteLanguage } = await getSiteName();
   const blogSEO = post.id ? await getBlogSEO(post.id).catch(() => null) : null;
   const useArabic = siteLanguage === 'ar';
   const title = blogSEO?.title || (useArabic && post.title_ar ? post.title_ar : post.title);
@@ -71,14 +66,14 @@ export async function getBlogPostSocialMetadata(slug: string): Promise<SocialMet
   return {
     title,
     description,
-    imageUrl: toAbsoluteUrl(blogSEO?.metaImage || post.coverImage || defaultImage),
+    imageUrl: toAbsoluteUrl(blogSEO?.metaImage || post.coverImage),
     pageUrl: `${getBaseUrl()}/blog/${slug}`,
     siteName,
   };
 }
 
 export async function getBlogIndexSocialMetadata(): Promise<SocialMetadata> {
-  const { siteName, defaultImage } = await getSiteName();
+  const { siteName } = await getSiteName();
   const pageSEO = await getPageSEO('/blog').catch(() => null);
 
   return {
@@ -86,7 +81,7 @@ export async function getBlogIndexSocialMetadata(): Promise<SocialMetadata> {
     description: normalizeDescription(
       pageSEO?.description || 'Discover guides, updates, and useful articles from our store.'
     ),
-    imageUrl: toAbsoluteUrl(pageSEO?.metaImage || defaultImage),
+    imageUrl: toAbsoluteUrl(pageSEO?.metaImage),
     pageUrl: `${getBaseUrl()}/blog`,
     siteName,
   };
@@ -99,7 +94,7 @@ export async function getCmsPageSocialMetadata(options: {
   fallbackDescription: string;
 }): Promise<SocialMetadata> {
   const { slug, pagePath, fallbackTitle, fallbackDescription } = options;
-  const { siteName, defaultImage, siteLanguage } = await getSiteName();
+  const { siteName, siteLanguage } = await getSiteName();
   const [pageSEO, page] = await Promise.all([
     getPageSEO(pagePath).catch(() => null),
     getPageBySlug(slug).catch(() => null),
@@ -122,7 +117,7 @@ export async function getCmsPageSocialMetadata(options: {
   return {
     title,
     description,
-    imageUrl: toAbsoluteUrl(pageSEO?.metaImage || defaultImage),
+    imageUrl: toAbsoluteUrl(pageSEO?.metaImage),
     pageUrl: `${getBaseUrl()}${pagePath}`,
     siteName,
   };
@@ -134,13 +129,13 @@ export async function getRouteSocialMetadata(options: {
   fallbackDescription: string;
 }): Promise<SocialMetadata> {
   const { pagePath, fallbackTitle, fallbackDescription } = options;
-  const { siteName, defaultImage } = await getSiteName();
+  const { siteName } = await getSiteName();
   const pageSEO = await getPageSEO(pagePath).catch(() => null);
 
   return {
     title: pageSEO?.title || fallbackTitle,
     description: normalizeDescription(pageSEO?.description || fallbackDescription),
-    imageUrl: toAbsoluteUrl(pageSEO?.metaImage || defaultImage),
+    imageUrl: toAbsoluteUrl(pageSEO?.metaImage),
     pageUrl: `${getBaseUrl()}${pagePath}`,
     siteName,
   };

@@ -68,6 +68,46 @@ const serializePage = (page: Page | null): SerializedPage | null => {
   };
 };
 
+const pickPreferredTranslation = (translations: Page['translations'] | undefined, preferredLanguage: string) => {
+  const normalizedPreferred = preferredLanguage.trim().toLowerCase();
+  const normalizedTranslations = (translations || []).map((translation) => ({
+    raw: translation,
+    languageCode: String(translation.languageCode || '').trim().toLowerCase(),
+    metaTitle: translation.metaTitle?.trim() || '',
+    metaDescription: translation.metaDescription?.trim() || '',
+    title: translation.title?.trim() || '',
+    content: translation.content?.trim() || '',
+  }));
+
+  const exactWithSeo = normalizedTranslations.find(
+    (translation) =>
+      translation.languageCode === normalizedPreferred &&
+      (translation.metaTitle || translation.metaDescription)
+  );
+  if (exactWithSeo) return exactWithSeo.raw;
+
+  const exact = normalizedTranslations.find(
+    (translation) => translation.languageCode === normalizedPreferred
+  );
+  if (exact) return exact.raw;
+
+  const englishWithSeo = normalizedTranslations.find(
+    (translation) =>
+      translation.languageCode === 'en' &&
+      (translation.metaTitle || translation.metaDescription)
+  );
+  if (englishWithSeo) return englishWithSeo.raw;
+
+  const arabicWithSeo = normalizedTranslations.find(
+    (translation) =>
+      translation.languageCode === 'ar' &&
+      (translation.metaTitle || translation.metaDescription)
+  );
+  if (arabicWithSeo) return arabicWithSeo.raw;
+
+  return normalizedTranslations[0]?.raw;
+};
+
 export async function generateMetadata(): Promise<Metadata> {
   try {
     const [settings, seoSettings, pageSEO, page] = await Promise.all([
@@ -79,10 +119,11 @@ export async function generateMetadata(): Promise<Metadata> {
 
     const globalSEO = seoSettings || settings?.seo;
     const companyName = settings?.company?.name || '';
+    const siteLanguage = String(settings?.site?.language || 'en');
     
-    // Get metaTitle and metaDescription from page translation (English by default)
-    // Priority: Page Translation SEO > Page SEO Collection > Global SEO
-    const pageTranslation = page?.translations?.find(t => t.languageCode === 'en') || page?.translations?.[0];
+    // Prefer a matching translation case-insensitively, and prefer the one that
+    // actually contains SEO fields when duplicates like EN/en both exist.
+    const pageTranslation = pickPreferredTranslation(page?.translations, siteLanguage);
     const pageMetaTitle = pageTranslation?.metaTitle?.trim();
     const pageMetaDescription = pageTranslation?.metaDescription?.trim();
     const pageTitle = pageTranslation?.title?.trim();

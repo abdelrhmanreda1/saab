@@ -32,7 +32,10 @@ export async function generateMetadata(): Promise<Metadata> {
       pageSEO,
       fallbackTitle: `Shop | ${companyName}`,
       fallbackDescription: 'Browse our collection of modest fashion products.',
+      fallbackImage: pageSEO?.metaImage,
       url: '/shop',
+      fallbackTitlePriority: 'high',
+      fallbackDescriptionPriority: 'high',
     });
   } catch {
     // Failed to generate shop metadata - return fallback

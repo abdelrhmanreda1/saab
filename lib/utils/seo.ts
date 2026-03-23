@@ -118,9 +118,7 @@ export function generateSEOMetadata(options: GenerateMetadataOptions): Metadata 
   const metaImage =
     entityMetaImage ||
     fallbackImage ||
-    (productImages.length > 0 ? productImages[0] : undefined) ||
-    globalSEO?.defaultMetaImage ||
-    globalSEO?.ogDefaultImage;
+    (productImages.length > 0 ? productImages[0] : undefined);
 
   const canonicalUrl = 
     productSEO?.canonicalUrl || 

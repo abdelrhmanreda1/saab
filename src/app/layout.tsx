@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Inter, Cairo } from "next/font/google";
 import "./globals.css";
 import { generateSEOMetadata } from '@/lib/utils/seo';
+import { getBaseUrl } from '@/lib/utils/url';
 import { getCachedPageSEO, getCachedSEOSettings, getCachedSettings } from '@/lib/server/site-config';
 
 const inter = Inter({
@@ -21,6 +22,7 @@ const cairo = Cairo({
 
 export async function generateMetadata(): Promise<Metadata> {
   try {
+    const metadataBase = new URL(getBaseUrl());
     const [settings, seoSettings, homepageSEO] = await Promise.all([
       getCachedSettings(),
       getCachedSEOSettings(),
@@ -35,7 +37,7 @@ export async function generateMetadata(): Promise<Metadata> {
       pageSEO: homepageSEO,
       fallbackTitle: globalSEO?.siteTitle || companyName || '',
       fallbackDescription: globalSEO?.siteDescription || '',
-      fallbackImage: homepageSEO?.metaImage || globalSEO?.defaultMetaImage || globalSEO?.ogDefaultImage,
+      fallbackImage: homepageSEO?.metaImage,
       url: '/',
       fallbackTitlePriority: 'high',
       fallbackDescriptionPriority: 'high',
@@ -53,7 +55,7 @@ export async function generateMetadata(): Promise<Metadata> {
     if (settings?.theme?.faviconUrl) {
       return {
         ...metadata,
-        metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'),
+        metadataBase,
         icons: {
           icon: settings.theme.faviconUrl,
           shortcut: settings.theme.faviconUrl,
@@ -65,23 +67,25 @@ export async function generateMetadata(): Promise<Metadata> {
 
     return {
       ...metadata,
-      metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'),
+      metadataBase,
       ...pwaMetadata,
     };
   } catch {
     try {
+      const metadataBase = new URL(getBaseUrl());
       const settings = await getCachedSettings();
       const companyName = settings?.company?.name || 'Pardah';
       const globalSEO = settings?.seo;
       return {
-        metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'),
+        metadataBase,
         title: globalSEO?.siteTitle || companyName || '',
         description: globalSEO?.siteDescription || '',
         keywords: globalSEO?.siteKeywords,
       };
     } catch {
+      const metadataBase = new URL(getBaseUrl());
       return {
-        metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'),
+        metadataBase,
         title: 'Pardah',
         description: '',
       };

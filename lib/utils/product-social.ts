@@ -69,11 +69,7 @@ export async function getProductSocialMetadata(
   );
   const imageUrl = toAbsoluteUrl(
     productSEO?.metaImage ||
-      product.images?.[0] ||
-      seoSettings?.defaultMetaImage ||
-      seoSettings?.ogDefaultImage ||
-      settings?.seo?.defaultMetaImage ||
-      settings?.seo?.ogDefaultImage
+      product.images?.[0]
   );
 
   return {
