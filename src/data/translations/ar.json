@@ -441,6 +441,23 @@
   "product.review_singular": "تقييم",
   "product.review_plural": "تقييمات",
   "product.no_reviews_yet": "لا توجد تقييمات بعد",
+  "product.write_review": "اكتب تقييمك",
+  "product.share_review_thoughts": "شارك رأيك مع باقي العملاء.",
+  "product.your_rating": "تقييمك:",
+  "product.your_review": "رأيك:",
+  "product.review_placeholder": "شارك تجربتك مع هذا المنتج...",
+  "product.submit_review": "إرسال التقييم",
+  "product.be_first_to_review": "كن أول من يقيّم هذا المنتج.",
+  "product.loading_reviews": "جارٍ تحميل التقييمات...",
+  "product.sort_by": "ترتيب حسب:",
+  "product.sort_newest_first": "الأحدث أولًا",
+  "product.sort_oldest_first": "الأقدم أولًا",
+  "product.sort_highest_rating": "الأعلى تقييمًا",
+  "product.sort_lowest_rating": "الأقل تقييمًا",
+  "product.clear_filter": "مسح الفلتر",
+  "product.stars_label": "نجوم",
+  "product.no_reviews_match_filter": "لا توجد تقييمات مطابقة للفلتر المحدد.",
+  "product.recently": "حديثًا",
   "product.not_found": "المنتج غير موجود",
   "product.not_found_desc": "المنتج الذي تبحث عنه غير موجود أو تم إزالته.",
   "products.select_variant": "يرجى اختيار اللون والمقاس.",
@@ -920,4 +937,3 @@
   "home.silver_ounce_sar": "أونصة الفضة بالريال",
   "home.silver_ounce_usd": "أونصة الفضة بالدولار"
 }
-

@@ -1,42 +1,142 @@
 
-C:\Users\original\Downloads\codecanyon-61943339-pardah-nextjs-modern-ecommerce-platform-with-firebase-backend\sourcecode\src\app\account\addresses\edit\[id]\page.tsx
+C:\Users\original\Downloads\codecanyon-61943339-pardah-nextjs-modern-ecommerce-platform-with-firebase-backend\sourcecode\src\app\(app-shell)\about\AboutClient.tsx
+  76:9  warning  'defaultHtml' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+C:\Users\original\Downloads\codecanyon-61943339-pardah-nextjs-modern-ecommerce-platform-with-firebase-backend\sourcecode\src\app\(app-shell)\account\addresses\edit\[id]\page.tsx
   145:6  warning  React Hook useEffect has a missing dependency: 'fetchAddressFromApi'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
 
-C:\Users\original\Downloads\codecanyon-61943339-pardah-nextjs-modern-ecommerce-platform-with-firebase-backend\sourcecode\src\app\admin\settings\payment-gateways\page.tsx
-  407:25  warning  Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
-  803:29  warning  Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
-  872:27  warning  Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
+C:\Users\original\Downloads\codecanyon-61943339-pardah-nextjs-modern-ecommerce-platform-with-firebase-backend\sourcecode\src\app\(app-shell)\admin\pages\[slug]\PageEditor.tsx
+  646:6  warning  React Hook React.useCallback has a missing dependency: 'readDraft'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
 
-C:\Users\original\Downloads\codecanyon-61943339-pardah-nextjs-modern-ecommerce-platform-with-firebase-backend\sourcecode\src\app\checkout\page.tsx
-    23:8   warning  'LocalPaymentMethodComponent' is defined but never used                                                                        @typescript-eslint/no-unused-vars
-   109:10  warning  'paymentMethod' is assigned a value but never used                                                                             @typescript-eslint/no-unused-vars
-   109:25  warning  'setPaymentMethod' is assigned a value but never used                                                                          @typescript-eslint/no-unused-vars
-   110:10  warning  'localPaymentMethods' is assigned a value but never used                                                                       @typescript-eslint/no-unused-vars
-   111:10  warning  'selectedLocalPaymentMethod' is assigned a value but never used                                                                @typescript-eslint/no-unused-vars
-   111:38  warning  'setSelectedLocalPaymentMethod' is assigned a value but never used                                                             @typescript-eslint/no-unused-vars
-   112:10  warning  'paymentGateways' is assigned a value but never used                                                                           @typescript-eslint/no-unused-vars
-   113:10  warning  'selectedPaymentGateway' is assigned a value but never used                                                                    @typescript-eslint/no-unused-vars
-   113:34  warning  'setSelectedPaymentGateway' is assigned a value but never used                                                                 @typescript-eslint/no-unused-vars
-   117:10  warning  'confirmedLocalPaymentMethod' is assigned a value but never used                                                               @typescript-eslint/no-unused-vars
-   122:21  warning  'setUseWallet' is assigned a value but never used                                                                              @typescript-eslint/no-unused-vars
-   683:6   warning  React Hook useEffect has a missing dependency: 'getCurrentAuthUser'. Either include it or remove the dependency array          react-hooks/exhaustive-deps
-   703:6   warning  React Hook useEffect has a missing dependency: 'fetchCurrentAccountProfile'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
-  1437:6   warning  React Hook useMemo has a missing dependency: 'settings?.goldPricing'. Either include it or remove the dependency array         react-hooks/exhaustive-deps
-  1736:9   warning  'handleStripeProviderPayment' is assigned a value but never used                                                               @typescript-eslint/no-unused-vars
+C:\Users\original\Downloads\codecanyon-61943339-pardah-nextjs-modern-ecommerce-platform-with-firebase-backend\sourcecode\src\app\(app-shell)\checkout\page.tsx
+   112:10  warning  'paymentMethod' is assigned a value but never used                                                                             @typescript-eslint/no-unused-vars
+   112:25  warning  'setPaymentMethod' is assigned a value but never used                                                                          @typescript-eslint/no-unused-vars
+   113:10  warning  'localPaymentMethods' is assigned a value but never used                                                                       @typescript-eslint/no-unused-vars
+   114:10  warning  'selectedLocalPaymentMethod' is assigned a value but never used                                                                @typescript-eslint/no-unused-vars
+   114:38  warning  'setSelectedLocalPaymentMethod' is assigned a value but never used                                                             @typescript-eslint/no-unused-vars
+   115:10  warning  'paymentGateways' is assigned a value but never used                                                                           @typescript-eslint/no-unused-vars
+   116:10  warning  'selectedPaymentGateway' is assigned a value but never used                                                                    @typescript-eslint/no-unused-vars
+   116:34  warning  'setSelectedPaymentGateway' is assigned a value but never used                                                                 @typescript-eslint/no-unused-vars
+   120:10  warning  'confirmedLocalPaymentMethod' is assigned a value but never used                                                               @typescript-eslint/no-unused-vars
+   125:21  warning  'setUseWallet' is assigned a value but never used                                                                              @typescript-eslint/no-unused-vars
+   686:6   warning  React Hook useEffect has a missing dependency: 'getCurrentAuthUser'. Either include it or remove the dependency array          react-hooks/exhaustive-deps
+   706:6   warning  React Hook useEffect has a missing dependency: 'fetchCurrentAccountProfile'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+  1440:6   warning  React Hook useMemo has a missing dependency: 'settings?.goldPricing'. Either include it or remove the dependency array         react-hooks/exhaustive-deps
+  1739:9   warning  'handleStripeProviderPayment' is assigned a value but never used                                                               @typescript-eslint/no-unused-vars
 
-C:\Users\original\Downloads\codecanyon-61943339-pardah-nextjs-modern-ecommerce-platform-with-firebase-backend\sourcecode\src\app\login\page.tsx
-  930:9  warning  'handleGoogleLogin' is assigned a value but never used  @typescript-eslint/no-unused-vars
+C:\Users\original\Downloads\codecanyon-61943339-pardah-nextjs-modern-ecommerce-platform-with-firebase-backend\sourcecode\src\app\(app-shell)\gold-price\GoldPriceClient.tsx
+  4:8  warning  'Link' is defined but never used  @typescript-eslint/no-unused-vars
 
-C:\Users\original\Downloads\codecanyon-61943339-pardah-nextjs-modern-ecommerce-platform-with-firebase-backend\sourcecode\src\app\shop\ShopClient.tsx
-  139:6  warning  React Hook useMemo has a missing dependency: 'getPricing'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+C:\Users\original\Downloads\codecanyon-61943339-pardah-nextjs-modern-ecommerce-platform-with-firebase-backend\sourcecode\src\app\(app-shell)\login\page.tsx
+  936:9  warning  'handleGoogleLogin' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+C:\Users\original\Downloads\codecanyon-61943339-pardah-nextjs-modern-ecommerce-platform-with-firebase-backend\sourcecode\src\app\(app-shell)\shop\ShopClient.tsx
+  143:6  warning  React Hook useMemo has a missing dependency: 'getPricing'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+C:\Users\original\Downloads\codecanyon-61943339-pardah-nextjs-modern-ecommerce-platform-with-firebase-backend\sourcecode\src\app\(home)\home-context.tsx
+  309:7  error  Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+C:\Users\original\Downloads\codecanyon-61943339-pardah-nextjs-modern-ecommerce-platform-with-firebase-backend\sourcecode\src\app\(home)\home-context.tsx:309:7
+  307 |
+  308 |     if (savedLanguage) {
+> 309 |       setCurrentLanguageState(savedLanguage);
+      |       ^^^^^^^^^^^^^^^^^^^^^^^ Avoid calling setState() directly within an effect
+  310 |       setTranslations(getTranslationsFor(savedLanguage.code));
+  311 |     }
+  312 |   }, []);  react-hooks/set-state-in-effect
+
+C:\Users\original\Downloads\codecanyon-61943339-pardah-nextjs-modern-ecommerce-platform-with-firebase-backend\sourcecode\src\app\home\HomeDeferredSectionsClient.tsx
+  154:36  error  Error: Cannot call impure function during render
+
+`Date.now` is an impure function. Calling an impure function can produce unstable results that update unpredictably when the component happens to re-render. (https://react.dev/reference/rules/components-and-hooks-must-be-pure#components-and-hooks-must-be-idempotent).
+
+C:\Users\original\Downloads\codecanyon-61943339-pardah-nextjs-modern-ecommerce-platform-with-firebase-backend\sourcecode\src\app\home\HomeDeferredSectionsClient.tsx:154:36
+  152 |         : null;
+  153 |   const createdAtMs = timestampToMs(product.createdAt);
+> 154 |   const isNew = createdAtMs > 0 && Date.now() - createdAtMs < 30 * 24 * 60 * 60 * 1000;
+      |                                    ^^^^^^^^^^ Cannot call impure function
+  155 |   const pricing = getProductPricingSummary(
+  156 |     product as never,
+  157 |     settings?.goldPricing,  react-hooks/purity
+
+C:\Users\original\Downloads\codecanyon-61943339-pardah-nextjs-modern-ecommerce-platform-with-firebase-backend\sourcecode\src\app\home\HomeHeroClient.tsx
+  55:5  error  Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+C:\Users\original\Downloads\codecanyon-61943339-pardah-nextjs-modern-ecommerce-platform-with-firebase-backend\sourcecode\src\app\home\HomeHeroClient.tsx:55:5
+  53 |
+  54 |   useEffect(() => {
+> 55 |     setIsMobile(window.innerWidth < 768);
+     |     ^^^^^^^^^^^ Avoid calling setState() directly within an effect
+  56 |   }, []);
+  57 |
+  58 |   const visibleBanners = useMemo(                                                                        react-hooks/set-state-in-effect
+  81:7  error  Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+C:\Users\original\Downloads\codecanyon-61943339-pardah-nextjs-modern-ecommerce-platform-with-firebase-backend\sourcecode\src\app\home\HomeHeroClient.tsx:81:7
+  79 |   useEffect(() => {
+  80 |     if (currentBannerIndex >= visibleBanners.length) {
+> 81 |       setCurrentBannerIndex(0);
+     |       ^^^^^^^^^^^^^^^^^^^^^ Avoid calling setState() directly within an effect
+  82 |     }
+  83 |   }, [currentBannerIndex, visibleBanners.length]);
+  84 |  react-hooks/set-state-in-effect
 
 C:\Users\original\Downloads\codecanyon-61943339-pardah-nextjs-modern-ecommerce-platform-with-firebase-backend\sourcecode\src\app\sitemap.ts
   208:12  warning  'error' is defined but never used  @typescript-eslint/no-unused-vars
 
-C:\Users\original\Downloads\codecanyon-61943339-pardah-nextjs-modern-ecommerce-platform-with-firebase-backend\sourcecode\src\components\admin\ProductForm.tsx
-  1110:25  warning  Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
-  1129:25  warning  Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
-  1386:19  warning  Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
+C:\Users\original\Downloads\codecanyon-61943339-pardah-nextjs-modern-ecommerce-platform-with-firebase-backend\sourcecode\src\components\Header.tsx
+  45:5  warning  Unused eslint-disable directive (no problems were reported from 'react-hooks/set-state-in-effect')
 
-✖ 25 problems (0 errors, 25 warnings)
+C:\Users\original\Downloads\codecanyon-61943339-pardah-nextjs-modern-ecommerce-platform-with-firebase-backend\sourcecode\src\components\LanguageSwitcher.tsx
+  16:22  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  17:22  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  27:22  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  28:22  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Users\original\Downloads\codecanyon-61943339-pardah-nextjs-modern-ecommerce-platform-with-firebase-backend\sourcecode\src\components\ReviewList.tsx
+  81:6  warning  React Hook useEffect has a missing dependency: 'isArabic'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+C:\Users\original\Downloads\codecanyon-61943339-pardah-nextjs-modern-ecommerce-platform-with-firebase-backend\sourcecode\src\components\admin\BannerForm.tsx
+  76:6  warning  React Hook useMemo has a missing dependency: 'getTranslation'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+  82:6  warning  React Hook useMemo has a missing dependency: 'getTranslation'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+C:\Users\original\Downloads\codecanyon-61943339-pardah-nextjs-modern-ecommerce-platform-with-firebase-backend\sourcecode\src\components\admin\ProductForm.tsx
+    60:7   warning  'ReactQuill' is assigned a value but never used                                                                                                                                                                                                                                          @typescript-eslint/no-unused-vars
+   117:10  warning  'isClient' is assigned a value but never used                                                                                                                                                                                                                                            @typescript-eslint/no-unused-vars
+   471:9   warning  'quillModules' is assigned a value but never used                                                                                                                                                                                                                                        @typescript-eslint/no-unused-vars
+   490:9   warning  'quillFormats' is assigned a value but never used                                                                                                                                                                                                                                        @typescript-eslint/no-unused-vars
+  1215:25  warning  Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
+  1234:25  warning  Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
+  1493:19  warning  Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
+
+C:\Users\original\Downloads\codecanyon-61943339-pardah-nextjs-modern-ecommerce-platform-with-firebase-backend\sourcecode\src\context\CartContext.tsx
+  97:5  warning  Unused eslint-disable directive (no problems were reported from 'react-hooks/set-state-in-effect')
+
+C:\Users\original\Downloads\codecanyon-61943339-pardah-nextjs-modern-ecommerce-platform-with-firebase-backend\sourcecode\src\context\CurrencyContext.tsx
+  117:5  warning  React Hook useMemo has a missing dependency: 'formatPrice'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+C:\Users\original\Downloads\codecanyon-61943339-pardah-nextjs-modern-ecommerce-platform-with-firebase-backend\sourcecode\src\context\LanguageContext.tsx
+  178:6  warning  React Hook useCallback has missing dependencies: 'readCachedTranslations' and 'writeCachedTranslations'. Either include them or remove the dependency array  react-hooks/exhaustive-deps
+  248:6  warning  React Hook useEffect has a missing dependency: 'setLanguage'. Either include it or remove the dependency array                                               react-hooks/exhaustive-deps
+
+✖ 44 problems (8 errors, 36 warnings)
+  0 errors and 2 warnings potentially fixable with the `--fix` option.
 
