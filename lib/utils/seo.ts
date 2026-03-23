@@ -104,17 +104,23 @@ export function generateSEOMetadata(options: GenerateMetadataOptions): Metadata 
     globalSEO?.siteKeywords || 
     [];
 
-  const metaImage = 
-    productSEO?.metaImage || 
-    categorySEO?.metaImage || 
-    brandSEO?.metaImage || 
+  const entityMetaImage =
+    productSEO?.metaImage ||
+    categorySEO?.metaImage ||
+    brandSEO?.metaImage ||
     collectionSEO?.metaImage ||
     blogSEO?.metaImage ||
-    pageSEO?.metaImage || 
+    pageSEO?.metaImage;
+
+  // Prefer a page-specific fallback image before the site-wide default image.
+  // This ensures dynamic routes like blog posts share their own cover image
+  // instead of an older global OG image.
+  const metaImage =
+    entityMetaImage ||
+    fallbackImage ||
     (productImages.length > 0 ? productImages[0] : undefined) ||
-    globalSEO?.defaultMetaImage || 
-    globalSEO?.ogDefaultImage || 
-    fallbackImage;
+    globalSEO?.defaultMetaImage ||
+    globalSEO?.ogDefaultImage;
 
   const canonicalUrl = 
     productSEO?.canonicalUrl || 
